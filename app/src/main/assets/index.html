@@ -217,7 +217,7 @@
   #bottom .btns .bg button[data-ico]:active { transform:translateY(0) scale(.98); }
   /* ===== bottom dock v5 (compact): clock | transport | zoomable timeline on top, navigation pills below; all text centred ===== */
   body:not(.mobile) #bottom { padding:6px 10px 8px; z-index:8; }
-  body:not(.mobile) #mtabs { display:grid; grid-template-columns:minmax(0,1fr) auto; grid-template-areas:"R L" "N N"; gap:5px 10px; align-items:center; padding:0 0 1px; }
+  body:not(.mobile) #mtabs { display:grid; grid-template-columns:auto minmax(0,1fr); grid-template-areas:"L R" "N N"; gap:5px 10px; align-items:center; padding:0 0 1px; }
   #dkN { display:contents; } body:not(.mobile) #dkN { grid-area:N; display:flex; gap:5px; align-items:center; justify-content:center; flex-wrap:wrap; padding-top:5px; border-top:1px solid rgba(160,190,255,.12); }
   body:not(.mobile) #mtabs #dkN button { padding:4px 11px; font-size:12px; gap:5px; } body:not(.mobile) #mtabs #dkN button b { font-size:13px; } body:not(.mobile) #mtabs #dkN .dsep { height:16px; margin:0 3px; } body:not(.mobile) #mtabs #dkN button.q { min-width:0; }
   body.mobile #dkL, body.mobile #dkR { display:none; } body:not(.mobile) #mqPause, body:not(.mobile) #mqSpeed, body:not(.mobile) #mqInfo, body:not(.mobile) #mqMenu { display:none !important; }
@@ -226,7 +226,7 @@
   #dkL, #dkR { box-sizing:border-box; text-align:center; }
   body:not(.mobile) #infoRows .odds { display:none; }
   /* clock */
-  #dkL { grid-area:L; justify-self:end; align-self:stretch; min-width:0; display:grid; grid-template-columns:auto auto; grid-template-areas:"cl od" "tp tp"; align-items:center; justify-content:center; gap:5px 10px; padding:6px 10px 6px; border-radius:12px; background:linear-gradient(180deg,rgba(120,170,255,.10),rgba(120,170,255,.04)); border:1px solid rgba(150,190,255,.16); font-variant-numeric:tabular-nums; }
+  #dkL { grid-area:L; justify-self:start; align-self:stretch; min-width:0; display:grid; grid-template-columns:auto auto; grid-template-areas:"cl od" "tp tp"; align-items:center; justify-content:center; gap:5px 10px; padding:6px 10px 6px; border-radius:12px; background:linear-gradient(180deg,rgba(120,170,255,.10),rgba(120,170,255,.04)); border:1px solid rgba(150,190,255,.16); font-variant-numeric:tabular-nums; }
   #dkL .cl { grid-area:cl; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px; min-width:0; }
   #dkL .od { grid-area:od; display:flex; flex-direction:column; gap:3px; padding-left:9px; border-left:1px solid rgba(150,190,255,.18); font-size:10.5px; } #dkL .od > div { display:grid; grid-template-columns:auto 44px 28px; align-items:center; gap:5px; white-space:nowrap; } #dkL .od span { color:#b9c8e6; text-align:left; }
   #dkL .od .ob { display:block; height:6px; border-radius:6px; background:rgba(255,255,255,.1); overflow:hidden; } #dkL .od .ob u { display:block; height:100%; width:0; border-radius:6px; text-decoration:none; transition:width .8s; } #dkL .od .l u { background:linear-gradient(90deg,#2f9d58,#8cf5a8); box-shadow:0 0 8px #6fe08a; } #dkL .od .m u { background:linear-gradient(90deg,#d49a2a,#ffe08f); box-shadow:0 0 8px #ffd278; }
@@ -2820,7 +2820,7 @@ function compile(type, src) {
   if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
     const log = gl.getShaderInfoLog(sh), lines = src.split("\n");
     const m = /ERROR: \d+:(\d+)/.exec(log); const ln = m ? +m[1] : 0;
-    fail("Shader compile error:\n" + log + (ln ? "\n\nnear line " + ln + ":\n" + lines.slice(Math.max(0, ln - 3), ln + 2).join("\n") : ""));
+    fail("Shader compile error:\n" + (log || "(the graphics driver gave no details: it gave up compiling this large shader)") + (log ? "" : "\n\nTry: update your graphics driver; in the desktop app start it with --angle=gl or --angle=d3d11; or lower Graphics quality.") + (ln ? "\n\nnear line " + ln + ":\n" + lines.slice(Math.max(0, ln - 3), ln + 2).join("\n") : ""));
     return null;
   }
   return sh;
