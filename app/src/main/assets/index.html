@@ -245,6 +245,8 @@
   #dkTrack .nowc { position:absolute; right:0; top:0; bottom:0; width:24px; background:linear-gradient(90deg,transparent,rgba(111,224,138,.5)); } #dkTrack .nowd { position:absolute; right:3px; top:5px; width:10px; height:10px; border-radius:50%; background:#6fe08a; box-shadow:0 0 10px 2px #6fe08a; animation:dkp 2s ease-in-out infinite; } @keyframes dkp { 50% { transform:scale(.7); opacity:.7; } }
   #dkTrack .al, #dkTrack .ar, #dkTrack .az { position:absolute; top:50%; transform:translateY(-50%); font-size:9px; line-height:1; color:#dbe8ff; text-shadow:0 0 3px #000, 0 0 3px #000; pointer-events:none; letter-spacing:.02em; } #dkTrack .al { left:5px; } #dkTrack .ar { right:5px; } #dkTrack .az { left:50%; transform:translate(-50%,-50%); color:#7fe0ff; }
   #dkLast { display:flex; align-items:center; justify-content:center; gap:6px; font-size:11px; color:#dce9ff; white-space:nowrap; overflow:hidden; cursor:pointer; } #dkLast i { flex:none; width:7px; height:7px; border-radius:50%; background:var(--c,#6fe08a); box-shadow:0 0 8px var(--c,#6fe08a); } #dkLast span { overflow:hidden; text-overflow:ellipsis; min-width:0; } #dkLast small { flex:none; color:#8fa4cc; font-size:10px; }
+  #dkStat { display:flex; justify-content:center; align-items:center; gap:9px; font-size:10px; color:#a9bddf; white-space:nowrap; overflow:hidden; font-variant-numeric:tabular-nums; } #dkStat b { font-weight:600; color:#e6f0ff; } #dkStat .c::before { content:""; display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--c); margin-right:3px; vertical-align:0; box-shadow:0 0 5px var(--c); } #dkStat .v { color:#7fe0ff; }
+  #dkTrack .en { position:absolute; top:50%; transform:translateY(-50%); font-size:8.5px; line-height:1; color:#fff; opacity:.8; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; pointer-events:none; padding:0 3px; box-sizing:border-box; text-shadow:0 0 3px #000; }
   #dkTip { position:absolute; bottom:calc(100% + 8px); transform:translateX(-50%); padding:5px 9px; border-radius:8px; background:rgba(8,12,24,.96); border:1px solid rgba(160,190,255,.3); font-size:11.5px; color:#fff; white-space:nowrap; pointer-events:none; opacity:0; transition:opacity .1s; z-index:40; text-align:center; } #dkTip small { display:block; color:#8fa4cc; font-size:10px; }
   /* compact graph strip */
   body:not(.mobile) #chips { margin-bottom:4px; gap:4px; } body:not(.mobile) #chips button { padding:1px 8px; font-size:11px; } body:not(.mobile) #gstrip { gap:5px; } body:not(.mobile) .gc { padding:3px 6px 2px; } body:not(.mobile) .gc canvas { height:36px; margin-top:2px; }
@@ -3838,7 +3840,7 @@ function buildMobileHUD() {                                     // thumb-reach t
     const ck = document.createElement("div"); ck.id = "dkL"; ck.title = "Today's date and time, and how far this world has come";
     ck.innerHTML = '<div class="r1"><b id="ckDate"></b><span id="ckTime"></span></div><div class="r2"><span id="ckSim"></span><span id="ckEra"></span><em id="ckSpd"></em></div>';
     const tr = document.createElement("div"); tr.id = "dkR";
-    tr.innerHTML = '<div id="dkTrack" title="Scroll to zoom · drag to pan · double-click to reset · click for the full feed"></div><div id="dkLast" title="Open the full timeline"></div><div id="dkTip"></div>';
+    tr.innerHTML = '<div id="dkTrack" title="Scroll to zoom · drag to pan · double-click to reset · click for the full feed"></div><div id="dkStat" title="Event counts: whole history · in view"></div><div id="dkLast" title="Open the full timeline"></div><div id="dkTip"></div>';
     bar.insertBefore(ck, nav); bar.insertBefore(tp, nav); bar.insertBefore(tr, nav); }
   $("bottom").insertBefore(bar, $("bottom").firstChild);
   document.querySelectorAll("#bottom .bg").forEach(g => { const l = g.querySelector("i"); if (l) g.dataset.g = l.textContent.trim().toLowerCase(); });
@@ -4605,7 +4607,7 @@ function tlSet(a, span, now) {
     if (drag) { const now = Math.max(S.age, 1), dx = e.clientX - drag.x; drag.moved = Math.max(drag.moved, Math.abs(dx)); if (!TLV.full || drag.span < now * 0.995) { tlSet(drag.a - dx / track.clientWidth * drag.span, drag.span, now); updateDock(true); } return; }
     const best = nearest(e.clientX, 14); if (!best) { tip.style.opacity = 0; return; }
     const now = Math.max(S.age, 1), [a, b] = tlRange(now), r = track.getBoundingClientRect(), tr2 = tr.getBoundingClientRect(), px = (best.age - a) / (b - a) * r.width + (r.left - tr2.left);
-    tip.innerHTML = `${best.text}<small>${Math.round(best.age * 2).toLocaleString()} Myr</small>`; tip.style.left = clamp(px, 80, tr2.width - 80) + "px"; tip.style.opacity = 1; });
+    let eraN = ""; try { eraN = S.world.geoEra(best.age).era || ""; } catch (e) {} tip.innerHTML = `${best.text}<small>${TLC[best.cat][1]} · ${Math.round(best.age * 2).toLocaleString()} Myr${eraN ? " · " + eraN : ""} · ${Math.round((S.age - best.age) * 2).toLocaleString()} Myr ago</small>`; tip.style.left = clamp(px, 80, tr2.width - 80) + "px"; tip.style.opacity = 1; });
   const up = e => { if (!drag) return; const moved = drag.moved; drag = null; track.classList.remove("dn"); if (moved < 4) { const best = nearest(e.clientX, 8); if (best && best.loc) flyTo(best.loc); tlToggle(); } };
   track.addEventListener("pointerup", up); track.addEventListener("pointercancel", () => { drag = null; track.classList.remove("dn"); });
   track.addEventListener("mouseleave", () => { tip.style.opacity = 0; });
@@ -4625,12 +4627,16 @@ function updateDock(force) {
     else setHTML(lastEl, '<i style="--c:#8896b3"></i><span>Nothing has happened yet…</span>'); }
   const ev = W.events || [], now = Math.max(S.age, 1), F = S.tlF || { life: 1, impact: 1, planet: 1, civ: 1, minor: 0 }, [a, b] = tlRange(now), sp = Math.max(b - a, 1e-6), X = ag => (ag - a) / sp * 100;
   const eras = ev.filter(x => x.era).sort((p, q) => p.age - q.age); let h = "";
-  eras.forEach((x, i) => { const l = X(x.age), r = X(eras[i + 1] ? eras[i + 1].age : now); if (r < 0 || l > 100) return; const L = Math.max(l, 0), R = Math.min(r, 100); h += `<span class="eb" style="left:${L.toFixed(2)}%;width:${Math.max(R - L, 0.4).toFixed(2)}%;background:hsl(${(205 + i * 41) % 360},55%,${i % 2 ? 30 : 38}%)"></span>`; });
+  eras.forEach((x, i) => { const l = X(x.age), r = X(eras[i + 1] ? eras[i + 1].age : now); if (r < 0 || l > 100) return; const L = Math.max(l, 0), R = Math.min(r, 100); h += `<span class="eb" style="left:${L.toFixed(2)}%;width:${Math.max(R - L, 0.4).toFixed(2)}%;background:hsl(${(205 + i * 41) % 360},55%,${i % 2 ? 30 : 38}%)"></span>`; if (R - L > 14) h += `<span class="en" style="left:${L.toFixed(2)}%;width:${(R - L).toFixed(2)}%;text-align:center">${x.text.replace(/ (era|eon) begins$/i, "")}</span>`; });
   for (const x of ev) if (!x.era && F[x.cat]) { const l = X(x.age); if (l < -1 || l > 101) continue; const c = TLC[x.cat][0]; h += `<i class="tk${x.cat === "civ" || x.cat === "impact" ? " big" : ""}" style="left:${l.toFixed(2)}%;color:${c};background:${c}"></i>`; }
   if (b >= now - sp * 0.01) h += '<span class="nowc"></span><span class="nowd"></span>';
   h += `<span class="al">${Math.round(a * 2).toLocaleString()} Myr</span><span class="ar">${b >= now - sp * 0.01 ? "" : Math.round(b * 2).toLocaleString() + " Myr"}</span>`;
   if (!TLV.full) h += `<span class="az">🔍 ×${(now / sp).toFixed(now / sp < 10 ? 1 : 0)}</span>`;
   setHTML($("dkTrack"), h);
+  { const all = {}, vis = {}; let nv = 0, na = 0; for (const x of ev) { if (x.era || x.cat === "minor") continue; na++; all[x.cat] = (all[x.cat] || 0) + 1; if (x.age >= a && x.age <= b) { nv++; vis[x.cat] = (vis[x.cat] || 0) + 1; } }
+    const chip = k => `<span class="c" style="--c:${TLC[k][0]}" title="${TLC[k][1]}"><b>${all[k] || 0}</b>${TLC[k][1]}</span>`;
+    const win = TLV.full ? "" : `<span class="v">${nv} in view · ${Math.round(a * 2).toLocaleString()}–${Math.round(b * 2).toLocaleString()} Myr</span>`;
+    const html = `<span><b>${na}</b> events</span>${chip("life")}${chip("impact")}${chip("planet")}${chip("civ")}${win}`, el = $("dkStat"); if (el.__h !== html) { el.__h = html; el.innerHTML = html; } }
 }
 { let tab = "over"; try { tab = localStorage.getItem("pfLeftTab") || "over"; } catch (e) {}
   const setTab = t => { document.querySelectorAll("#ltabs [data-lt]").forEach(b => b.classList.toggle("on", b.dataset.lt === t)); document.querySelectorAll("#info .lt").forEach(d => d.classList.toggle("on", d.id === "lt-" + t)); try { localStorage.setItem("pfLeftTab", t); } catch (e) {} if (t === "time") renderTimeline(); };
