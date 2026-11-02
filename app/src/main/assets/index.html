@@ -215,38 +215,39 @@
   #bottom .btns .bg button[data-ico]:hover { transform:translateY(-1px); border-color:rgba(150,190,255,.45); box-shadow:0 4px 14px rgba(0,0,0,.35); } #bottom .btns .bg button[data-ico]:hover::before { background:rgba(130,180,255,.28); }
   #bottom .btns .bg button[data-ico].on::before { background:rgba(255,255,255,.22); box-shadow:inset 0 0 0 1px rgba(255,255,255,.3); } #bottom .btns .bg button[data-ico].on { box-shadow:0 0 16px rgba(80,140,255,.35); }
   #bottom .btns .bg button[data-ico]:active { transform:translateY(0) scale(.98); }
-  /* ===== bottom dock v4: clock | transport | timeline strip on top, navigation pills below ===== */
-  body:not(.mobile) #mtabs { display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); grid-template-areas:"L T R" "N N N"; gap:8px 14px; align-items:center; padding:2px 2px 4px; }
-  #dkN { display:contents; } body:not(.mobile) #dkN { grid-area:N; display:flex; gap:6px; align-items:center; justify-content:center; flex-wrap:wrap; padding-top:7px; border-top:1px solid rgba(160,190,255,.12); }
+  /* ===== bottom dock v5 (compact): clock | transport | zoomable timeline on top, navigation pills below; all text centred ===== */
+  body:not(.mobile) #bottom { padding:6px 10px 8px; z-index:8; }
+  body:not(.mobile) #mtabs { display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); grid-template-areas:"L T R" "N N N"; gap:5px 10px; align-items:center; padding:0 0 1px; }
+  #dkN { display:contents; } body:not(.mobile) #dkN { grid-area:N; display:flex; gap:5px; align-items:center; justify-content:center; flex-wrap:wrap; padding-top:5px; border-top:1px solid rgba(160,190,255,.12); }
+  body:not(.mobile) #mtabs #dkN button { padding:4px 11px; font-size:12px; gap:5px; } body:not(.mobile) #mtabs #dkN button b { font-size:13px; } body:not(.mobile) #mtabs #dkN .dsep { height:16px; margin:0 3px; } body:not(.mobile) #mtabs #dkN button.q { min-width:0; }
   body.mobile #dkL, body.mobile #dkT, body.mobile #dkR { display:none; } body:not(.mobile) #mqPause, body:not(.mobile) #mqSpeed, body:not(.mobile) #mqInfo, body:not(.mobile) #mqMenu { display:none !important; }
   body:not(.mobile) #bottom .bg[data-g=time] #bPlay, body:not(.mobile) #bottom .bg[data-g=time] #bPause, body:not(.mobile) #bottom .bg[data-g=time] #bFF3, body:not(.mobile) #bottom .bg[data-g=time] #bFF5, body:not(.mobile) #bottom .bg[data-g=time] #bReal, body:not(.mobile) #bottom .bg[data-g=time] #bClim { display:none; }
   #bWall { display:none !important; }
+  #dkL, #dkR { box-sizing:border-box; text-align:center; }
   /* clock */
-  #bottom { z-index:8; } #dkL, #dkR { box-sizing:border-box; }
-  #dkL { grid-area:L; justify-self:start; min-width:0; display:flex; flex-direction:column; gap:3px; padding:6px 14px; border-radius:14px; background:linear-gradient(180deg,rgba(120,170,255,.10),rgba(120,170,255,.04)); border:1px solid rgba(150,190,255,.16); font-variant-numeric:tabular-nums; }
-  #dkL .r1 { display:flex; align-items:baseline; gap:10px; white-space:nowrap; } #dkL #ckDate { font-size:13.5px; font-weight:600; color:#fff; letter-spacing:.01em; } #dkL #ckTime { font-size:12px; color:#9fc0ff; }
-  #dkL .r2 { display:flex; align-items:center; gap:8px; white-space:nowrap; font-size:11.5px; color:#a9bddf; min-width:0; } #dkL #ckSim { color:#7fe0ff; font-weight:600; } #dkL #ckEra { overflow:hidden; text-overflow:ellipsis; opacity:.85; min-width:0; }
-  #dkL #ckSpd { font-style:normal; font-size:10.5px; padding:1px 8px; border-radius:999px; background:rgba(111,224,138,.14); color:#9af0b4; box-shadow:inset 0 0 0 1px rgba(111,224,138,.3); flex:none; } #dkL #ckSpd.pz { background:rgba(255,190,90,.14); color:#ffd08a; box-shadow:inset 0 0 0 1px rgba(255,190,90,.35); }
+  #dkL { grid-area:L; justify-self:start; min-width:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px; padding:3px 12px; border-radius:12px; background:linear-gradient(180deg,rgba(120,170,255,.10),rgba(120,170,255,.04)); border:1px solid rgba(150,190,255,.16); font-variant-numeric:tabular-nums; }
+  #dkL .r1 { display:flex; align-items:baseline; justify-content:center; gap:8px; white-space:nowrap; } #dkL #ckDate { font-size:12.5px; font-weight:600; color:#fff; } #dkL #ckTime { font-size:11.5px; color:#9fc0ff; }
+  #dkL .r2 { display:flex; align-items:center; justify-content:center; gap:7px; white-space:nowrap; font-size:10.5px; color:#a9bddf; min-width:0; max-width:100%; } #dkL #ckSim { color:#7fe0ff; font-weight:600; } #dkL #ckEra { overflow:hidden; text-overflow:ellipsis; opacity:.85; min-width:0; }
+  #dkL #ckSpd { font-style:normal; font-size:10px; padding:0 7px; border-radius:999px; background:rgba(111,224,138,.14); color:#9af0b4; box-shadow:inset 0 0 0 1px rgba(111,224,138,.3); flex:none; } #dkL #ckSpd.pz { background:rgba(255,190,90,.14); color:#ffd08a; box-shadow:inset 0 0 0 1px rgba(255,190,90,.35); }
   /* transport */
-  #dkT { grid-area:T; display:inline-flex; align-items:center; gap:2px; padding:4px; border-radius:999px; background:rgba(6,10,22,.7); border:1px solid rgba(150,190,255,.22); box-shadow:inset 0 1px 0 rgba(255,255,255,.05), 0 6px 20px rgba(0,0,0,.35); }
-  #mtabs #dkT button { position:relative; display:flex; align-items:center; justify-content:center; gap:5px; height:38px; min-width:38px; padding:0 11px; border-radius:999px; border:0; background:transparent; color:#b9cbef; font:inherit; font-size:12px; font-weight:600; cursor:pointer; transition:background .15s, color .15s, transform .1s, box-shadow .15s; }
-  #mtabs #dkT button svg { width:17px; height:17px; flex:none; fill:currentColor; stroke:none; } #mtabs #dkT button svg.st { fill:none; stroke:currentColor; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; } #mtabs #dkT button em { font-style:normal; font-size:11.5px; letter-spacing:.02em; }
+  #dkT { grid-area:T; display:inline-flex; align-items:center; justify-content:center; gap:1px; padding:3px; border-radius:999px; background:rgba(6,10,22,.7); border:1px solid rgba(150,190,255,.22); box-shadow:inset 0 1px 0 rgba(255,255,255,.05), 0 4px 14px rgba(0,0,0,.3); }
+  #mtabs #dkT button { position:relative; display:flex; align-items:center; justify-content:center; gap:4px; height:30px; min-width:30px; padding:0 9px; border-radius:999px; border:0; background:transparent; color:#b9cbef; font:inherit; font-size:11.5px; font-weight:600; cursor:pointer; transition:background .15s, color .15s, transform .1s, box-shadow .15s; }
+  #mtabs #dkT button svg { width:15px; height:15px; flex:none; fill:currentColor; stroke:none; } #mtabs #dkT button svg.st { fill:none; stroke:currentColor; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; } #mtabs #dkT button em { font-style:normal; font-size:11px; letter-spacing:.02em; }
   #mtabs #dkT button:hover { background:rgba(150,190,255,.14); color:#fff; } #mtabs #dkT button:active { transform:scale(.94); }
-  #mtabs #dkT button.on { color:#fff; background:linear-gradient(180deg,#4a86e8,#2d5bb8); box-shadow:0 0 0 1px rgba(255,255,255,.18) inset, 0 4px 16px rgba(60,120,255,.45); }
-  #mtabs #dkT button#tpPause.on { background:linear-gradient(180deg,#e8a24a,#b8721f); box-shadow:0 0 0 1px rgba(255,255,255,.18) inset, 0 4px 16px rgba(255,160,60,.4); }
-  #dkT i { width:1px; height:20px; margin:0 5px; background:rgba(160,190,255,.25); }
-  /* timeline strip */
-  #dkR { grid-area:R; justify-self:end; width:min(100%, 440px); min-width:0; display:flex; flex-direction:column; gap:4px; padding:6px 12px 7px; border-radius:14px; background:linear-gradient(180deg,rgba(120,170,255,.10),rgba(120,170,255,.04)); border:1px solid rgba(150,190,255,.16); cursor:pointer; position:relative; transition:border-color .15s, background .15s; }
-  #dkR:hover, #dkR.open { border-color:rgba(150,200,255,.5); background:linear-gradient(180deg,rgba(130,180,255,.16),rgba(120,170,255,.07)); }
-  #dkR .h { display:flex; align-items:center; justify-content:space-between; font-size:10px; text-transform:uppercase; letter-spacing:.11em; color:#7f93bb; } #dkR .h b { color:#cfe0ff; font-weight:600; letter-spacing:.04em; text-transform:none; font-size:10.5px; }
-  #dkTrack { position:relative; height:20px; border-radius:6px; overflow:hidden; background:rgba(4,8,18,.55); box-shadow:inset 0 0 0 1px rgba(150,190,255,.12); }
-  #dkTrack .eb { position:absolute; top:0; bottom:0; opacity:.5; } #dkTrack .tk { position:absolute; top:4px; bottom:4px; width:2px; margin-left:-1px; border-radius:2px; opacity:.95; box-shadow:0 0 6px currentColor; } #dkTrack .tk.big { top:2px; bottom:2px; width:3px; margin-left:-1.5px; }
-  #dkTrack .nowc { position:absolute; right:0; top:0; bottom:0; width:26px; background:linear-gradient(90deg,transparent,rgba(111,224,138,.5)); } #dkTrack .nowd { position:absolute; right:3px; top:5px; width:10px; height:10px; border-radius:50%; background:#6fe08a; box-shadow:0 0 10px 2px #6fe08a; animation:dkp 2s ease-in-out infinite; } @keyframes dkp { 50% { transform:scale(.7); opacity:.7; } }
-  #dkLast { display:flex; align-items:center; gap:7px; font-size:11.5px; color:#dce9ff; white-space:nowrap; overflow:hidden; } #dkLast i { flex:none; width:8px; height:8px; border-radius:50%; background:var(--c,#6fe08a); box-shadow:0 0 8px var(--c,#6fe08a); } #dkLast span { overflow:hidden; text-overflow:ellipsis; min-width:0; } #dkLast small { flex:none; color:#8fa4cc; font-size:10.5px; }
-  #dkTip { position:absolute; bottom:calc(100% + 8px); transform:translateX(-50%); padding:5px 9px; border-radius:8px; background:rgba(8,12,24,.96); border:1px solid rgba(160,190,255,.3); font-size:11.5px; color:#fff; white-space:nowrap; pointer-events:none; opacity:0; transition:opacity .1s; z-index:40; } #dkTip small { display:block; color:#8fa4cc; font-size:10px; }
-  /* timeline popover */
-  #tlPop { display:none; position:absolute !important; right:0; bottom:calc(100% + 10px); width:min(460px, calc(100vw - 28px)); max-height:min(62vh, 560px, calc(100vh - var(--bh, 260px) - 44px)); overflow:auto; padding:12px 14px 14px; z-index:35; background:linear-gradient(180deg,rgba(14,22,42,.97),rgba(7,11,22,.97)); border-radius:16px; box-shadow:0 -10px 40px rgba(0,0,0,.55); }
-  #tlPop.open { display:block; } #tlPop .gh { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; font-weight:600; color:#fff; } body.mobile #tlPop { left:8px; right:8px; width:auto; }
+  #mtabs #dkT button.on { color:#fff; background:linear-gradient(180deg,#4a86e8,#2d5bb8); box-shadow:0 0 0 1px rgba(255,255,255,.18) inset, 0 3px 12px rgba(60,120,255,.45); }
+  #mtabs #dkT button#tpPause.on { background:linear-gradient(180deg,#e8a24a,#b8721f); box-shadow:0 0 0 1px rgba(255,255,255,.18) inset, 0 3px 12px rgba(255,160,60,.4); }
+  #dkT i { width:1px; height:16px; margin:0 4px; background:rgba(160,190,255,.25); }
+  /* zoomable timeline strip */
+  #dkR { grid-area:R; justify-self:end; width:min(100%, 440px); min-width:0; display:flex; flex-direction:column; align-items:stretch; gap:3px; padding:4px 9px 4px; border-radius:12px; background:linear-gradient(180deg,rgba(120,170,255,.10),rgba(120,170,255,.04)); border:1px solid rgba(150,190,255,.16); position:relative; transition:border-color .15s; }
+  #dkR:hover { border-color:rgba(150,200,255,.45); }
+  #dkTrack { position:relative; height:20px; border-radius:6px; overflow:hidden; background:rgba(4,8,18,.55); box-shadow:inset 0 0 0 1px rgba(150,190,255,.12); cursor:grab; touch-action:none; } #dkTrack.dn { cursor:grabbing; }
+  #dkTrack .eb { position:absolute; top:0; bottom:0; opacity:.5; } #dkTrack .tk { position:absolute; top:5px; bottom:5px; width:2px; margin-left:-1px; border-radius:2px; opacity:.95; box-shadow:0 0 6px currentColor; } #dkTrack .tk.big { top:3px; bottom:3px; width:3px; margin-left:-1.5px; }
+  #dkTrack .nowc { position:absolute; right:0; top:0; bottom:0; width:24px; background:linear-gradient(90deg,transparent,rgba(111,224,138,.5)); } #dkTrack .nowd { position:absolute; right:3px; top:5px; width:10px; height:10px; border-radius:50%; background:#6fe08a; box-shadow:0 0 10px 2px #6fe08a; animation:dkp 2s ease-in-out infinite; } @keyframes dkp { 50% { transform:scale(.7); opacity:.7; } }
+  #dkTrack .al, #dkTrack .ar, #dkTrack .az { position:absolute; top:50%; transform:translateY(-50%); font-size:9px; line-height:1; color:#dbe8ff; text-shadow:0 0 3px #000, 0 0 3px #000; pointer-events:none; letter-spacing:.02em; } #dkTrack .al { left:5px; } #dkTrack .ar { right:5px; } #dkTrack .az { left:50%; transform:translate(-50%,-50%); color:#7fe0ff; }
+  #dkLast { display:flex; align-items:center; justify-content:center; gap:6px; font-size:11px; color:#dce9ff; white-space:nowrap; overflow:hidden; cursor:pointer; } #dkLast i { flex:none; width:7px; height:7px; border-radius:50%; background:var(--c,#6fe08a); box-shadow:0 0 8px var(--c,#6fe08a); } #dkLast span { overflow:hidden; text-overflow:ellipsis; min-width:0; } #dkLast small { flex:none; color:#8fa4cc; font-size:10px; }
+  #dkTip { position:absolute; bottom:calc(100% + 8px); transform:translateX(-50%); padding:5px 9px; border-radius:8px; background:rgba(8,12,24,.96); border:1px solid rgba(160,190,255,.3); font-size:11.5px; color:#fff; white-space:nowrap; pointer-events:none; opacity:0; transition:opacity .1s; z-index:40; text-align:center; } #dkTip small { display:block; color:#8fa4cc; font-size:10px; }
+  /* compact graph strip */
+  body:not(.mobile) #chips { margin-bottom:4px; gap:4px; } body:not(.mobile) #chips button { padding:1px 8px; font-size:11px; } body:not(.mobile) #gstrip { gap:5px; } body:not(.mobile) .gc { padding:3px 6px 2px; } body:not(.mobile) .gc canvas { height:36px; margin-top:2px; }
   /* simple phone HUD: Pause, New world, Info and one Menu button; everything else lives in the Menu sheet */
   #mqMenu, #mqInfo { display:none !important; } body.msimple #mqMenu, body.msimple #mqInfo { display:flex !important; }
   body.msimple #mtabs [data-t]:not(#mqMenu), body.msimple #mqSpeed, body.msimple #bEndless, body.msimple #mtabs .dsep { display:none !important; }
@@ -325,9 +326,10 @@
 <canvas id="c"></canvas>
 <div id="pins"></div><div id="wtimer" class="panel"></div><div id="toast"></div><div id="help" class="panel"><div class="gh"><span>Guide</span><button id="helpC">✕</button></div><div id="helpB"></div></div>
 <div id="leftcol"><div id="info" class="panel"><div id="infoTxt" title="Click to collapse or expand"></div>
-  <div id="ltabs"><button data-lt="over" class="on">Overview</button><button data-lt="data">Data</button></div>
+  <div id="ltabs"><button data-lt="over" class="on">Overview</button><button data-lt="time">Timeline</button><button data-lt="data">Data</button></div>
   <div id="lt-over" class="lt on"><div id="infoRows"></div></div>
   
+  <div id="lt-time" class="lt"><div id="tlFilter"></div><div id="tlBar"></div><div id="evts"></div></div>
   <div id="lt-data" class="lt"><div id="tables"></div></div></div></div>
 <div id="topbar" class="panel"></div>
 <div id="legend" class="panel"></div>
@@ -346,8 +348,7 @@
     <div class="bg" id="viewBg"><i>View</i><select id="selView" title="Map view (V)"></select><div id="viewGrid"></div></div>
     <div class="bg"><i>Panels</i><button id="bInfo" data-ico="ℹ️">Info (I)</button><button id="bGraph" data-ico="📈" class="on">Graphs (J)</button><button id="bNat" data-ico="🏛">Nations (O)</button><button id="bTree" data-ico="🌳" title="How life branched and which lines died out">Tree of life</button><button id="bCrit" data-ico="🦎" class="on" title="Show the creatures themselves moving about inside their ranges (zoom in close)">Creatures</button><button id="bLife" data-ico="📍" title="Show where each new line of life began, how far it spread and where it died out">Life ranges</button><button id="bMoonB" data-ico="🌙" title="Fly the camera to the moon base (B)">Moon base (B)</button><button id="bSound" data-ico="🔊" title="Ambient wind, rumbles and thunder">Sound: off (X)</button><button id="bHelp" data-ico="❓" title="Keys and map guide">Help (?)</button><button id="bThumb" data-ico="🛰">Live views (T)</button><button id="bGfx" data-ico="⚙️">Graphics (G)</button><button id="bCtrl" data-ico="🎛">Controls</button><button id="bMobile" data-ico="📱">Mobile layout: auto</button></div>
   </div>
-  <div id="tlPop" class="panel"><div class="gh"><span>Timeline</span><button id="tlPopC">Close (Esc)</button></div><div id="tlFilter"></div><div id="tlBar"></div><div id="evts"></div></div>
-  <div id="gwrap"><div id="chips"></div><div id="gstrip"></div></div>
+    <div id="gwrap"><div id="chips"></div><div id="gstrip"></div></div>
   <div id="civwrap"><div id="civcards"></div></div>
   <div id="thumbwrap"><div id="thumbs"></div></div>
 </div>
@@ -3836,8 +3837,8 @@ function buildMobileHUD() {                                     // thumb-reach t
     tp.addEventListener("click", e => { const b = e.target.closest("[data-tp]"); if (b) { $(b.dataset.tp).onclick(); b.blur(); } });
     const ck = document.createElement("div"); ck.id = "dkL"; ck.title = "Today's date and time, and how far this world has come";
     ck.innerHTML = '<div class="r1"><b id="ckDate"></b><span id="ckTime"></span></div><div class="r2"><span id="ckSim"></span><span id="ckEra"></span><em id="ckSpd"></em></div>';
-    const tr = document.createElement("div"); tr.id = "dkR"; tr.title = "Click to open the full timeline";
-    tr.innerHTML = '<div class="h"><span>Timeline</span><b id="dkSpan"></b></div><div id="dkTrack"></div><div id="dkLast"></div><div id="dkTip"></div>';
+    const tr = document.createElement("div"); tr.id = "dkR";
+    tr.innerHTML = '<div id="dkTrack" title="Scroll to zoom · drag to pan · double-click to reset · click for the full feed"></div><div id="dkLast" title="Open the full timeline"></div><div id="dkTip"></div>';
     bar.insertBefore(ck, nav); bar.insertBefore(tp, nav); bar.insertBefore(tr, nav); }
   $("bottom").insertBefore(bar, $("bottom").firstChild);
   document.querySelectorAll("#bottom .bg").forEach(g => { const l = g.querySelector("i"); if (l) g.dataset.g = l.textContent.trim().toLowerCase(); });
@@ -3851,7 +3852,7 @@ function buildMobileHUD() {                                     // thumb-reach t
     $("mmGfx").onclick = () => { const i = gl3.indexOf(S.gfxPreset), v = gl3[(i + 1) % gl3.length]; Object.assign(S, PRESETS[v]); S.gfxPreset = v; S.trim = 0; lab(); };
     $("mmSimple").onclick = () => { simplePref = document.body.classList.contains("msimple") ? "0" : "1"; try { localStorage.setItem("planetForgeSimple", simplePref); } catch (e) {} applyMobile(false); closeSheet(); lab(); };
     if ($("mmWall")) $("mmWall").onclick = () => { closeSheet(); try { AndroidBridge.setWallpaper(); } catch (e) {} };
-    $("mmTL").onclick = () => { closeSheet(); tlToggle(true); };
+    $("mmTL").onclick = () => { closeSheet(); tlToggle(); };
     $("mmSet").onclick = () => { closeSheet(); $("bGfx").onclick(); }; $("mmHelp").onclick = () => { closeSheet(); $("bHelp").onclick(); };
     lab(); bar.querySelector("#mqMenu").addEventListener("click", lab); }
   $("mqInfo").onclick = () => { closeSheet(); $("bInfo").click(); };
@@ -4566,7 +4567,7 @@ function frame(now) {
     if (!S.frozen && !S.evoPaused) sampleGraph(p);
     drawGraph(); syncNames(); updateLegend(); renderStory(); updateCards();
     document.documentElement.style.setProperty("--bh", $("bottom").offsetHeight + "px"); layoutCenter(frames < 30);
-    if ($("tlPop").classList.contains("open") && !S.hidden) renderTimeline(); updateDock(); }
+    if ($("lt-time").classList.contains("on") && !S.hidden) renderTimeline(); updateDock(); }
   SPK.mark(6); requestAnimationFrame(frame);
 }
 const TLC = { life: ["#6fe08a", "Life"], impact: ["#ff9a4a", "Impacts"], planet: ["#7fb6ff", "Planet"], civ: ["#ffd278", "People"], minor: ["#8896b3", "Minor"] };
@@ -4583,48 +4584,63 @@ function renderTimeline() {                                       // history as 
   if (rows.length > N) h += `<button class="more" data-more="1">Show ${Math.min(40, rows.length - N)} more (${rows.length - N} older)</button>`;
   setHTML($("evts"), h + "</div>");
 }
-/* ------------------------------------------------------------------ bottom dock: clock, speed read-out and the timeline strip */
-function tlToggle(on) { const pop = $("tlPop"), open = on == null ? !pop.classList.contains("open") : on; pop.classList.toggle("open", open); $("dkR").classList.toggle("open", open); if (open) renderTimeline(); }
-{ const tr = $("dkR"), track = $("dkTrack"), tip = $("dkTip");
-  tr.addEventListener("click", e => { if (e.target.closest("#dkTip")) return; tlToggle(); });
-  $("tlPopC").onclick = () => tlToggle(false);
-  addEventListener("keydown", e => { if (e.key === "Escape") tlToggle(false); });
-  canvas.addEventListener("pointerdown", () => tlToggle(false));
-  track.addEventListener("mousemove", e => {                                  // hover the strip: name the nearest event
-    const W = S.world, ev = (W.events || []).filter(x => !x.era && (S.tlF || {})[x.cat] !== 0 && x.cat !== "minor"); if (!ev.length) return;
-    const r = track.getBoundingClientRect(), f = clamp((e.clientX - r.left) / r.width, 0, 1), a = f * Math.max(S.age, 1); let best = null, bd = 1e9; for (const x of ev) { const d = Math.abs(x.age - a); if (d < bd) { bd = d; best = x; } }
-    if (!best) return; const tr2 = tr.getBoundingClientRect(), px = best.age / Math.max(S.age, 1) * r.width + (r.left - tr2.left);
-    tip.innerHTML = `${best.text}<small>${Math.round(best.age * 2).toLocaleString()} Myr</small>`; tip.style.left = clamp(px, 70, tr2.width - 70) + "px"; tip.style.opacity = 1; });
-  track.addEventListener("mouseleave", () => { tip.style.opacity = 0; }); }
-let dockSig = "";
-function updateDock() {
+/* ------------------------------------------------------------------ bottom dock: clock, speed read-out and the zoomable timeline strip */
+let openLeftTab = null;
+function tlToggle() {                                                      // show the full feed in the left panel (on a phone it slides in as a sheet)
+  document.body.classList.add("m-info"); $("leftcol").classList.remove("min"); if (openLeftTab) openLeftTab("time"); }
+const TLV = { full: true, pin: true, a: 0, b: 1, span: 1 };               // what part of history the strip shows: all of it, the latest stretch (follows "now"), or a fixed window
+function tlRange(now) { return TLV.full ? [0, now] : TLV.pin ? [Math.max(0, now - TLV.span), now] : [TLV.a, Math.min(TLV.b, now)]; }
+function tlSet(a, span, now) {
+  span = clamp(span, Math.max(now * 0.002, 1), now);
+  if (span >= now * 0.995) { TLV.full = true; return; }
+  a = clamp(a, 0, now - span); TLV.full = false; TLV.span = span; TLV.a = a; TLV.b = a + span; TLV.pin = a + span >= now - span * 0.02; }
+{ const tr = $("dkR"), track = $("dkTrack"), tip = $("dkTip"); let drag = null;
+  const nearest = (clientX, maxPx) => { const W = S.world, now = Math.max(S.age, 1), [a, b] = tlRange(now), r = track.getBoundingClientRect(); let best = null, bd = maxPx;
+    for (const x of W.events || []) { if (x.era || x.cat === "minor" || !(S.tlF || { life: 1, impact: 1, planet: 1, civ: 1 })[x.cat]) continue; const px = r.left + (x.age - a) / (b - a) * r.width, d = Math.abs(px - clientX); if (d < bd) { bd = d; best = x; } }
+    return best; };
+  track.addEventListener("wheel", e => { e.preventDefault(); const now = Math.max(S.age, 1), [a, b] = tlRange(now), r = track.getBoundingClientRect(), f0 = clamp((e.clientX - r.left) / r.width, 0, 1), f = f0 > 0.92 ? 1 : f0 < 0.03 ? 0 : f0, c = a + f * (b - a), ns = (b - a) * Math.pow(1.0017, e.deltaY);      // near either end the zoom anchors to it, so the right end stays glued to "now"
+    tlSet(c - f * ns, ns, now); updateDock(true); }, { passive: false });
+  track.addEventListener("pointerdown", e => { if (e.button) return; track.setPointerCapture(e.pointerId); const now = Math.max(S.age, 1), [a, b] = tlRange(now); drag = { x: e.clientX, a, span: b - a, moved: 0 }; track.classList.add("dn"); tip.style.opacity = 0; });
+  track.addEventListener("pointermove", e => {
+    if (drag) { const now = Math.max(S.age, 1), dx = e.clientX - drag.x; drag.moved = Math.max(drag.moved, Math.abs(dx)); if (!TLV.full || drag.span < now * 0.995) { tlSet(drag.a - dx / track.clientWidth * drag.span, drag.span, now); updateDock(true); } return; }
+    const best = nearest(e.clientX, 14); if (!best) { tip.style.opacity = 0; return; }
+    const now = Math.max(S.age, 1), [a, b] = tlRange(now), r = track.getBoundingClientRect(), tr2 = tr.getBoundingClientRect(), px = (best.age - a) / (b - a) * r.width + (r.left - tr2.left);
+    tip.innerHTML = `${best.text}<small>${Math.round(best.age * 2).toLocaleString()} Myr</small>`; tip.style.left = clamp(px, 80, tr2.width - 80) + "px"; tip.style.opacity = 1; });
+  const up = e => { if (!drag) return; const moved = drag.moved; drag = null; track.classList.remove("dn"); if (moved < 4) { const best = nearest(e.clientX, 8); if (best && best.loc) flyTo(best.loc); tlToggle(); } };
+  track.addEventListener("pointerup", up); track.addEventListener("pointercancel", () => { drag = null; track.classList.remove("dn"); });
+  track.addEventListener("mouseleave", () => { tip.style.opacity = 0; });
+  track.addEventListener("dblclick", () => { TLV.full = true; updateDock(true); });
+  $("dkLast").onclick = tlToggle; }
+function updateDock(force) {
   const W = S.world; if (!W || document.body.classList.contains("mobile")) return;
-  const d = new Date(), WD = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], MO = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   const setT = (id, t) => { const el = $(id); if (el.__t !== t) { el.__t = t; el.textContent = t; } };
-  setT("ckDate", `${WD[d.getDay()]} · ${MO[d.getMonth()]} ${d.getDate()} · ${d.getFullYear()}`); setT("ckTime", d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }));
-  let era = ""; try { era = W.geoEra(S.age).era || W.geoEra(S.age).eon; } catch (e) {}
-  setT("ckSim", "⏳ " + Math.round(S.age * 2).toLocaleString() + " Myr"); setT("ckEra", era);
-  const spd = S.frozen ? "paused" : S.tmode === "real" ? "real time" : S.tmode === "clim" ? "climate pace" : "×" + S.mult, calm = S.pk < 0.97 ? ` · calm ×${S.pk.toFixed(2)}` : "", sp = $("ckSpd"); setT("ckSpd", spd + calm); sp.classList.toggle("pz", S.frozen || S.evoPaused);
-  const ev = W.events || [], now = Math.max(S.age, 1), F = S.tlF || { life: 1, impact: 1, planet: 1, civ: 1, minor: 0 };
-  const sig = ev.length + ":" + Math.floor(Math.log(now) * 60) + ":" + (F.life | 0) + (F.impact | 0) + (F.planet | 0) + (F.civ | 0) + (F.minor | 0);
-  if (sig !== dockSig) { dockSig = sig;
-    const eras = ev.filter(x => x.era).sort((a, b) => a.age - b.age); let h = "";
-    eras.forEach((x, i) => { const a = x.age / now * 100, b = ((eras[i + 1] ? eras[i + 1].age : now) / now) * 100; h += `<span class="eb" style="left:${a.toFixed(2)}%;width:${Math.max(b - a, 0.4).toFixed(2)}%;background:hsl(${(205 + i * 41) % 360},55%,${i % 2 ? 30 : 38}%)"></span>`; });
-    for (const x of ev) if (!x.era && F[x.cat]) { const c = TLC[x.cat][0]; h += `<i class="tk${x.cat === "civ" || x.cat === "impact" ? " big" : ""}" style="left:${clamp(x.age / now * 100, 0, 99).toFixed(2)}%;color:${c};background:${c}"></i>`; }
-    h += '<span class="nowc"></span><span class="nowd"></span>'; setHTML($("dkTrack"), h);
-    setT("dkSpan", `0 → ${Math.round(S.age * 2).toLocaleString()} Myr`);
-    const last = ev.find(x => !x.era && x.cat !== "minor") || ev.find(x => !x.era), lastEl = $("dkLast");
+  if (!force) {
+    const d = new Date(), WD = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], MO = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    setT("ckDate", `${WD[d.getDay()]} · ${MO[d.getMonth()]} ${d.getDate()} · ${d.getFullYear()}`); setT("ckTime", d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }));
+    let era = ""; try { const g = W.geoEra(S.age); era = g.era || g.eon; } catch (e) {}
+    setT("ckSim", "⏳ " + Math.round(S.age * 2).toLocaleString() + " Myr"); setT("ckEra", era);
+    const spd = S.frozen ? "paused" : S.tmode === "real" ? "real time" : S.tmode === "clim" ? "climate pace" : "×" + S.mult, calm = S.pk < 0.97 ? ` · calm ×${S.pk.toFixed(2)}` : ""; setT("ckSpd", spd + calm); $("ckSpd").classList.toggle("pz", S.frozen || S.evoPaused);
+    const ev = W.events || [], last = ev.find(x => !x.era && x.cat !== "minor") || ev.find(x => !x.era), lastEl = $("dkLast");
     if (last) { const ago = (S.age - last.age) * 2; setHTML(lastEl, `<i style="--c:${TLC[last.cat][0]}"></i><span>${last.text}</span><small>${ago < 1 ? "just now" : Math.round(ago).toLocaleString() + " Myr ago"}</small>`); }
     else setHTML(lastEl, '<i style="--c:#8896b3"></i><span>Nothing has happened yet…</span>'); }
+  const ev = W.events || [], now = Math.max(S.age, 1), F = S.tlF || { life: 1, impact: 1, planet: 1, civ: 1, minor: 0 }, [a, b] = tlRange(now), sp = Math.max(b - a, 1e-6), X = ag => (ag - a) / sp * 100;
+  const eras = ev.filter(x => x.era).sort((p, q) => p.age - q.age); let h = "";
+  eras.forEach((x, i) => { const l = X(x.age), r = X(eras[i + 1] ? eras[i + 1].age : now); if (r < 0 || l > 100) return; const L = Math.max(l, 0), R = Math.min(r, 100); h += `<span class="eb" style="left:${L.toFixed(2)}%;width:${Math.max(R - L, 0.4).toFixed(2)}%;background:hsl(${(205 + i * 41) % 360},55%,${i % 2 ? 30 : 38}%)"></span>`; });
+  for (const x of ev) if (!x.era && F[x.cat]) { const l = X(x.age); if (l < -1 || l > 101) continue; const c = TLC[x.cat][0]; h += `<i class="tk${x.cat === "civ" || x.cat === "impact" ? " big" : ""}" style="left:${l.toFixed(2)}%;color:${c};background:${c}"></i>`; }
+  if (b >= now - sp * 0.01) h += '<span class="nowc"></span><span class="nowd"></span>';
+  h += `<span class="al">${Math.round(a * 2).toLocaleString()} Myr</span><span class="ar">${b >= now - sp * 0.01 ? "" : Math.round(b * 2).toLocaleString() + " Myr"}</span>`;
+  if (!TLV.full) h += `<span class="az">🔍 ×${(now / sp).toFixed(now / sp < 10 ? 1 : 0)}</span>`;
+  setHTML($("dkTrack"), h);
 }
-{ let tab = "over"; try { tab = localStorage.getItem("pfLeftTab") || "over"; } catch (e) {}   // (the Timeline tab moved to the bottom bar)
-  const setTab = t => { document.querySelectorAll("#ltabs [data-lt]").forEach(b => b.classList.toggle("on", b.dataset.lt === t)); document.querySelectorAll("#info .lt").forEach(d => d.classList.toggle("on", d.id === "lt-" + t)); try { localStorage.setItem("pfLeftTab", t); } catch (e) {} };
+{ let tab = "over"; try { tab = localStorage.getItem("pfLeftTab") || "over"; } catch (e) {}
+  const setTab = t => { document.querySelectorAll("#ltabs [data-lt]").forEach(b => b.classList.toggle("on", b.dataset.lt === t)); document.querySelectorAll("#info .lt").forEach(d => d.classList.toggle("on", d.id === "lt-" + t)); try { localStorage.setItem("pfLeftTab", t); } catch (e) {} if (t === "time") renderTimeline(); };
+  openLeftTab = setTab;
   $("ltabs").onclick = e => { const b = e.target.closest("[data-lt]"); if (b) setTab(b.dataset.lt); };
   $("tlFilter").onclick = e => { const b = e.target.closest("[data-f]"); if (b) { S.tlF[b.dataset.f] = S.tlF[b.dataset.f] ? 0 : 1; renderTimeline(); } };
   $("evts").addEventListener("click", e => { if (e.target.closest("[data-more]")) { S.tlN += 40; renderTimeline(); } });
   $("infoRows").onclick = e => { const lf = e.target.closest(".lfl"); if (lf) { const n = (S.world.tree || [])[+lf.dataset.t]; if (n) openForm(n); return; } const nt = e.target.closest(".nat"); if (nt) { const v = S.world.civs[+nt.dataset.i]; if (v) openStory(v); return; } const h = e.target.closest("[data-s]"); if (h) { S.lsec[h.dataset.s] = !S.lsec[h.dataset.s]; h.parentNode.classList.toggle("c", !!S.lsec[h.dataset.s]); } };
   $("infoTxt").onclick = () => $("bInfo").onclick();
-  setTab(["over", "data"].includes(tab) ? tab : "over"); }
+  setTab(["over", "time", "data"].includes(tab) ? tab : "over"); }
 $("bInfo").onclick = () => { $("leftcol").classList.toggle("min"); $("bInfo").blur(); };
 function layoutCenter(snap) {                       // keep the planet centred in the part of the screen the panels leave free
   const W = innerWidth, H = innerHeight, body = document.body, vis = el => el && el.getClientRects().length > 0;
