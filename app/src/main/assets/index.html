@@ -310,7 +310,7 @@
 <div id="bottom" class="panel">
   <div class="btns">
     <div class="bg"><i>World</i><button id="bNew" title="Roll a brand-new random world (R)">New world</button><button id="bWall" data-ico="🖼" title="Hide everything and let the camera and sun drift on their own, for use as a live desktop wallpaper (W; click, Esc or W to leave)">Wallpaper (W)</button><button id="bEndless">Endless: off (E)</button><button id="bLink" data-ico="🔗" title="Copy a link that rebuilds this exact world from its seed">Copy link</button><button id="bExport" data-ico="📄" title="Download the planet and every nation's story as a web page">Export story</button></div>
-    <div class="bg"><i>Time</i><button id="bPlay" data-ico="▶️" title="Normal speed">Play</button><button id="bPause" data-ico="⏸" title="Pause everything (Space)">Pause</button><button id="bFF3" data-ico="⏩" title="Fast forward ×3">Fast ×3</button><button id="bFF5" data-ico="⏭" title="Fast forward ×5">Fast ×5</button><button id="bSpin" data-ico="🌀">Spin: on (S)</button><button id="bEvo" data-ico="🧬">Pause evolution (P)</button><button id="bSun" data-ico="☀️">Look at sun (F)</button><button id="bCam" data-ico="🎥">Camera: free (M)</button><button id="bLock" data-ico="🔒">Lock view (L)</button></div>
+    <div class="bg"><i>Time</i><button id="bPlay" data-ico="▶️" title="Normal speed">Play</button><button id="bPause" data-ico="⏸" title="Pause everything (Space)">Pause</button><button id="bFF3" data-ico="⏩" title="Fast forward ×3">Fast ×3</button><button id="bFF5" data-ico="⏭" title="Fast forward ×5">Fast ×5</button><button id="bReal" data-ico="🕰" title="Real time: the planet turns once every 24 hours and the weather moves at its true pace">Real time</button><button id="bClim" data-ico="🌡" title="Climate pace: a day lasts a few minutes so you can watch heat and weather spread, while evolution only creeps">Climate pace</button><button id="bCalm" data-ico="🌿" title="When minds appear, slow down the plates, climate and weather so their story is easy to follow">Calm</button><button id="bSpin" data-ico="🌀">Spin: on (S)</button><button id="bEvo" data-ico="🧬">Pause evolution (P)</button><button id="bSun" data-ico="☀️">Look at sun (F)</button><button id="bCam" data-ico="🎥">Camera: free (M)</button><button id="bLock" data-ico="🔒">Lock view (L)</button></div>
     <div class="bg" id="viewBg"><i>View</i><select id="selView" title="Map view (V)"></select><div id="viewGrid"></div></div>
     <div class="bg"><i>Panels</i><button id="bInfo" data-ico="ℹ️">Info (I)</button><button id="bGraph" data-ico="📈" class="on">Graphs (J)</button><button id="bNat" data-ico="🏛">Nations (O)</button><button id="bTree" data-ico="🌳" title="How life branched and which lines died out">Tree of life</button><button id="bCrit" data-ico="🦎" class="on" title="Show the creatures themselves moving about inside their ranges (zoom in close)">Creatures</button><button id="bLife" data-ico="📍" title="Show where each new line of life began, how far it spread and where it died out">Life ranges</button><button id="bMoonB" data-ico="🌙" title="Fly the camera to the moon base (B)">Moon base (B)</button><button id="bSound" data-ico="🔊" title="Ambient wind, rumbles and thunder">Sound: off (X)</button><button id="bHelp" data-ico="❓" title="Keys and map guide">Help (?)</button><button id="bThumb" data-ico="🛰">Live views (T)</button><button id="bGfx" data-ico="⚙️">Graphics (G)</button><button id="bCtrl" data-ico="🎛">Controls</button><button id="bMobile" data-ico="📱">Mobile layout: auto</button></div>
   </div>
@@ -1021,42 +1021,44 @@ class World {
       c.co2 -= k * 0.012 * c.co2 * Math.max(0, life - 0.3) * dt; }                            // a thriving biosphere buries extra carbon
     for (const k in c) c[k] = clamp(c[k], 0, 1);
     if (!noEvents && S.eventRate > 0) {
-      if (age >= this.nextVolc) { this.eruption(age); this.nextVolc = age + (60 + 160 * this.rng2()) / S.eventRate; }
-      if (age >= this.nextImpact) { const rate = S.impactRate * (0.9 * Math.exp(-age / 45) + 0.0035); this.impactEvent(age); this.nextImpact = age + (-Math.log(1 - this.rngI())) / Math.max(rate, 1e-4); }
+      if ((this.pAge ?? age) >= this.nextVolc) { this.eruption(age); this.nextVolc = (this.pAge ?? age) + (60 + 160 * this.rng2()) / S.eventRate; }
+      if ((this.pAge ?? age) >= this.nextImpact) { const rate = S.impactRate * (0.9 * Math.exp(-age / 45) + 0.0035); this.impactEvent(age); this.nextImpact = (this.pAge ?? age) + (-Math.log(1 - this.rngI())) / Math.max(rate, 1e-4); }
     }
   }
   step(dt, age) {
     if (!(dt > 0)) return;
+    const dp = dt * (this.pk ?? 1);                                               // planetary pace: plates, climate cycles, volcanoes, chemistry and weather slow down once minds appear (see Calm)
+    this.pAge = (this.pAge ?? age - dt) + dp; const pa = this.pAge;
     if (!isFinite(this.ouH)) this.ouH = 0; if (!isFinite(this.ouW)) this.ouW = 0;
-    const g = () => Math.sqrt(-2 * Math.log(1 - this.rng3())) * Math.cos(TAU * this.rng3()), sg = 0.02 * S.rand * Math.sqrt(dt);
-    this.ouH = clamp(this.ouH - 0.012 * this.ouH * dt + sg * g(), -0.6, 0.6); this.ouW = clamp(this.ouW - 0.012 * this.ouW * dt + sg * g(), -0.6, 0.6);
-    this.impHeat *= Math.exp(-dt / 8);
-    { const sq = Math.sqrt(dt) * S.rand; this.ouS = clamp(this.ouS * (1 - dt / 400) + 0.012 * sq * g(), -0.5, 0.5); this.ouF = clamp(this.ouF * (1 - dt / 150) + 0.05 * sq * g(), -1, 1);
-      this.clk += dt * (1 + 0.25 * this.ouF); }                                   // the orbital/climate cycles' clock speeds up and slows down at random, so no swing ever repeats exactly
+    const g = () => Math.sqrt(-2 * Math.log(1 - this.rng3())) * Math.cos(TAU * this.rng3()), sg = 0.02 * S.rand * Math.sqrt(dp);
+    this.ouH = clamp(this.ouH - 0.012 * this.ouH * dp + sg * g(), -0.6, 0.6); this.ouW = clamp(this.ouW - 0.012 * this.ouW * dp + sg * g(), -0.6, 0.6);
+    this.impHeat *= Math.exp(-dp / 8);
+    { const sq = Math.sqrt(dp) * S.rand; this.ouS = clamp(this.ouS * (1 - dp / 400) + 0.012 * sq * g(), -0.5, 0.5); this.ouF = clamp(this.ouF * (1 - dp / 150) + 0.05 * sq * g(), -1, 1);
+      this.clk += dp * (1 + 0.25 * this.ouF); }                                   // the orbital/climate cycles' clock speeds up and slows down at random, so no swing ever repeats exactly
     { const L = (this.plumes || []).filter(p => age - p.tl < 40), so = this.chem.so2;                                // ash cooling follows the smoke: it builds as the haze front spreads over the globe, then fades slowly
       const cov = L.length ? Math.min(1, 1.25 * Math.max(...L.map(p => (1 - Math.cos(Math.min(this.plumeR(p, age), Math.PI))) / 2 * (1 - sstep(20, 40, age - p.tl))))) : 1;
-      this.ashK = Math.max((this.ashK ?? so) * Math.exp(-dt / 60), so);
-      const tgt = L.length ? 0.85 * this.ashK * cov : 0.5 * so; this.ashCool = this.ashCool == null ? tgt : this.ashCool + (tgt - this.ashCool) * (1 - Math.exp(-dt / 15)); }
-    this.extHeat *= Math.exp(-dt / 45); this.uvBurst *= Math.exp(-dt / 10); this.extK += (1 - this.extK) * (1 - Math.exp(-dt / 35));
-    if (S.eventRate > 0 && age >= this.nextRare) { this.nextRare = age + (150 + 350 * this.rngX()) / S.eventRate; if (age > 60) this.rareEvent(age); }
+      this.ashK = Math.max((this.ashK ?? so) * Math.exp(-dp / 60), so);
+      const tgt = L.length ? 0.85 * this.ashK * cov : 0.5 * so; this.ashCool = this.ashCool == null ? tgt : this.ashCool + (tgt - this.ashCool) * (1 - Math.exp(-dp / 15)); }
+    this.extHeat *= Math.exp(-dp / 45); this.uvBurst *= Math.exp(-dp / 10); this.extK += (1 - this.extK) * (1 - Math.exp(-dp / 35));
+    if (S.eventRate > 0 && pa >= this.nextRare) { this.nextRare = pa + (150 + 350 * this.rngX()) / S.eventRate; if (age > 60) this.rareEvent(age); }
     { const h = this.heat(age), k = S.fbK, tgt = k * (-0.07 * clamp((-0.1 - h) / 0.5, 0, 1) + 0.05 * clamp((h - 0.3) / 0.5, 0, 1));   // ice sheets lock water up when cold and release it when warm
-      this.iceSea = (this.iceSea || 0) + (tgt - (this.iceSea || 0)) * (1 - Math.exp(-dt / 15)); }
+      this.iceSea = (this.iceSea || 0) + (tgt - (this.iceSea || 0)) * (1 - Math.exp(-dp / 15)); }
     if (this.hasGiant && !this.giantDone && age >= this.giantAt) { this.giantDone = true; this.impactEvent(age, { size: 1, kind: "stony", giant: true }); }
     for (const v of this.volcs) {
       v.life ??= 150 + 250 * this.rng2();
-      if (!v.dead && age > v.born + v.life) { v.dead = true; }
-      const tgt = v.dead ? 0 : Math.max(Math.sin(TAU * age / v.per + v.ph) > 0.55 ? 0.9 : 0, this.eruptBoost);
-      v.act += (tgt - v.act) * (1 - Math.exp(-0.2 * dt));
-      if (v.dead) v.lava *= Math.exp(-0.012 * dt);                                                       // an extinct volcano erodes and sinks
-      else if (age >= v.born && v.act > 0.3) v.lava = Math.min(1, v.lava + 0.03 * v.act * dt); else v.lava *= Math.exp(-0.004 * dt);
+      if (!v.dead && pa > v.born + v.life) { v.dead = true; }
+      const tgt = v.dead ? 0 : Math.max(Math.sin(TAU * pa / v.per + v.ph) > 0.55 ? 0.9 : 0, this.eruptBoost);
+      v.act += (tgt - v.act) * (1 - Math.exp(-0.2 * dp));
+      if (v.dead) v.lava *= Math.exp(-0.012 * dp);                                                       // an extinct volcano erodes and sinks
+      else if (pa >= v.born && v.act > 0.3) v.lava = Math.min(1, v.lava + 0.03 * v.act * dp); else v.lava *= Math.exp(-0.004 * dp);
       if (!v.isl && !v.dead && v.lava > 0.45 && !this.plates[v.k].cont) { v.isl = true; this.log(age, "A volcanic island rises from the sea", this.civPos(v)); }
       if (v.dead && v.lava < 0.08) v.retire = true;                                                      // once the island is gone the slot fades out and a new volcano opens elsewhere
-      v.alive = clamp(v.alive + (v.retire ? -dt / 25 : dt / 12), 0, 1);
+      v.alive = clamp(v.alive + (v.retire ? -dp / 25 : dp / 12), 0, 1);
       if (v.retire && v.alive <= 0) this.rebirth(v, age);
     }
-    this.eruptBoost = Math.max(0, this.eruptBoost - 0.03 * dt);
-    if (S.chemOn) this.stepChem(dt, age);
-    this.stepLife(dt, age); this.stepCiv(dt, age); this.stepRing(dt, age); this.stepFlora(dt, age); this.stepWx(dt, age); this.watch(age);
+    this.eruptBoost = Math.max(0, this.eruptBoost - 0.03 * dp);
+    if (S.chemOn) this.stepChem(dp, age);
+    this.stepLife(dt, age); this.stepCiv(dt, age); this.stepRing(dt, age); this.stepFlora(dt, age); this.stepWx(dp, age); this.watch(age);
   }
   geoEra(age) {
     const m = age * 2; let g = GEO[0]; for (const row of GEO) { if (m >= row[0]) g = row; else break; }
@@ -3104,7 +3106,7 @@ function climRowsHTML(r2) {                                       // the "Climat
 const S = {
   world: null, time: Q.has("time") ? +Q.get("time") : 0, age: Q.has("age") ? +Q.get("age") : 0, driftT: Q.has("drift") ? +Q.get("drift") : 0,
   spin: Q.has("spinAngle") ? +Q.get("spinAngle") : 0, spinSpeed: Q.has("spin") ? +Q.get("spin") : 0.08,
-  driftSpeed: Q.has("driftSpeed") ? +Q.get("driftSpeed") : 1, evoSpeed: Q.has("evo") ? +Q.get("evo") : 1,
+  driftSpeed: Q.has("driftSpeed") ? +Q.get("driftSpeed") : 1, evoSpeed: Q.has("evo") ? +Q.get("evo") : 1, evoK: 1, tmode: "play", pk: 1, civCalm: true, civCalmK: 0.3,
   evoPaused: false, res4k: Q.get("4k") === "1", shot: false, spinOn: true, clouds: Q.get("clouds") !== "0", atmo: Q.get("atmo") !== "0",
   yaw: Q.has("yaw") ? +Q.get("yaw") : 0.55, pitch: Q.has("pitch") ? +Q.get("pitch") : 0.28, dist: Q.has("dist") ? +Q.get("dist") : 3.4,
   tYaw: null, tPitch: null, tDist: null, facingSun: false, saved: null,
@@ -3432,7 +3434,8 @@ function updateButtons() {
   $("bSpin").classList.toggle("on", S.spinOn && S.spinSpeed !== 0);
   $("bCam").textContent = "Camera: " + CAMMODES.find(c => c[0] === S.camMode)[1].toLowerCase() + " (M)"; $("bCam").classList.toggle("on", S.camMode !== "free");
   $("bLock").textContent = "Lock view: " + (S.camLock ? "on" : "off") + " (L)"; $("bLock").classList.toggle("on", S.camLock);
-  $("bPause").classList.toggle("on", S.frozen); $("bPlay").classList.toggle("on", !S.frozen && S.mult === 1); $("bFF3").classList.toggle("on", !S.frozen && S.mult === 3); $("bFF5").classList.toggle("on", !S.frozen && S.mult === 5);
+  $("bPause").classList.toggle("on", S.frozen); $("bPlay").classList.toggle("on", !S.frozen && S.tmode === "play"); $("bFF3").classList.toggle("on", !S.frozen && S.tmode === "ff3"); $("bFF5").classList.toggle("on", !S.frozen && S.tmode === "ff5"); $("bReal").classList.toggle("on", !S.frozen && S.tmode === "real"); $("bClim").classList.toggle("on", !S.frozen && S.tmode === "clim");
+  $("bCalm").textContent = "Calm with minds: " + (S.civCalm ? "on" : "off"); $("bCalm").classList.toggle("on", S.civCalm);
   $("bEvo").textContent = S.evoPaused ? "Resume evolution (P)" : "Pause evolution (P)";
   $("bUnit").textContent = "Temps: " + (S.unit === "K" ? "K" : "°" + S.unit) + " (U)";
   $("selView").value = String(S.view);
@@ -3481,9 +3484,13 @@ $("bSun").onclick = lookAtSun;
 $("bCam").onclick = () => { const i = CAMMODES.findIndex(c => c[0] === S.camMode); setCamMode(CAMMODES[(i + 1) % CAMMODES.length][0]); };
 $("bLock").onclick = () => { S.camLock = !S.camLock; if (S.camLock) drag = null; updateButtons(); };
 $("bPause").onclick = () => { S.frozen = true; updateButtons(); $("bPause").blur(); };
-$("bPlay").onclick = () => { S.frozen = false; S.mult = 1; updateButtons(); $("bPlay").blur(); };
-$("bFF3").onclick = () => { S.frozen = false; S.mult = S.mult === 3 ? 1 : 3; updateButtons(); $("bFF3").blur(); };
-$("bFF5").onclick = () => { S.frozen = false; S.mult = S.mult === 5 ? 1 : 5; updateButtons(); $("bFF5").blur(); };
+const setPace = (mode, mult, evoK) => { S.frozen = false; S.tmode = mode; S.mult = mult; S.evoK = evoK; updateButtons(); };
+$("bPlay").onclick = () => { setPace("play", 1, 1); $("bPlay").blur(); };
+$("bFF3").onclick = () => { S.tmode === "ff3" ? setPace("play", 1, 1) : setPace("ff3", 3, 1); $("bFF3").blur(); };
+$("bFF5").onclick = () => { S.tmode === "ff5" ? setPace("play", 1, 1) : setPace("ff5", 5, 1); $("bFF5").blur(); };
+$("bReal").onclick = () => { if (!S.spinSpeed) { S.spinSpeed = 0.08; S.spinOn = true; } setPace("real", 1, 1); $("bReal").blur(); };          // the frame loop keeps the speed matched to this world's day length
+$("bClim").onclick = () => { setPace("clim", 0.6, 0.06); $("bClim").blur(); };
+$("bCalm").onclick = () => { S.civCalm = !S.civCalm; updateButtons(); $("bCalm").blur(); };
 const togglePause = () => { S.frozen = !S.frozen; updateButtons(); };
 $("bUnit").onclick = () => { S.unit = S.unit === "C" ? "F" : S.unit === "F" ? "K" : "C"; updateButtons(); };
 $("b4k").onclick = () => { S.res4k = !S.res4k; if (S.res4k) { S.auto = false; S.quality = 1; } updateButtons(); };
@@ -3546,6 +3553,8 @@ R(g, "Spin", () => S.spinSpeed, v => { S.spinSpeed = v; S.spinOn = true; }, -1.5
 R(g, "Continental drift (1 = real pace)", () => S.driftSpeed, v => S.driftSpeed = v, 0, 10, 0.05);
 R(g, "Evolution speed", () => S.evoSpeed, v => S.evoSpeed = v, 0, 10, 0.05);
 R(g, "Time scale", () => S.timeScale, v => S.timeScale = v, 0, 5, 0.05);
+T(g, "Calm the planet when minds appear", () => S.civCalm, v => { S.civCalm = v; updateButtons(); });
+R(g, "Calm strength (1 = no slowdown)", () => S.civCalmK, v => S.civCalmK = v, 0.05, 1, 0.01);
 
 g = grp("Camera");
 SEL(g, "Mode", CAMMODES, () => S.camMode, v => setCamMode(v));
@@ -3738,7 +3747,7 @@ B(g, [["Reset all to auto", () => { for (const k in OV) delete OV[k]; }], ["Rand
 }
 
 // ------------------------------------------------------------------ graphics settings window
-const GKEYS = ["realSun", "taa", "hq", "cl3", "dynClim", "climTr", "climDay", "heatTint", "camEase", "rotK", "zoomK", "invX", "invY", "wheelZoom", "bloom", "fxaa", "vig", "grain", "ca", "nebula", "civOn", "cine", "lens", "pins", "intelRate", "impactRate", "climSpeed", "endless", "endlessSecs", "wxRate", "gfxPreset", "quality", "tFps", "maxDpr", "atmoQ", "aurQ", "oct", "shadow", "cShadow", "atmo", "clouds", "stars", "exposure", "sat", "fxAur", "fxThu", "fxCity", "showFps", "panelA"];
+const GKEYS = ["realSun", "taa", "hq", "cl3", "dynClim", "climTr", "climDay", "heatTint", "camEase", "rotK", "zoomK", "invX", "invY", "wheelZoom", "bloom", "fxaa", "vig", "grain", "ca", "nebula", "civOn", "cine", "lens", "pins", "intelRate", "impactRate", "climSpeed", "endless", "endlessSecs", "wxRate", "gfxPreset", "quality", "tFps", "maxDpr", "atmoQ", "aurQ", "oct", "shadow", "cShadow", "atmo", "clouds", "stars", "exposure", "sat", "fxAur", "fxThu", "fxCity", "showFps", "panelA", "civCalm", "civCalmK"];
 const PRESETS = {
   minimal:{ cl3: 0, taa: false, hq: false, cine: 0, lens: 0, crit: false, quality: 0.65, auto: true, atmoQ: 4, aurQ: 6, oct: -3, shadow: 0, cShadow: 0, maxDpr: 1, res4k: false, bloom: 0, fxaa: false, vig: 0, grain: 0, ca: 0, nebula: 0, stars: 0.7, fxAur: false, fxThu: false },
   low:    { cl3: 0, taa: false, hq: false, cine: 0.3, lens: 0, crit: false, quality: 0.6, auto: true, atmoQ: 8,  aurQ: 10, oct: -1.5, shadow: 0, cShadow: 0, maxDpr: 1,    res4k: false, bloom: 0,    fxaa: false, vig: 0,    grain: 0,     ca: 0,    nebula: 0 },
@@ -3799,12 +3808,12 @@ function buildMobileHUD() {                                     // thumb-reach t
     lab(); bar.querySelector("#mqMenu").addEventListener("click", lab); }
   $("mqInfo").onclick = () => { closeSheet(); $("bInfo").click(); };
   $("mqPause").onclick = () => { if (S.frozen) $("bPlay").onclick(); else $("bPause").onclick(); };
-  $("mqSpeed").onclick = () => { const m = S.frozen ? 0 : S.mult; (m === 1 ? $("bFF3") : m === 3 ? $("bFF5") : $("bPlay")).onclick(); };
+  $("mqSpeed").onclick = () => { const order = ["play", "ff3", "ff5", "clim", "real"], b = { play: "bPlay", ff3: "bFF3", ff5: "bFF5", clim: "bClim", real: "bReal" }, nx = order[(order.indexOf(S.frozen ? "real" : S.tmode) + 1) % order.length]; S.tmode = "play"; $(b[nx]).onclick(); };
   document.querySelectorAll("#bottom .btns button").forEach(b => b.addEventListener("click", () => { if (!B.classList.contains("mt-time") && !B.classList.contains("mt-panels") && b.id !== "mmGfx" && b.id !== "mmSimple") setTimeout(closeSheet, 60); }));
   $("dxSet").onclick = () => { closeSheet(); $("bGfx").onclick(); }; $("dxMaps").onclick = () => { closeSheet(); $("bMaps").onclick(); $("dxMaps").classList.toggle("on", !$("maps").classList.contains("closed")); }; $("dxHelp").onclick = () => { closeSheet(); $("bHelp").onclick(); }; $("dxWall").onclick = () => { closeSheet(); $("bWall").onclick(); }; $("dxCtl").onclick = () => { closeSheet(); $("side").classList.toggle("closed"); $("dxCtl").classList.toggle("on", !$("side").classList.contains("closed")); };
   addEventListener("keydown", e => { if (e.key === "Escape") closeSheet(); });
   $("selView").addEventListener("change", () => setTimeout(closeSheet, 60)); canvas.addEventListener("pointerdown", closeSheet);
-  setInterval(() => { const sp = bar.querySelector("#mqSpeed span"), pa = bar.querySelector("#mqPause span"); if (sp) sp.textContent = S.frozen ? "paused" : "×" + S.mult; if (pa) pa.textContent = S.frozen ? "Play" : "Pause"; const dc = $("dxCtl"); if (dc) dc.classList.toggle("on", !$("side").classList.contains("closed")); }, 400);
+  setInterval(() => { const sp = bar.querySelector("#mqSpeed span"), pa = bar.querySelector("#mqPause span"); if (sp) sp.textContent = S.frozen ? "paused" : S.tmode === "real" ? "real" : S.tmode === "clim" ? "climate" : "×" + S.mult; if (pa) pa.textContent = S.frozen ? "Play" : "Pause"; const dc = $("dxCtl"); if (dc) dc.classList.toggle("on", !$("side").classList.contains("closed")); }, 400);
 }
 buildMobileHUD();
 { const bar = $("mtabs"), nw = $("bNew"), en = $("bEndless");                                 // New world and Endless live on the main bar, at its left end
@@ -4412,21 +4421,25 @@ function frame(now) {
   if (WP.on && now - last < 1000 / WP.fps - 2) { requestAnimationFrame(frame); return; }               // wallpaper mode: gentle frame rate (default 30, ?fps=NN)
   if (S.tFps <= 45 && !WP.on && !SHOT.job && !REC && now - last < 880 / S.tFps) { requestAnimationFrame(frame); return; }      // a 30 fps target is honoured on 60-144 Hz screens, so a phone doesn't render (and heat up) twice as often as needed
   const dt = clamp((now - last) / 1000, 0, 0.1) || 0.016; last = now;     // rAF's timestamp can precede `last` on the first frame: never allow a negative step
-  SPK.begin(); const W = S.world, sdt = dt * S.mult;                                  // sdt: simulation time (fast-forward aware)
+  if (S.tmode === "real") S.mult = 7.272e-5 / Math.max(Math.abs(S.spinSpeed * S.world.spinK), 0.004);          // real time: the planet turns once every 24 hours
+  SPK.begin(); const W = S.world, sdt = dt * S.mult;
+  { const tgt = S.civCalm && W.civs.length ? S.civCalmK : 1; S.pk += (tgt - S.pk) * (1 - Math.exp(-dt / 3)); W.pk = S.pk;       // once minds appear, the planet itself calms down so their story is the thing to watch
+    if (tgt < 1 && !W.calmNote && S.civCalmK < 0.95 && !SHOT.job) { W.calmNote = true; flash("🌿 Minds have arisen: plates, climate and weather now change more slowly"); } }
+  const wkk = Math.sqrt(S.pk);                                  // sdt: simulation time (fast-forward aware)
   if (!S.frozen) {
-    S.time += sdt * S.timeScale;
-    if (!S.evoPaused) S.driftT += sdt * S.evoSpeed * 2 * S.driftSpeed;                       // drift clock in Myr: 1.6 to 6.4 cm/yr per plate at speed 1, like the real thing
+    S.time += sdt * S.timeScale * wkk;
+    if (!S.evoPaused) S.driftT += sdt * S.evoSpeed * S.evoK * 2 * S.driftSpeed * S.pk;                       // drift clock in Myr: 1.6 to 6.4 cm/yr per plate at speed 1, like the real thing
     if (S.spinOn) S.spin += sdt * S.spinSpeed * W.spinK;                                         // every world has its own day length (and a few spin backwards)
     camTick(S.spinOn ? sdt * S.spinSpeed * W.spinK : 0);
     S.moonAng += sdt * S.timeScale * ov("moonRate", W.moonRate); for (const m of W.moons) m.ang += sdt * S.timeScale * m.rate;
     S.sunAz += sdt * S.sunOrbit;
     if (S.camOrbit && !drag) { S.yaw += dt * S.camOrbit * D2R; S.tYaw += dt * S.camOrbit * D2R; }
     if (S.p) S.plKs = (S.plKs == null ? S.p.plK : S.plKs + (S.p.plK - S.plKs) * (1 - Math.exp(-dt * 0.8)));
-    if (!S.evoPaused) { const e = sdt * S.evoSpeed; S.age += e; W.step(e, S.age); W.stepSky(e, S.age); }
+    if (!S.evoPaused) { const e = sdt * S.evoSpeed * S.evoK; S.age += e; W.step(e, S.age); W.stepSky(e, S.age); }
     W.stepRocks(sdt * S.timeScale); W.stepRockets(sdt * S.timeScale);
   }
   SPK.mark(0);
-  { const el = $("wtimer"), on = !S.endless && S.endlessSecs > 0;
+  { const el = $("wtimer"), on = !S.endless && S.endlessSecs > 0 && S.mult >= 0.1;
     if (!on) { if (el.style.display !== "none") el.style.display = "none"; }
     else { const rem = Math.max(0, S.endlessSecs - S.worldClock) / Math.max(S.mult, 0.01), m = Math.floor(rem / 60), sc = Math.floor(rem % 60), t = `⏳ new world in ${m}:${String(sc).padStart(2, "0")}`;
       if (el.style.display !== "block") el.style.display = "block"; if (el.__t !== t) { el.__t = t; el.textContent = t + (S.evoPaused || S.frozen ? " (paused)" : ""); el.classList.toggle("low", rem < 30); } } }
@@ -4470,12 +4483,12 @@ function frame(now) {
   const p = W.params(S.age); S.p = p; soundStep(p, W, dt);
   // low-pass the climate values the shader reads, so fast changes (cooling, oceans condensing) glide instead of snapping
   { const a = 1 - Math.exp(-dt * 3), sm = S.sm, ease = (k, v) => (sm[k] = k in sm ? sm[k] + (v - sm[k]) * a : v);
-    W.stepStorms(S.time, p); stepThunder(p); if (!S.frozen && !SHOT.job) stepClimate(W, p, sdt); SPK.mark(1); stepRivers(W, p, dt); SPK.mark(2); stepEclipse(W);
+    W.stepStorms(S.time, p); stepThunder(p); if (!S.frozen && !SHOT.job) stepClimate(W, p, sdt * wkk); SPK.mark(1); stepRivers(W, p, dt); SPK.mark(2); stepEclipse(W);
     p.cover = ease("cover", p.cover); p.wind = ease("wind", p.wind); p.density = ease("density", p.density); p.sea = ease("sea", p.sea);
     for (const k of ["heat", "wet", "life", "pole", "k", "hot", "magma", "basalt", "glow", "aur", "city", "thu", "bioGlow", "bioLum"]) if (typeof p[k] === "number") p[k] = ease(k, p[k]);   // events (extinctions, impacts, oxygen surges) shift these in one step; the picture should glide
     { const ev = (k, v) => v.map((x, i) => ease(k + i, x)); p.beta = ev("beta", p.beta); p.atmo = ev("atmo", p.atmo); p.tint = ev("tint", p.tint); p.wSh = ev("wSh", p.wSh); p.wDp = ev("wDp", p.wDp);
       p.dead = p.dead.map((c, j) => ev("dead" + j, c)); p.veg = p.veg.map((c, j) => ev("veg" + j, c)); }
-    if (!S.frozen) S.cloudPh += sdt * S.timeScale * p.wind; }
+    if (!S.frozen) S.cloudPh += sdt * S.timeScale * p.wind * wkk; }
   if (S.realSun) { const d = new Date(), h = d.getHours() + d.getMinutes() / 60 + d.getSeconds() / 3600, doy = (d - new Date(d.getFullYear(), 0, 0)) / 864e5;       // the sun sits where it really is for you: noon behind the camera, midnight behind the planet, seasons nudge its height
     S.sunAz = ((h - 12) * 15 + 360) % 360; S.sunEl = 14 * Math.sin(2 * Math.PI * (doy - 80) / 365); S.sunOrbit = 0; S.facingSun = false; }
   { const az = S.sunAz * D2R, el = S.sunEl * D2R; S.sunDir = [Math.sin(az) * Math.cos(el), Math.sin(el), Math.cos(az) * Math.cos(el)]; }
