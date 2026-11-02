@@ -1,6 +1,9 @@
 package com.planetforge.app;
 
 import android.app.Activity;
+import android.app.WallpaperManager;
+import android.content.ComponentName;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,6 +23,23 @@ public class MainActivity extends Activity {
 
     /** Methods the page can call as window.AndroidBridge.* (the page's own pfApp shim uses quit()). */
     private class Bridge {
+        @JavascriptInterface
+        public void setWallpaper() {
+            runOnUiThread(new Runnable() {
+                @Override public void run() {
+                    try {
+                        Intent i = new Intent(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER);
+                        i.putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT,
+                                new ComponentName(MainActivity.this, PlanetWallpaperService.class));
+                        startActivity(i);
+                    } catch (Exception e) {
+                        try { startActivity(new Intent(WallpaperManager.ACTION_LIVE_WALLPAPER_CHOOSER)); }
+                        catch (Exception e2) { Toast.makeText(MainActivity.this, "Open Wallpaper settings and pick Planet Forge", Toast.LENGTH_LONG).show(); }
+                    }
+                }
+            });
+        }
+
         @JavascriptInterface
         public void quit() {
             runOnUiThread(new Runnable() {
