@@ -215,6 +215,15 @@
   #bottom .btns .bg button[data-ico]:hover { transform:translateY(-1px); border-color:rgba(150,190,255,.45); box-shadow:0 4px 14px rgba(0,0,0,.35); } #bottom .btns .bg button[data-ico]:hover::before { background:rgba(130,180,255,.28); }
   #bottom .btns .bg button[data-ico].on::before { background:rgba(255,255,255,.22); box-shadow:inset 0 0 0 1px rgba(255,255,255,.3); } #bottom .btns .bg button[data-ico].on { box-shadow:0 0 16px rgba(80,140,255,.35); }
   #bottom .btns .bg button[data-ico]:active { transform:translateY(0) scale(.98); }
+  /* simple phone HUD: Pause, New world, Info and one Menu button; everything else lives in the Menu sheet */
+  #mqMenu, #mqInfo { display:none !important; } body.msimple #mqMenu, body.msimple #mqInfo { display:flex !important; }
+  body.msimple #mtabs [data-t]:not(#mqMenu), body.msimple #mqSpeed, body.msimple #bEndless, body.msimple #mtabs .dsep { display:none !important; }
+  body.mobile #bWall, body.mobile #bMobile { display:none !important; } body.mobile.mt-more #bMobile { display:flex !important; }
+  body.mobile #mtabs button { flex:1 1 0; } body.msimple #mtabs .q { flex:1 1 0; } body.msimple #mtabs button { min-height:56px; font-size:11.5px; } body.msimple #mtabs button b { font-size:22px; }
+  body.mobile.mt-more #bottom .bg { display:flex; } body.mobile.mt-more #bottom .btns { max-height:62vh; }
+  body.mobile.mt-more #bottom .bg > i { display:block; flex:1 0 100%; font-size:11px; letter-spacing:.08em; text-transform:uppercase; opacity:.65; margin:4px 0 -2px; }
+  body.msimple #legend, body.msimple #hint, body.msimple #hist, body.msimple #gwrap, body.msimple #thumbwrap { display:none !important; }
+  body.msimple #topbar { font-size:12px; padding:4px 10px; } body.msimple #topbar .sub, body.msimple #topbar small { display:none; }
   body.mobile .dx, body.mobile #mtabs .dsep { display:none !important; }
   body.wp { cursor:none; } body.wp #pins, body.wp #toast, body.wp #wtimer, body.wp #hint, body.wp .panel { display:none !important; }
   #side.closed { width:auto; min-width:150px; }
@@ -3735,6 +3744,7 @@ B(g, [["Reset all to auto", () => { for (const k in OV) delete OV[k]; }], ["Rand
 // ------------------------------------------------------------------ graphics settings window
 const GKEYS = ["realSun", "taa", "hq", "cl3", "dynClim", "climTr", "climDay", "heatTint", "camEase", "rotK", "zoomK", "invX", "invY", "wheelZoom", "bloom", "fxaa", "vig", "grain", "ca", "nebula", "civOn", "cine", "lens", "pins", "intelRate", "impactRate", "climSpeed", "endless", "endlessSecs", "wxRate", "gfxPreset", "quality", "tFps", "maxDpr", "atmoQ", "aurQ", "oct", "shadow", "cShadow", "atmo", "clouds", "stars", "exposure", "sat", "fxAur", "fxThu", "fxCity", "showFps", "panelA"];
 const PRESETS = {
+  minimal:{ cl3: 0, taa: false, hq: false, cine: 0, lens: 0, crit: false, quality: 0.65, auto: true, atmoQ: 4, aurQ: 6, oct: -3, shadow: 0, cShadow: 0, maxDpr: 1, res4k: false, bloom: 0, fxaa: false, vig: 0, grain: 0, ca: 0, nebula: 0, stars: 0.7, fxAur: false, fxThu: false },
   low:    { cl3: 0, taa: false, hq: false, cine: 0.3, lens: 0, crit: false, quality: 0.6, auto: true, atmoQ: 8,  aurQ: 10, oct: -1.5, shadow: 0, cShadow: 0, maxDpr: 1,    res4k: false, bloom: 0,    fxaa: false, vig: 0,    grain: 0,     ca: 0,    nebula: 0 },
   medium: { cl3: 1, taa: true, hq: false, cine: 0.6, lens: 0.4, crit: true, quality: 0.8, auto: true, atmoQ: 12, aurQ: 14, oct: -0.5, shadow: 1, cShadow: 0, maxDpr: 1,    res4k: false, bloom: 0.2, fxaa: true,  vig: 0.2,  grain: 0,     ca: 0,    nebula: 0.5 },
   high:   { cl3: 2, taa: true, hq: false, cine: 0.85, lens: 0.6, crit: true, quality: 1,   auto: true, atmoQ: 16, aurQ: 20, oct: 0,    shadow: 1, cShadow: 1, maxDpr: 1.25, res4k: false, bloom: 0.3,  fxaa: true,  vig: 0.25, grain: 0.01,  ca: 0.15, nebula: 1 },
@@ -3753,11 +3763,12 @@ const IS_PHONE = (() => { try { return (matchMedia("(pointer:coarse)").matches |
 let mobPref = Q.has("mobile") ? (Q.get("mobile") === "1" ? "1" : "0") : (() => { try { return localStorage.getItem("planetForgeMobile") || "auto"; } catch (e) { return "auto"; } })();
 const mobOn = () => mobPref === "1" || (mobPref === "auto" && IS_PHONE);
 let wakeL = null;
+let simplePref = Q.has("simple") ? Q.get("simple") : (() => { try { return localStorage.getItem("planetForgeSimple") || "1"; } catch (e) { return "1"; } })();
 function applyMobile(first) {
-  const on = mobOn(); document.body.classList.toggle("mobile", on); $("bMobile").style.display = "flex";
+  const on = mobOn(); document.body.classList.toggle("mobile", on); document.body.classList.toggle("msimple", on && simplePref !== "0"); $("bMobile").style.display = "flex";
   $("bMobile").textContent = "Mobile layout: " + (mobPref === "auto" ? "auto" : mobPref === "1" ? "on" : "off");
   if (!on) document.body.classList.remove("m-info", "m-ctrl", "m-graph", "m-nat", "m-thumb");
-  if (on && first && !hadSavedGfx) { Object.assign(S, PRESETS.low, { gfxPreset: "low", tFps: 30, pins: S.pins, panelA: 0.8 }); applyPanelA(); }
+  if (on && first && !hadSavedGfx) { Object.assign(S, PRESETS.minimal, { gfxPreset: "minimal", tFps: 30, pins: S.pins, panelA: 0.8 }); applyPanelA(); }
   if (on && first && !Q.has("dist") && innerHeight > innerWidth) S.dist = S.tDist = 3.4 * (1 + (innerHeight / innerWidth - 1) * 0.55);       // tall screens: pull back so the whole planet fits
   if (on) { try { if (navigator.wakeLock && !wakeL) navigator.wakeLock.request("screen").then(l => { wakeL = l; l.addEventListener("release", () => { wakeL = null; }); }).catch(() => {}); } catch (e) {} }
   try { dispatchEvent(new Event("resize")); } catch (e) {}
@@ -3775,14 +3786,24 @@ $("bSide").addEventListener("click", () => document.body.classList.remove("m-ctr
 applyMobile(true);
 function buildMobileHUD() {                                     // thumb-reach tab bar for phones: quick pause + speed, then World / Time / View / Panels sheets
   if ($("mtabs")) return; const bar = document.createElement("div"); bar.id = "mtabs";
-  bar.innerHTML = `<button class="q" id="mqPause"><b>⏯</b><span>Pause</span></button><button class="q" id="mqSpeed"><b>⏩</b><span>×1</span></button>` + [["world", "🌍", "World"], ["time", "⏱", "Time"], ["view", "🗺", "View"], ["panels", "📊", "Panels"]].map(t => `<button data-t="${t[0]}"><b>${t[1]}</b><span>${t[2]}</span></button>`).join("") + `<i class="dsep"></i><button class="dx" id="dxSet" title="Graphics and quality settings"><b>⚙</b><span>Settings</span></button><button class="dx" id="dxMaps" title="Flat live maps of the planet"><b>▦</b><span>Maps</span></button><button class="dx" id="dxCtl" title="Fine-tune the planet (Tab)"><b>🎛</b><span>Controls</span></button><button class="dx" id="dxWall" title="Turn the planet into your desktop wallpaper (W)"><b>🖼</b><span>Wallpaper</span></button><button class="dx" id="dxHelp" title="How to use Planet Forge"><b>❔</b><span>Guide</span></button>`;
+  bar.innerHTML = `<button class="q" id="mqPause"><b>⏯</b><span>Pause</span></button><button class="q" id="mqSpeed"><b>⏩</b><span>×1</span></button>` + [["world", "🌍", "World"], ["time", "⏱", "Time"], ["view", "🗺", "View"], ["panels", "📊", "Panels"]].map(t => `<button data-t="${t[0]}"><b>${t[1]}</b><span>${t[2]}</span></button>`).join("") + `<button class="q" id="mqInfo"><b>ℹ️</b><span>Info</span></button><button id="mqMenu" data-t="more"><b>☰</b><span>Menu</span></button>` + `<i class="dsep"></i><button class="dx" id="dxSet" title="Graphics and quality settings"><b>⚙</b><span>Settings</span></button><button class="dx" id="dxMaps" title="Flat live maps of the planet"><b>▦</b><span>Maps</span></button><button class="dx" id="dxCtl" title="Fine-tune the planet (Tab)"><b>🎛</b><span>Controls</span></button><button class="dx" id="dxWall" title="Turn the planet into your desktop wallpaper (W)"><b>🖼</b><span>Wallpaper</span></button><button class="dx" id="dxHelp" title="How to use Planet Forge"><b>❔</b><span>Guide</span></button>`;
   $("bottom").insertBefore(bar, $("bottom").firstChild);
   document.querySelectorAll("#bottom .bg").forEach(g => { const l = g.querySelector("i"); if (l) g.dataset.g = l.textContent.trim().toLowerCase(); });
-  const B = document.body, closeSheet = () => { B.classList.remove("mt-on", "mt-world", "mt-time", "mt-view", "mt-panels"); bar.querySelectorAll("[data-t]").forEach(b => b.classList.remove("on")); };
+  const B = document.body, closeSheet = () => { B.classList.remove("mt-on", "mt-world", "mt-time", "mt-view", "mt-panels", "mt-more"); bar.querySelectorAll("[data-t]").forEach(b => b.classList.remove("on")); };
   bar.querySelectorAll("[data-t]").forEach(b => b.addEventListener("click", () => { const t = b.dataset.t, was = B.classList.contains("mt-" + t); closeSheet(); if (!was) { B.classList.add("mt-on", "mt-" + t); b.classList.add("on"); } }));
+  { const mg = document.createElement("div"); mg.className = "bg"; mg.dataset.g = "more";
+    mg.innerHTML = '<i>More</i><button id="mmSet" data-ico="⚙">Settings</button><button id="mmHelp" data-ico="❔">Guide</button><button id="mmGfx" data-ico="🥔"></button><button id="mmSimple" data-ico="🧩"></button>';
+    const bt = bar.parentNode.querySelector(".btns"); bt.insertBefore(mg, bt.firstChild);
+    const gl3 = ["minimal", "low", "medium"], nm = { minimal: "Minimum", low: "Low", medium: "Medium" };
+    const lab = () => { $("mmGfx").textContent = "Graphics: " + (nm[S.gfxPreset] || "Custom"); $("mmSimple").textContent = "Simple menu: " + (document.body.classList.contains("msimple") ? "on" : "off"); };
+    $("mmGfx").onclick = () => { const i = gl3.indexOf(S.gfxPreset), v = gl3[(i + 1) % gl3.length]; Object.assign(S, PRESETS[v]); S.gfxPreset = v; S.trim = 0; lab(); };
+    $("mmSimple").onclick = () => { simplePref = document.body.classList.contains("msimple") ? "0" : "1"; try { localStorage.setItem("planetForgeSimple", simplePref); } catch (e) {} applyMobile(false); closeSheet(); lab(); };
+    $("mmSet").onclick = () => { closeSheet(); $("bGfx").onclick(); }; $("mmHelp").onclick = () => { closeSheet(); $("bHelp").onclick(); };
+    lab(); bar.querySelector("#mqMenu").addEventListener("click", lab); }
+  $("mqInfo").onclick = () => { closeSheet(); $("bInfo").click(); };
   $("mqPause").onclick = () => { if (S.frozen) $("bPlay").onclick(); else $("bPause").onclick(); };
   $("mqSpeed").onclick = () => { const m = S.frozen ? 0 : S.mult; (m === 1 ? $("bFF3") : m === 3 ? $("bFF5") : $("bPlay")).onclick(); };
-  document.querySelectorAll("#bottom .btns button").forEach(b => b.addEventListener("click", () => { if (!B.classList.contains("mt-time") && !B.classList.contains("mt-panels")) setTimeout(closeSheet, 60); }));
+  document.querySelectorAll("#bottom .btns button").forEach(b => b.addEventListener("click", () => { if (!B.classList.contains("mt-time") && !B.classList.contains("mt-panels") && b.id !== "mmGfx" && b.id !== "mmSimple") setTimeout(closeSheet, 60); }));
   $("dxSet").onclick = () => { closeSheet(); $("bGfx").onclick(); }; $("dxMaps").onclick = () => { closeSheet(); $("bMaps").onclick(); $("dxMaps").classList.toggle("on", !$("maps").classList.contains("closed")); }; $("dxHelp").onclick = () => { closeSheet(); $("bHelp").onclick(); }; $("dxWall").onclick = () => { closeSheet(); $("bWall").onclick(); }; $("dxCtl").onclick = () => { closeSheet(); $("side").classList.toggle("closed"); $("dxCtl").classList.toggle("on", !$("side").classList.contains("closed")); };
   addEventListener("keydown", e => { if (e.key === "Escape") closeSheet(); });
   $("selView").addEventListener("change", () => setTimeout(closeSheet, 60)); canvas.addEventListener("pointerdown", closeSheet);
@@ -3843,7 +3864,7 @@ canvas.addEventListener("webglcontextrestored", () => location.reload());
   const colA = mk("div"), colB = mk("div"); body.append(colA, colB);
 
   let g = sec("Preset", "Pick a starting point, then fine-tune anything below.");
-  SEL(g, "Quality preset", [["low", "Low"], ["medium", "Medium"], ["high", "High"], ["ultra", "Ultra"], ["extreme", "Ultra+"], ["custom", "Custom"]], () => S.gfxPreset, v => { if (PRESETS[v]) { Object.assign(S, PRESETS[v]); S.gfxPreset = v; S.trim = 0; } else S.gfxPreset = "custom"; });
+  SEL(g, "Quality preset", [["minimal", "Minimum (phones)"], ["low", "Low"], ["medium", "Medium"], ["high", "High"], ["ultra", "Ultra"], ["extreme", "Ultra+"], ["custom", "Custom"]], () => S.gfxPreset, v => { if (PRESETS[v]) { Object.assign(S, PRESETS[v]); S.gfxPreset = v; S.trim = 0; } else S.gfxPreset = "custom"; });
   colA.appendChild(g);
 
   g = sec("Resolution & speed");
@@ -4437,7 +4458,7 @@ function frame(now) {
         if (S.trim === 1) S.cine = Math.min(S.cine, 0.3), S.hq = false, S.cl3 = Math.min(S.cl3 | 0, 1); else if (S.trim === 2) S.shadow = 0, S.cShadow = 0; else if (S.trim === 3) S.atmoQ = Math.min(S.atmoQ, 8), S.aurQ = Math.min(S.aurQ, 10); else if (S.trim === 4) S.lens = 0, S.crit = false, S.bloom = 0, S.taa = false, S.cl3 = 0;
       } else S.quality = Math.max(0.4, Math.round((S.quality - 0.1) * 20) / 20);
     }
-    else if (emaMs < bud * 0.72 && S.quality < 1 && nowT - (S.qChg || 0) > 12000) { S.qChg = nowT; S.quality = Math.min(1, Math.round((S.quality + 0.05) * 20) / 20); }       // climb back slowly: every resize reallocates the render buffers
+    else if (emaMs < bud * 0.72 && S.quality < (S.gfxPreset === "minimal" ? 0.75 : 1) && nowT - (S.qChg || 0) > 12000) { S.qChg = nowT; S.quality = Math.min(1, Math.round((S.quality + 0.05) * 20) / 20); }       // climb back slowly: every resize reallocates the render buffers
   }
   let w, h;
   if (S.res4k) {                                   // fixed 3840x2160 budget, matched to the window's aspect ratio
