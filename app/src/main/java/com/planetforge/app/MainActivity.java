@@ -6,6 +6,8 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -19,6 +21,7 @@ import android.widget.Toast;
 /** Planet Forge: the whole game is one web page (assets/index.html) shown full-screen in a WebView. */
 public class MainActivity extends Activity {
     private WebView web;
+    static volatile boolean visible = false;          // the background job stays out of the way while the app is on screen
     private long lastBack = 0;
 
     /** Methods the page can call as window.AndroidBridge.* (the page's own pfApp shim uses quit()). */
@@ -40,6 +43,13 @@ public class MainActivity extends Activity {
             });
         }
 
+        /** The page tells us whether the 15-minute background check (new eras, intelligent life) should be running. */
+        @JavascriptInterface
+        public void bgConfig(boolean on) { BgJobService.schedule(getApplicationContext(), on); }
+
+        @JavascriptInterface
+        public void bgDone(String json) { }
+
         @JavascriptInterface
         public void quit() {
             runOnUiThread(new Runnable() {
@@ -57,6 +67,11 @@ public class MainActivity extends Activity {
             lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
             getWindow().setAttributes(lp);
         }
+
+        Notifier.channel(this);
+        if (Build.VERSION.SDK_INT >= 33 && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED)
+            requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1);
+        BgJobService.schedule(this, true);
 
         web = new WebView(this);
         web.setBackgroundColor(Color.BLACK);
@@ -104,7 +119,14 @@ public class MainActivity extends Activity {
         Toast.makeText(this, "Press back again to leave", Toast.LENGTH_SHORT).show();
     }
 
-    @Override protected void onPause()  { super.onPause();  web.onPause(); }
-    @Override protected void onResume() { super.onResume(); web.onResume(); }
+    @Override protected void onPause()  {
+        visible = false;
+        web.evaluateJavascript("window.pfSaveNow&&pfSaveNow()", null);        // autosave right now, so reopening gives back this very planet
+        super.onPause();  web.onPause();
+    }
+    @Override protected void onResume() {
+        super.onResume(); web.onResume(); visible = true;
+        web.evaluateJavascript("window.pfResume&&pfResume()", null);          // catch the planet up with the time that passed
+    }
     @Override protected void onDestroy() { if (web != null) { web.destroy(); } super.onDestroy(); }
 }

@@ -24,3 +24,9 @@ Open the in-game Menu (☰) and tap "Set as live wallpaper", or pick Planet Forg
 - Back button: first press = Esc in game, second within 2 s = leave. Quit on the title screen closes the app.
 - Phones are slower than PCs: lower the quality setting in the game's Settings if it stutters.
 - Release signing: the release build uses the debug key so it sideloads; make your own keystore (`keytool -genkey ...`) before publishing to Play.
+
+## Autosave, real time and notifications (v1.1)
+- The planet autosaves (seed, age, speed, minds) every few seconds and when you leave; reopening gives you the same planet, caught up with the time that passed.
+- The phone starts in **Real time** (the planet turns once a day, which costs almost nothing). History moves at the **Away pace** (Menu → More: Slow 0.5 / Normal 1 / Fast 3 Gyr per day, or Off). The other speeds still work.
+- Every ~15 minutes a tiny job (no graphics) winds the planet forward and posts a notification for each **new era** and for **intelligent life**. Turn it off with Menu → More → Notifications. Android 13+ asks for notification permission on first launch.
+- Android may delay the job in battery saver / Doze; the planet always catches up when you open the app.

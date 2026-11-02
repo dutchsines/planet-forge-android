@@ -224,8 +224,13 @@
   body:not(.mobile) #bottom .bg[data-g=time] #bPlay, body:not(.mobile) #bottom .bg[data-g=time] #bPause, body:not(.mobile) #bottom .bg[data-g=time] #bFF3, body:not(.mobile) #bottom .bg[data-g=time] #bFF5, body:not(.mobile) #bottom .bg[data-g=time] #bReal, body:not(.mobile) #bottom .bg[data-g=time] #bClim { display:none; }
   #bWall { display:none !important; }
   #dkL, #dkR { box-sizing:border-box; text-align:center; }
+  body:not(.mobile) #infoRows .odds { display:none; }
   /* clock */
-  #dkL { grid-area:L; justify-self:start; min-width:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px; padding:3px 12px; border-radius:12px; background:linear-gradient(180deg,rgba(120,170,255,.10),rgba(120,170,255,.04)); border:1px solid rgba(150,190,255,.16); font-variant-numeric:tabular-nums; }
+  #dkL { grid-area:L; justify-self:start; min-width:0; display:flex; flex-direction:row; align-items:center; justify-content:center; gap:12px; padding:3px 12px; border-radius:12px; background:linear-gradient(180deg,rgba(120,170,255,.10),rgba(120,170,255,.04)); border:1px solid rgba(150,190,255,.16); font-variant-numeric:tabular-nums; }
+  #dkL .cl { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px; min-width:0; }
+  #dkL .od { display:flex; flex-direction:column; gap:3px; padding-left:12px; border-left:1px solid rgba(150,190,255,.18); font-size:10.5px; } #dkL .od > div { display:grid; grid-template-columns:auto 62px 30px; align-items:center; gap:6px; white-space:nowrap; } #dkL .od span { color:#b9c8e6; text-align:left; }
+  #dkL .od .ob { display:block; height:6px; border-radius:6px; background:rgba(255,255,255,.1); overflow:hidden; } #dkL .od .ob u { display:block; height:100%; width:0; border-radius:6px; text-decoration:none; transition:width .8s; } #dkL .od .l u { background:linear-gradient(90deg,#2f9d58,#8cf5a8); box-shadow:0 0 8px #6fe08a; } #dkL .od .m u { background:linear-gradient(90deg,#d49a2a,#ffe08f); box-shadow:0 0 8px #ffd278; }
+  #dkL .od b { font-weight:600; text-align:right; } #dkL .od .l b { color:#8cf5a8; } #dkL .od .m b { color:#ffd278; } @media (max-width:1180px) { #dkL .od { display:none; } }
   #dkL .r1 { display:flex; align-items:baseline; justify-content:center; gap:8px; white-space:nowrap; } #dkL #ckDate { font-size:12.5px; font-weight:600; color:#fff; } #dkL #ckTime { font-size:11.5px; color:#9fc0ff; }
   #dkL .r2 { display:flex; align-items:center; justify-content:center; gap:7px; white-space:nowrap; font-size:10.5px; color:#a9bddf; min-width:0; max-width:100%; } #dkL #ckSim { color:#7fe0ff; font-weight:600; } #dkL #ckEra { overflow:hidden; text-overflow:ellipsis; opacity:.85; min-width:0; }
   #dkL #ckSpd { font-style:normal; font-size:10px; padding:0 7px; border-radius:999px; background:rgba(111,224,138,.14); color:#9af0b4; box-shadow:inset 0 0 0 1px rgba(111,224,138,.3); flex:none; } #dkL #ckSpd.pz { background:rgba(255,190,90,.14); color:#ffd08a; box-shadow:inset 0 0 0 1px rgba(255,190,90,.35); }
@@ -280,6 +285,10 @@
   @media (orientation:landscape) and (max-height:480px) { body.mobile #bottom .btns { max-height:60vh; } body.mobile #mtabs button { min-height:42px; } body.mobile #mtabs button span { display:none; } }
   .svrow { display:flex; gap:6px; align-items:center; margin:3px 0; } .svrow span { flex:1; font-size:12px; color:#cfdcf5; } .svrow button { padding:3px 9px; } #recDot { position:fixed; right:14px; top:14px; width:12px; height:12px; border-radius:50%; background:#ff3b3b; box-shadow:0 0 10px #ff3b3b; z-index:95; display:none; animation:recb 1s infinite; } @keyframes recb { 50% { opacity:.25; } }
   #side details.keys { border-top:0; padding:6px 0 2px; } #side .kl { font-size:12px; line-height:1.7; color:#b9c8e6; } #side .kl b { color:#fff; }
+  #info h1, #info .sub { text-align:center; } #info .seas { text-align:center; }
+  #info .stats div.st { position:relative; overflow:hidden; padding:6px 3px 7px; border-radius:11px; background:linear-gradient(165deg, color-mix(in srgb, var(--c) 24%, rgba(10,16,32,.6)), rgba(10,16,32,.35)); border:1px solid color-mix(in srgb, var(--c) 42%, transparent); box-shadow:0 0 12px -6px var(--c); }
+  #info .stats .st em { display:block; font-style:normal; font-size:13px; line-height:1; margin-bottom:2px; filter:saturate(1.2); } #info .stats .st b { color:color-mix(in srgb, var(--c) 55%, #fff); font-size:12.5px; line-height:1.2; } #info .stats .st span { font-size:9px; color:color-mix(in srgb, var(--c) 40%, #8fa4cc); }
+  #info .stats .st u { display:block; height:3px; margin:5px 4px 0; border-radius:3px; background:rgba(255,255,255,.1); text-decoration:none; overflow:hidden; } #info .stats .st u i { display:block; height:100%; border-radius:3px; background:linear-gradient(90deg, color-mix(in srgb, var(--c) 55%, #000), var(--c)); box-shadow:0 0 6px var(--c); transition:width .6s; }
   #infoTxt { cursor:pointer; } #info .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin:8px 0 2px; } #info .stats div { background:rgba(120,170,255,.08); border:1px solid rgba(120,170,255,.14); border-radius:9px; padding:5px 4px; text-align:center; }
   #info .stats b { display:block; font-size:13px; color:#fff; font-weight:600; white-space:nowrap; } #info .stats span { font-size:9.5px; text-transform:uppercase; letter-spacing:.09em; color:#8fa4cc; } #info .seas { margin-top:6px; font-size:11.5px; color:#b9c8e6; }
   #ltabs { display:flex; gap:4px; margin:10px 0 8px; padding:3px; background:rgba(120,170,255,.07); border-radius:10px; } #ltabs button { flex:1; padding:6px 0; font-size:12px; border:0; border-radius:8px; background:transparent; color:#9fb2d8; cursor:pointer; } #ltabs button.on { background:rgba(110,170,255,.25); color:#fff; }
@@ -2797,7 +2806,8 @@ void main() {
 
 /* ------------------------------------------------------------------ GL setup */
 const canvas = document.getElementById("c");
-const gl = canvas.getContext("webgl2", { antialias: false, preserveDrawingBuffer: true });
+const GLSTUB = new Proxy(function () {}, { get: (t, k) => k === Symbol.toPrimitive ? () => 1 : GLSTUB, apply: () => GLSTUB, construct: () => GLSTUB, set: () => true });       // background job (?bg=1): no graphics at all, only the simulation runs
+const gl = Q.get("bg") === "1" ? GLSTUB : canvas.getContext("webgl2", { antialias: false, preserveDrawingBuffer: true });
 const errBox = document.getElementById("err");
 function fail(msg) { errBox.style.display = "block"; errBox.textContent = msg; console.error(msg); window.PFERR = msg; }
 if (!gl) fail("WebGL2 is not available in this browser.");
@@ -3153,6 +3163,62 @@ const S = {
 };
 S.tYaw = S.yaw; S.tPitch = S.pitch; S.tDist = S.dist; S.camMode = "free"; S.camLock = false;
 
+/* ===== Phone app: autosave, real-time pace, catch-up while away, and the background job that reports new eras and intelligent life ===== */
+const AND = typeof AndroidBridge !== "undefined" && Q.get("wallpaper") !== "1";            // the Android app itself (its live wallpaper keeps rolling random worlds)
+const PFB = {
+  paces: { off: 0, slow: 0.5, normal: 1, fast: 3 }, cap: 3000, noSave: false,               // pace = billions of years of planet history per real day, while you are away and in Real time
+  cfg: (() => { const c = { pace: "normal", notify: true }; try { Object.assign(c, JSON.parse(localStorage.getItem("pfBg") || "{}")); } catch (e) {} return c; })(),
+  get rate() { return (this.paces[this.cfg.pace] ?? 1) * 500 / 86400; },                       // planet-age units (2 Myr each) per real second
+  saveCfg() { try { localStorage.setItem("pfBg", JSON.stringify(this.cfg)); } catch (e) {} try { AndroidBridge.bgConfig(!!this.cfg.notify && this.cfg.pace !== "off"); } catch (e) {} },
+  eraKey(W, a) { const g = W.geoEra(a); return g.eon + "/" + g.era; },
+  eraName(W, a) { const g = W.geoEra(a); return g.era || g.eon; },
+  load() { try { const o = JSON.parse(localStorage.getItem("pfSave") || "null"); return o && o.v === 1 && isFinite(o.seed) && isFinite(o.age) ? o : null; } catch (e) { return null; } },
+  save(at) {
+    const W = S.world; if (!AND || this.noSave || !W || S.shot) return;
+    try { localStorage.setItem("pfSave", JSON.stringify({ v: 1, seed: W.seed, age: S.age, drift: S.driftT, at: at || Date.now(), tmode: S.tmode, civs: W.civs.slice(0, 3).map(v => ({ tech: +v.tech.toFixed(3), pop: Math.round(v.pop), species: v.species })) })); } catch (e) {}
+  },
+  revive(sv, age) {                                                                         // the same planet again: seed and age rebuild it; minds that were alive are brought back with their tech and numbers
+    this.noSave = true; try { newWorld(sv.seed, age); const W = S.world; W.silent = true; for (const c of sv.civs || []) W.spawnCiv(age, { pop: c.pop, tech: c.tech, species: c.species }); if (W.civs.length) W.bioTime = W.intelNeed; W.silent = false; } finally { this.noSave = false; }
+  },
+  target(sv) { return Math.min(this.cap, sv.age + Math.max(0, (Date.now() - sv.at) / 1000) * this.rate); },
+  advance(sv, maxU) {                                                                         // rebuild the saved planet and run its history forward through the time that passed (small steps, no graphics): returns what happened
+    const tgt = Math.min(this.target(sv), sv.age + (maxU || 1e9)); this.revive(sv, sv.age); S.driftT = sv.drift || 0;
+    const W = S.world, res = { eras: [], civ: null, tgt, a: sv.age };
+    if (tgt - sv.age < 0.05) return res;
+    this.noSave = true; W.silent = true;
+    let a = sv.age, key = this.eraKey(W, a), had = W.civs.length > 0;
+    try {
+      for (let g = 0; a < tgt - 1e-9 && g < 60000; g++) {
+        const dt = Math.min(0.05, tgt - a); a += dt; S.age = a; S.driftT += dt * 2 * S.driftSpeed; W.step(dt, a);
+        const k = this.eraKey(W, a); if (k !== key) { key = k; res.eras.push(this.eraName(W, a)); }
+        if (!had && W.civs.length) { had = true; res.civ = W.civs[0].species; }
+      }
+    } finally { W.silent = false; this.noSave = false; }
+    S.age = res.a = a; return res;
+  },
+  job() {                                                                                    // ?bg=1: no graphics. Wind the saved planet forward by the time that has passed and report what happened.
+    const out = [];
+    try {
+      const sv = this.load(); if (sv && this.rate > 0) {
+        const r = this.advance(sv, 1500);
+        if (r.a - sv.age > 0.05) {
+          const eras = r.eras;
+          if (eras.length > 3) out.push({ title: "🌍 " + eras.length + " new eras have passed", text: "Your planet is now in the " + eras[eras.length - 1] + " era." });
+          else for (const e of eras) out.push({ title: "🌍 A new era begins: " + e, text: "Your planet has entered the " + e + " era." });
+          if (r.civ) out.push({ title: "🧠 Intelligent life has arisen", text: "The " + r.civ + " have appeared on your planet." });
+          S.tmode = sv.tmode || "real"; this.save(Math.min(Date.now(), r.a < r.tgt - 1e-6 ? sv.at + (r.a - sv.age) / this.rate * 1000 : Date.now()));
+        }
+      }
+    } catch (e) { try { console.error(e); } catch (e2) {} }
+    try { AndroidBridge.bgDone(JSON.stringify(out)); } catch (e) {}
+  },
+  resume() {                                                                                 // back from the background: catch the planet up with the time that passed
+    const sv = this.load(); if (!AND || !sv || !S.world || S.world.seed !== sv.seed || (Date.now() - sv.at) / 1000 < 300) return;
+    this.note(this.advance(sv, 1500)); this.save();
+  },
+  note(r) { const t = []; if (r.eras.length) t.push(r.eras.length > 2 ? r.eras.length + " new eras" : r.eras.join(", ") + (r.eras.length > 1 ? " eras" : " era") + " began"); if (r.civ) t.push("intelligent life arose: the " + r.civ); if (t.length) setTimeout(() => { try { flash("⏳ While you were away: " + t.join(" · ")); } catch (e) {} }, 1800); },
+};
+
 function newWorld(seed, atAge, raw) {
   seed = seed ?? Math.floor(Math.random() * 2000000000) + 1;
   const a0 = raw ? null : atAge ?? (Q.has("age") ? +Q.get("age") : null);
@@ -3160,14 +3226,18 @@ function newWorld(seed, atAge, raw) {
   if (!S.keepOv) for (const k in OV) delete OV[k];
   S.storyCiv = null; document.getElementById("story")?.classList.remove("open"); S.hist = []; S.sm = {}; S.cloudPh = 0; S.worldClock = 0;
   if (a0 != null) { S.world.life = S.world.lifeTarget(S.age); S.world.settle(S.age, false); }
-  S.world.moonAng = S.world.moonPhase;
+  S.world.moonAng = S.world.moonPhase; PFB.save();
   /* the URL is not rewritten with the seed: refreshing the page rolls a new random world (Copy link still gives a seeded link) */
 }
 if (Q.has("ov")) { try { Object.assign(OV, JSON.parse(Q.get("ov"))); } catch (e) {} }
 const keep0 = Object.keys(OV).length > 0; if (keep0) S.keepOv = true;
 const isReload = (() => { try { return performance.getEntriesByType("navigation")[0].type === "reload"; } catch (e) { return false; } })();
 if (isReload && Q.has("seed")) { try { Q.delete("seed"); history.replaceState(null, "", location.pathname + (Q.toString() ? "?" + Q : "")); } catch (e) {} }   // refreshing the page always rolls a new world; opening a shared seed link still rebuilds it
-newWorld(Q.has("seed") ? +Q.get("seed") : undefined);
+const BGJOB = Q.get("bg") === "1";
+const RESTORED = AND && !BGJOB && !Q.has("seed") && !Q.has("age") ? PFB.load() : null;
+if (BGJOB) { PFB.job(); throw new Error("pf-bg-stop"); }
+else if (RESTORED) PFB.note(PFB.advance(RESTORED, 1500));
+else newWorld(Q.has("seed") ? +Q.get("seed") : undefined);
 
 /* ------------------------------------------------------------------ per-frame uniforms */
 
@@ -3527,6 +3597,15 @@ $("bFF3").onclick = () => { S.tmode === "ff3" ? setPace("play", 1, 1) : setPace(
 $("bFF5").onclick = () => { S.tmode === "ff5" ? setPace("play", 1, 1) : setPace("ff5", 5, 1); $("bFF5").blur(); };
 $("bReal").onclick = () => { if (!S.spinSpeed) { S.spinSpeed = 0.08; S.spinOn = true; } setPace("real", 1, 1); $("bReal").blur(); };          // the frame loop keeps the speed matched to this world's day length
 $("bClim").onclick = () => { setPace("clim", 0.6, 0.06); $("bClim").blur(); };
+if (AND) {                                                                                // phone: start in Real time (cheap), resume the pace you left, and autosave
+  const P = { play: ["play", 1, 1], ff3: ["ff3", 3, 1], ff5: ["ff5", 5, 1], clim: ["clim", 0.6, 0.06], real: ["real", 1, 1] }[(RESTORED && RESTORED.tmode) || "real"] || ["real", 1, 1];
+  if (!S.spinSpeed) { S.spinSpeed = 0.08; S.spinOn = true; } setPace(...P); PFB.save();
+  setInterval(() => { if (!document.hidden) PFB.save(); }, 4000);
+  addEventListener("pagehide", () => PFB.save());
+  document.addEventListener("visibilitychange", () => { if (document.hidden) PFB.save(); else PFB.resume(); });
+  window.pfSaveNow = () => PFB.save(); window.pfResume = () => PFB.resume();
+  PFB.saveCfg();
+}
 $("bCalm").onclick = () => { S.civCalm = !S.civCalm; updateButtons(); $("bCalm").blur(); };
 const togglePause = () => { S.frozen = !S.frozen; updateButtons(); };
 $("bUnit").onclick = () => { S.unit = S.unit === "C" ? "F" : S.unit === "F" ? "K" : "C"; updateButtons(); };
@@ -3838,7 +3917,7 @@ function buildMobileHUD() {                                     // thumb-reach t
     tp.innerHTML = `<button id="tpPause" data-tp="bPause" title="Pause everything (Space)">${ic.pause}</button><button id="tpPlay" data-tp="bPlay" title="Normal speed">${ic.play}<em>1×</em></button><button id="tpFF3" data-tp="bFF3" title="Fast forward ×3">${ic.ff}<em>3×</em></button><button id="tpFF5" data-tp="bFF5" title="Fast forward ×5">${ic.skip}<em>5×</em></button><i></i><button id="tpClim" data-tp="bClim" title="Climate pace: a day lasts a few minutes so heat and weather spread where you can watch them, while evolution only creeps">${ic.clim}</button><button id="tpReal" data-tp="bReal" title="Real time: the planet turns once every 24 hours">${ic.real}</button>`;
     tp.addEventListener("click", e => { const b = e.target.closest("[data-tp]"); if (b) { $(b.dataset.tp).onclick(); b.blur(); } });
     const ck = document.createElement("div"); ck.id = "dkL"; ck.title = "Today's date and time, and how far this world has come";
-    ck.innerHTML = '<div class="r1"><b id="ckDate"></b><span id="ckTime"></span></div><div class="r2"><span id="ckSim"></span><span id="ckEra"></span><em id="ckSpd"></em></div>';
+    ck.innerHTML = '<div class="cl"><div class="r1"><b id="ckDate"></b><span id="ckTime"></span></div><div class="r2"><span id="ckSim"></span><span id="ckEra"></span><em id="ckSpd"></em></div></div><div class="od" title="Chance of life: how kind this world is to life right now (temperature, water, air). Chance of minds: rarer, they also need time and luck."><div class="l"><span>🌱 Life</span><i class="ob"><u id="odLb"></u></i><b id="odLv"></b></div><div class="m"><span>🧠 Minds</span><i class="ob"><u id="odMb"></u></i><b id="odMv"></b></div></div>';
     const tr = document.createElement("div"); tr.id = "dkR";
     tr.innerHTML = '<div id="dkTrack" title="Scroll to zoom · drag to pan · double-click to reset · click for the full feed"></div><div id="dkStat" title="Event counts: whole history · in view"></div><div id="dkLast" title="Open the full timeline"></div><div id="dkTip"></div>';
     bar.insertBefore(ck, nav); bar.insertBefore(tp, nav); bar.insertBefore(tr, nav); }
@@ -3847,12 +3926,14 @@ function buildMobileHUD() {                                     // thumb-reach t
   const B = document.body, closeSheet = () => { B.classList.remove("mt-on", "mt-world", "mt-time", "mt-view", "mt-panels", "mt-more"); bar.querySelectorAll("[data-t]").forEach(b => b.classList.remove("on")); };
   bar.querySelectorAll("[data-t]").forEach(b => b.addEventListener("click", () => { const t = b.dataset.t, was = B.classList.contains("mt-" + t); closeSheet(); if (!was) { B.classList.add("mt-on", "mt-" + t); b.classList.add("on"); } }));
   { const mg = document.createElement("div"); mg.className = "bg"; mg.dataset.g = "more";
-    mg.innerHTML = '<i>More</i><button id="mmSet" data-ico="⚙">Settings</button><button id="mmHelp" data-ico="❔">Guide</button><button id="mmGfx" data-ico="🥔"></button><button id="mmSimple" data-ico="🧩"></button><button id="mmTL" data-ico="📜">Timeline</button>' + (typeof AndroidBridge !== "undefined" && AndroidBridge.setWallpaper ? '<button id="mmWall" data-ico="🖼">Set as live wallpaper</button>' : '');
+    mg.innerHTML = '<i>More</i><button id="mmSet" data-ico="⚙">Settings</button><button id="mmHelp" data-ico="❔">Guide</button><button id="mmGfx" data-ico="🥔"></button><button id="mmSimple" data-ico="🧩"></button><button id="mmTL" data-ico="📜">Timeline</button>' + (typeof AndroidBridge !== "undefined" && AndroidBridge.setWallpaper ? '<button id="mmWall" data-ico="🖼">Set as live wallpaper</button>' : '') + (AND ? '<button id="mmNote" data-ico="🔔"></button><button id="mmPace" data-ico="⏳"></button>' : '');
     const bt = bar.parentNode.querySelector(".btns"); bt.insertBefore(mg, bt.firstChild);
     const gl3 = ["minimal", "low", "medium"], nm = { minimal: "Minimum", low: "Low", medium: "Medium" };
-    const lab = () => { $("mmGfx").textContent = "Graphics: " + (nm[S.gfxPreset] || "Custom"); $("mmSimple").textContent = "Simple menu: " + (document.body.classList.contains("msimple") ? "on" : "off"); };
+    const PN = { off: "Off", slow: "Slow", normal: "Normal", fast: "Fast" }, PO = ["slow", "normal", "fast", "off"];
+    const lab = () => { if (AND) { $("mmNote").textContent = "Notifications: " + (PFB.cfg.notify ? "on" : "off"); $("mmPace").textContent = "Away pace: " + PN[PFB.cfg.pace] + (PFB.cfg.pace === "off" ? "" : " · " + PFB.paces[PFB.cfg.pace] + " Gyr/day"); } $("mmGfx").textContent = "Graphics: " + (nm[S.gfxPreset] || "Custom"); $("mmSimple").textContent = "Simple menu: " + (document.body.classList.contains("msimple") ? "on" : "off"); };
     $("mmGfx").onclick = () => { const i = gl3.indexOf(S.gfxPreset), v = gl3[(i + 1) % gl3.length]; Object.assign(S, PRESETS[v]); S.gfxPreset = v; S.trim = 0; lab(); };
     $("mmSimple").onclick = () => { simplePref = document.body.classList.contains("msimple") ? "0" : "1"; try { localStorage.setItem("planetForgeSimple", simplePref); } catch (e) {} applyMobile(false); closeSheet(); lab(); };
+    if (AND) { $("mmNote").onclick = () => { PFB.cfg.notify = !PFB.cfg.notify; PFB.saveCfg(); lab(); }; $("mmPace").onclick = () => { PFB.cfg.pace = PO[(PO.indexOf(PFB.cfg.pace) + 1) % PO.length]; PFB.saveCfg(); lab(); }; }
     if ($("mmWall")) $("mmWall").onclick = () => { closeSheet(); try { AndroidBridge.setWallpaper(); } catch (e) {} };
     $("mmTL").onclick = () => { closeSheet(); tlToggle(); };
     $("mmSet").onclick = () => { closeSheet(); $("bGfx").onclick(); }; $("mmHelp").onclick = () => { closeSheet(); $("bHelp").onclick(); };
@@ -3860,7 +3941,7 @@ function buildMobileHUD() {                                     // thumb-reach t
   $("mqInfo").onclick = () => { closeSheet(); $("bInfo").click(); };
   $("mqPause").onclick = () => { if (S.frozen) $("bPlay").onclick(); else $("bPause").onclick(); };
   $("mqSpeed").onclick = () => { const order = ["play", "ff3", "ff5", "clim", "real"], b = { play: "bPlay", ff3: "bFF3", ff5: "bFF5", clim: "bClim", real: "bReal" }, nx = order[(order.indexOf(S.frozen ? "real" : S.tmode) + 1) % order.length]; S.tmode = "play"; $(b[nx]).onclick(); };
-  document.querySelectorAll("#bottom .btns button").forEach(b => b.addEventListener("click", () => { if (!B.classList.contains("mt-time") && !B.classList.contains("mt-panels") && b.id !== "mmGfx" && b.id !== "mmSimple") setTimeout(closeSheet, 60); }));
+  document.querySelectorAll("#bottom .btns button").forEach(b => b.addEventListener("click", () => { if (!B.classList.contains("mt-time") && !B.classList.contains("mt-panels") && b.id !== "mmGfx" && b.id !== "mmSimple" && b.id !== "mmNote" && b.id !== "mmPace") setTimeout(closeSheet, 60); }));
   $("dxSet").onclick = () => { closeSheet(); $("bGfx").onclick(); }; $("dxMaps").onclick = () => { closeSheet(); $("bMaps").onclick(); $("dxMaps").classList.toggle("on", !$("maps").classList.contains("closed")); }; $("dxHelp").onclick = () => { closeSheet(); $("bHelp").onclick(); };
   addEventListener("keydown", e => { if (e.key === "Escape") closeSheet(); });
   $("selView").addEventListener("change", () => setTimeout(closeSheet, 60)); canvas.addEventListener("pointerdown", closeSheet);
@@ -4380,7 +4461,16 @@ function updateInfo(p) {
   const W = S.world, ageM = S.age * 2, ageT = ageM >= 1000 ? (ageM / 1000).toFixed(2) + " Gyr" : Math.round(ageM) + " Myr";
   setHTML($("topbar"), `<b>${p.name}</b><span class="sep">·</span><span class="era">${p.era}</span><span class="sep g">·</span><span class="g">${p.geo}</span><span class="sep z">·</span><span class="z">${W.size.toFixed(2)}× Earth</span><span class="sep">·</span><span>${ageT}</span>${W.civs.length ? `<span class="sep z">·</span><span class="z">${fmtPop(W.civs.reduce((a, v) => a + v.pop, 0))}</span>` : ""}`);
   { const nMoon = (W.moonR > 0 ? 1 : 0) + W.moons.filter(m => S.age >= m.born).length, tv = W.real(p.Ts), tT = S.unit === "F" ? `${(tv * 9 / 5 + 32).toFixed(0)}°F` : S.unit === "K" ? `${(tv + 273.15).toFixed(0)} K` : `${tv.toFixed(0)}°C`;
-    setHTML($("infoTxt"), `<h1>${p.name}</h1><div class="sub">seed ${W.seed} · ${W.starName} sun${W.ring ? " · ringed" : ""}${nMoon ? ` · ${nMoon} moon${nMoon > 1 ? "s" : ""}` : ""}</div><div class="stats"><div><b>${ageT}</b><span>age</span></div><div><b>${tT}</b><span>surface</span></div><div><b>${Math.round(clamp(p.life, 0, 1) * 100)}%</b><span>life</span></div><div><b>${(p.cover * 100).toFixed(0)}%</b><span>clouds</span></div></div>${S.season ? `<div class="seas">${S.season.text}</div>` : ""}`);
+    setHTML($("infoTxt"), `<h1>${p.name}</h1><div class="sub">seed ${W.seed} · ${W.starName} sun${W.ring ? " · ringed" : ""}${nMoon ? ` · ${nMoon} moon${nMoon > 1 ? "s" : ""}` : ""}</div><div class="stats">${(() => { const c0 = W.ch(S.age), oc = clamp(55 + 130 * p.sea, 0, 95) / 100 * p.fill * (1 - p.magma), tc = clamp((tv + 40) / 120, 0, 1), day = 24 / Math.max(Math.abs(W.spinK), 0.05), nC = W.civs.length, pop = W.civs.reduce((a, v) => a + v.pop, 0), tech = nC ? Math.max(...W.civs.map(v => v.tech)) : 0,
+        tile = (ico, v, lab, f, col, tip) => `<div class="st" style="--c:${col}" title="${tip}"><em>${ico}</em><b>${v}</b><span>${lab}</span><u><i style="width:${Math.round(clamp(f, 0, 1) * 100)}%"></i></u></div>`;
+      return tile("⏳", ageT, "age", S.age / 2268, "#b79bff", "How old this world is (the bar runs to the present day of an Earth-like planet)")
+        + tile("🌡", tT, "surface", tc, `hsl(${Math.round(215 - 215 * tc)} 85% 62%)`, "Average surface temperature")
+        + tile("🌱", Math.round(clamp(p.life, 0, 1) * 100) + "%", "life", p.life, "#6fe08a", "How much of the world life has taken hold of")
+        + tile("☁", (p.cover * 100).toFixed(0) + "%", "clouds", p.cover, "#bcd4ff", "Cloud cover")
+        + tile("🌊", Math.round(oc * 100) + "%", p.liq && p.liq !== "water" ? "seas" : "ocean", oc, "#4aa8ff", "Share of the surface covered by liquid")
+        + tile("🫁", Math.round(c0.o2 * 42) + "%", "oxygen", c0.o2, "#4de3d0", "Oxygen in the air")
+        + tile("🕓", day.toFixed(day < 10 ? 1 : 0) + " h" + (W.spinK < 0 ? " ↺" : ""), "day", day / 48, "#ffb36b", "Length of a day" + (W.spinK < 0 ? " (this world spins backwards)" : ""))
+        + (nC ? tile("👥", fmtPop(pop), "people", tech, "#ffd278", "Everyone alive; the bar shows how advanced the leading nation is") : tile("🧠", "none", "minds", 0, "#ffd278", "No intelligent life yet")); })()}</div>${S.season ? `<div class="seas">${S.season.text}</div>` : ""}`);
     const r2 = (k, v) => `<tr><td>${k}</td><td>${v}</td></tr>`, closed = S.lsec || (S.lsec = { Surface: true, Climate: true }), sec = (n, rows, ico = "") => `<div class="sec${closed[n] ? " c" : ""}"><div class="sh" data-s="${n}">${ico} ${n}</div><table>${rows}</table></div>`,
       secD = (n, ico, html) => `<div class="sec${closed[n] ? " c" : ""}"><div class="sh" data-s="${n}">${ico} ${n}</div><div class="sb">${html}</div></div>`;
     const T = W.tree || [], live = T.filter(n => n.died == null), tvv = W.real(p.Ts), nCiv = W.civs.length, popAll = W.civs.reduce((a, v) => a + v.pop, 0), spSet = [...new Set(W.civs.map(v => v.species || W.species))];
@@ -4472,7 +4562,7 @@ function frame(now) {
   if (WP.on && now - last < 1000 / WP.fps - 2) { requestAnimationFrame(frame); return; }               // wallpaper mode: gentle frame rate (default 30, ?fps=NN)
   if (S.tFps <= 45 && !WP.on && !SHOT.job && !REC && now - last < 880 / S.tFps) { requestAnimationFrame(frame); return; }      // a 30 fps target is honoured on 60-144 Hz screens, so a phone doesn't render (and heat up) twice as often as needed
   const dt = clamp((now - last) / 1000, 0, 0.1) || 0.016; last = now;     // rAF's timestamp can precede `last` on the first frame: never allow a negative step
-  if (S.tmode === "real") S.mult = 7.272e-5 / Math.max(Math.abs(S.spinSpeed * S.world.spinK), 0.004);          // real time: the planet turns once every 24 hours
+  if (S.tmode === "real") { S.mult = 7.272e-5 / Math.max(Math.abs(S.spinSpeed * S.world.spinK), 0.004); if (AND) S.evoK = PFB.rate / Math.max(S.mult * S.evoSpeed, 1e-9); }          // real time: the planet turns once every 24 hours (on the phone, history moves at the chosen background pace)
   SPK.begin(); const W = S.world, sdt = dt * S.mult;
   { const tgt = S.civCalm && W.civs.length ? S.civCalmK : 1; S.pk += (tgt - S.pk) * (1 - Math.exp(-dt / 3)); W.pk = S.pk;       // once minds appear, the planet itself calms down so their story is the thing to watch
     if (tgt < 1 && !W.calmNote && S.civCalmK < 0.95 && !SHOT.job) { W.calmNote = true; flash("🌿 Minds have arisen: plates, climate and weather now change more slowly"); } }
@@ -4620,6 +4710,7 @@ function updateDock(force) {
     const d = new Date(), WD = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], MO = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     setT("ckDate", `${WD[d.getDay()]} · ${MO[d.getMonth()]} ${d.getDate()} · ${d.getFullYear()}`); setT("ckTime", d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }));
     let era = ""; try { const g = W.geoEra(S.age); era = g.era || g.eon; } catch (e) {}
+    { const lc = W.lifeChance(S.age), nC = W.civs.length, mc = nC ? 1 : clamp(0.28 * lc, 0, 1); $("odLb").style.width = Math.round(lc * 100) + "%"; $("odMb").style.width = Math.round(mc * 100) + "%"; setT("odLv", Math.round(lc * 100) + "%"); setT("odMv", nC ? "here" : "~" + Math.round(mc * 100) + "%"); }
     setT("ckSim", "⏳ " + Math.round(S.age * 2).toLocaleString() + " Myr"); setT("ckEra", era);
     const spd = S.frozen ? "paused" : S.tmode === "real" ? "real time" : S.tmode === "clim" ? "climate pace" : "×" + S.mult, calm = S.pk < 0.97 ? ` · calm ×${S.pk.toFixed(2)}` : ""; setT("ckSpd", spd + calm); $("ckSpd").classList.toggle("pz", S.frozen || S.evoPaused);
     const ev = W.events || [], last = ev.find(x => !x.era && x.cat !== "minor") || ev.find(x => !x.era), lastEl = $("dkLast");
@@ -4952,7 +5043,7 @@ const TITLE_IMG = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQ
 const TITLE = { on: false, sel: 0 };
 {
   const T = document.getElementById("title"), tbtns = [...T.querySelectorAll(".tmenu button")];
-  const skip = WP.on || ["seed", "age", "notitle", "wallpaper", "ov"].some(k => Q.has(k));
+  const skip = WP.on || !!RESTORED || ["seed", "age", "notitle", "wallpaper", "ov"].some(k => Q.has(k));
   if (skip) { T.classList.add("off"); }
   else {
     TITLE.on = true; document.body.classList.add("intitle"); T.querySelector(".tbg").style.backgroundImage = "url(" + TITLE_IMG + ")"; $("tseed").textContent = "backdrop: a world forged by Planet Forge";
