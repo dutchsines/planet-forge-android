@@ -217,41 +217,44 @@
   #bottom .btns .bg button[data-ico]:active { transform:translateY(0) scale(.98); }
   /* ===== bottom dock v5 (compact): clock | transport | zoomable timeline on top, navigation pills below; all text centred ===== */
   body:not(.mobile) #bottom { padding:6px 10px 8px; z-index:8; }
-  body:not(.mobile) #mtabs { display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); grid-template-areas:"L T R" "N N N"; gap:5px 10px; align-items:center; padding:0 0 1px; }
+  body:not(.mobile) #mtabs { display:grid; grid-template-columns:minmax(0,1fr) auto; grid-template-areas:"R L" "N N"; gap:5px 10px; align-items:center; padding:0 0 1px; }
   #dkN { display:contents; } body:not(.mobile) #dkN { grid-area:N; display:flex; gap:5px; align-items:center; justify-content:center; flex-wrap:wrap; padding-top:5px; border-top:1px solid rgba(160,190,255,.12); }
   body:not(.mobile) #mtabs #dkN button { padding:4px 11px; font-size:12px; gap:5px; } body:not(.mobile) #mtabs #dkN button b { font-size:13px; } body:not(.mobile) #mtabs #dkN .dsep { height:16px; margin:0 3px; } body:not(.mobile) #mtabs #dkN button.q { min-width:0; }
-  body.mobile #dkL, body.mobile #dkT, body.mobile #dkR { display:none; } body:not(.mobile) #mqPause, body:not(.mobile) #mqSpeed, body:not(.mobile) #mqInfo, body:not(.mobile) #mqMenu { display:none !important; }
+  body.mobile #dkL, body.mobile #dkR { display:none; } body:not(.mobile) #mqPause, body:not(.mobile) #mqSpeed, body:not(.mobile) #mqInfo, body:not(.mobile) #mqMenu { display:none !important; }
   body:not(.mobile) #bottom .bg[data-g=time] #bPlay, body:not(.mobile) #bottom .bg[data-g=time] #bPause, body:not(.mobile) #bottom .bg[data-g=time] #bFF3, body:not(.mobile) #bottom .bg[data-g=time] #bFF5, body:not(.mobile) #bottom .bg[data-g=time] #bReal, body:not(.mobile) #bottom .bg[data-g=time] #bClim { display:none; }
   #bWall { display:none !important; }
   #dkL, #dkR { box-sizing:border-box; text-align:center; }
   body:not(.mobile) #infoRows .odds { display:none; }
   /* clock */
-  #dkL { grid-area:L; justify-self:start; min-width:0; display:flex; flex-direction:row; align-items:center; justify-content:center; gap:12px; padding:3px 12px; border-radius:12px; background:linear-gradient(180deg,rgba(120,170,255,.10),rgba(120,170,255,.04)); border:1px solid rgba(150,190,255,.16); font-variant-numeric:tabular-nums; }
-  #dkL .cl { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px; min-width:0; }
-  #dkL .od { display:flex; flex-direction:column; gap:3px; padding-left:12px; border-left:1px solid rgba(150,190,255,.18); font-size:10.5px; } #dkL .od > div { display:grid; grid-template-columns:auto 62px 30px; align-items:center; gap:6px; white-space:nowrap; } #dkL .od span { color:#b9c8e6; text-align:left; }
+  #dkL { grid-area:L; justify-self:end; align-self:stretch; min-width:0; display:grid; grid-template-columns:auto auto; grid-template-areas:"cl od" "tp tp"; align-items:center; justify-content:center; gap:5px 10px; padding:6px 10px 6px; border-radius:12px; background:linear-gradient(180deg,rgba(120,170,255,.10),rgba(120,170,255,.04)); border:1px solid rgba(150,190,255,.16); font-variant-numeric:tabular-nums; }
+  #dkL .cl { grid-area:cl; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px; min-width:0; }
+  #dkL .od { grid-area:od; display:flex; flex-direction:column; gap:3px; padding-left:9px; border-left:1px solid rgba(150,190,255,.18); font-size:10.5px; } #dkL .od > div { display:grid; grid-template-columns:auto 44px 28px; align-items:center; gap:5px; white-space:nowrap; } #dkL .od span { color:#b9c8e6; text-align:left; }
   #dkL .od .ob { display:block; height:6px; border-radius:6px; background:rgba(255,255,255,.1); overflow:hidden; } #dkL .od .ob u { display:block; height:100%; width:0; border-radius:6px; text-decoration:none; transition:width .8s; } #dkL .od .l u { background:linear-gradient(90deg,#2f9d58,#8cf5a8); box-shadow:0 0 8px #6fe08a; } #dkL .od .m u { background:linear-gradient(90deg,#d49a2a,#ffe08f); box-shadow:0 0 8px #ffd278; }
-  #dkL .od b { font-weight:600; text-align:right; } #dkL .od .l b { color:#8cf5a8; } #dkL .od .m b { color:#ffd278; } @media (max-width:1180px) { #dkL .od { display:none; } }
+  #dkL .od b { font-weight:600; text-align:right; } #dkL .od .l b { color:#8cf5a8; } #dkL .od .m b { color:#ffd278; } 
   #dkL .r1 { display:flex; align-items:baseline; justify-content:center; gap:8px; white-space:nowrap; } #dkL #ckDate { font-size:12.5px; font-weight:600; color:#fff; } #dkL #ckTime { font-size:11.5px; color:#9fc0ff; }
   #dkL .r2 { display:flex; align-items:center; justify-content:center; gap:7px; white-space:nowrap; font-size:10.5px; color:#a9bddf; min-width:0; max-width:100%; } #dkL #ckSim { color:#7fe0ff; font-weight:600; } #dkL #ckEra { overflow:hidden; text-overflow:ellipsis; opacity:.85; min-width:0; }
   #dkL #ckSpd { font-style:normal; font-size:10px; padding:0 7px; border-radius:999px; background:rgba(111,224,138,.14); color:#9af0b4; box-shadow:inset 0 0 0 1px rgba(111,224,138,.3); flex:none; } #dkL #ckSpd.pz { background:rgba(255,190,90,.14); color:#ffd08a; box-shadow:inset 0 0 0 1px rgba(255,190,90,.35); }
   /* transport */
-  #dkT { grid-area:T; display:inline-flex; align-items:center; justify-content:center; gap:1px; padding:3px; border-radius:999px; background:rgba(6,10,22,.7); border:1px solid rgba(150,190,255,.22); box-shadow:inset 0 1px 0 rgba(255,255,255,.05), 0 4px 14px rgba(0,0,0,.3); }
-  #mtabs #dkT button { position:relative; display:flex; align-items:center; justify-content:center; gap:4px; height:30px; min-width:30px; padding:0 9px; border-radius:999px; border:0; background:transparent; color:#b9cbef; font:inherit; font-size:11.5px; font-weight:600; cursor:pointer; transition:background .15s, color .15s, transform .1s, box-shadow .15s; }
-  #mtabs #dkT button svg { width:15px; height:15px; flex:none; fill:currentColor; stroke:none; } #mtabs #dkT button svg.st { fill:none; stroke:currentColor; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; } #mtabs #dkT button em { font-style:normal; font-size:11px; letter-spacing:.02em; }
+  #dkT { grid-area:tp; display:flex; align-items:center; justify-content:stretch; gap:2px; padding:2px; border-radius:11px; background:rgba(4,8,18,.6); border:1px solid rgba(150,190,255,.18); box-shadow:inset 0 1px 3px rgba(0,0,0,.35); }
+  #mtabs #dkT button { position:relative; display:flex; align-items:center; justify-content:center; flex:1 1 0; gap:3px; height:24px; min-width:0; padding:0 4px; border-radius:9px; border:0; background:transparent; color:#b9cbef; font:inherit; font-size:11.5px; font-weight:600; cursor:pointer; transition:background .15s, color .15s, transform .1s, box-shadow .15s; }
+  #mtabs #dkT button svg { width:13px; height:13px; flex:none; fill:currentColor; stroke:none; } #mtabs #dkT button svg.st { fill:none; stroke:currentColor; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; } #mtabs #dkT button em { font-style:normal; font-size:10px; letter-spacing:.02em; }
   #mtabs #dkT button:hover { background:rgba(150,190,255,.14); color:#fff; } #mtabs #dkT button:active { transform:scale(.94); }
   #mtabs #dkT button.on { color:#fff; background:linear-gradient(180deg,#4a86e8,#2d5bb8); box-shadow:0 0 0 1px rgba(255,255,255,.18) inset, 0 3px 12px rgba(60,120,255,.45); }
   #mtabs #dkT button#tpPause.on { background:linear-gradient(180deg,#e8a24a,#b8721f); box-shadow:0 0 0 1px rgba(255,255,255,.18) inset, 0 3px 12px rgba(255,160,60,.4); }
-  #dkT i { width:1px; height:16px; margin:0 4px; background:rgba(160,190,255,.25); }
+  #dkT i { flex:none; width:1px; height:16px; margin:0 2px; background:rgba(160,190,255,.25); }
   /* zoomable timeline strip */
-  #dkR { grid-area:R; justify-self:end; width:min(100%, 440px); min-width:0; display:flex; flex-direction:column; align-items:stretch; gap:3px; padding:4px 9px 4px; border-radius:12px; background:linear-gradient(180deg,rgba(120,170,255,.10),rgba(120,170,255,.04)); border:1px solid rgba(150,190,255,.16); position:relative; transition:border-color .15s; }
-  #dkR:hover { border-color:rgba(150,200,255,.45); }
-  #dkTrack { position:relative; height:20px; border-radius:6px; overflow:hidden; background:rgba(4,8,18,.55); box-shadow:inset 0 0 0 1px rgba(150,190,255,.12); cursor:grab; touch-action:none; } #dkTrack.dn { cursor:grabbing; }
-  #dkTrack .eb { position:absolute; top:0; bottom:0; opacity:.5; } #dkTrack .tk { position:absolute; top:5px; bottom:5px; width:2px; margin-left:-1px; border-radius:2px; opacity:.95; box-shadow:0 0 6px currentColor; } #dkTrack .tk.big { top:3px; bottom:3px; width:3px; margin-left:-1.5px; }
+  #dkR { grid-area:R; width:100%; align-self:stretch; } #dkR, #dkB { min-width:0; display:flex; flex-direction:column; align-items:stretch; gap:3px; padding:4px 9px 4px; border-radius:12px; background:linear-gradient(180deg,rgba(120,170,255,.10),rgba(120,170,255,.04)); border:1px solid rgba(150,190,255,.16); position:relative; transition:border-color .15s; }
+  #dkR:hover, #dkB:hover { border-color:rgba(150,200,255,.45); }
+  #dkR .cols { display:grid; grid-template-columns:1fr 1fr; gap:4px 14px; align-items:start; } #dkR .cols > div { display:flex; flex-direction:column; gap:3px; min-width:0; } #dkR .cols > div + div { border-left:1px solid rgba(150,190,255,.14); padding-left:12px; }
+  #dkTrack { position:relative; height:22px; border-radius:6px; overflow:hidden; background:rgba(4,8,18,.55); box-shadow:inset 0 0 0 1px rgba(150,190,255,.12); cursor:grab; touch-action:none; } #dkTrack.dn { cursor:grabbing; }
+  #dkTrack .eb { position:absolute; top:0; bottom:0; opacity:.55; box-shadow:inset -1px 0 rgba(0,0,0,.45); } #dkTrack .eb.cur { opacity:.9; box-shadow:inset 0 0 0 1px rgba(255,255,255,.45); } #dkTrack .tk { position:absolute; top:5px; bottom:5px; width:2px; margin-left:-1px; border-radius:2px; opacity:.95; box-shadow:0 0 6px currentColor; } #dkTrack .tk.big { top:3px; bottom:3px; width:3px; margin-left:-1.5px; }
   #dkTrack .nowc { position:absolute; right:0; top:0; bottom:0; width:24px; background:linear-gradient(90deg,transparent,rgba(111,224,138,.5)); } #dkTrack .nowd { position:absolute; right:3px; top:5px; width:10px; height:10px; border-radius:50%; background:#6fe08a; box-shadow:0 0 10px 2px #6fe08a; animation:dkp 2s ease-in-out infinite; } @keyframes dkp { 50% { transform:scale(.7); opacity:.7; } }
   #dkTrack .al, #dkTrack .ar, #dkTrack .az { position:absolute; top:50%; transform:translateY(-50%); font-size:9px; line-height:1; color:#dbe8ff; text-shadow:0 0 3px #000, 0 0 3px #000; pointer-events:none; letter-spacing:.02em; } #dkTrack .al { left:5px; } #dkTrack .ar { right:5px; } #dkTrack .az { left:50%; transform:translate(-50%,-50%); color:#7fe0ff; }
+  #dkBInfo { display:flex; flex-direction:column; align-items:center; gap:1px; font-size:11px; color:#dce9ff; min-width:0; overflow:hidden; cursor:pointer; line-height:1.25; } #dkBInfo > div { display:flex; align-items:center; justify-content:center; gap:6px; max-width:100%; white-space:nowrap; } #dkBInfo > div > span { overflow:hidden; text-overflow:ellipsis; min-width:0; } #dkBInfo i { flex:none; width:7px; height:7px; border-radius:50%; background:var(--c); box-shadow:0 0 8px var(--c); } #dkBInfo small { color:#8fa4cc; font-size:10px; overflow:hidden; text-overflow:ellipsis; max-width:100%; }
+  #dkBTrack { position:relative; height:22px; border-radius:6px; overflow:hidden; background:rgba(4,8,18,.55); box-shadow:inset 0 0 0 1px rgba(150,190,255,.12); cursor:pointer; } #dkBTrack .eb2 { position:absolute; top:0; bottom:0; opacity:.16; } #dkBTrack .lf { position:absolute; height:3px; min-width:2px; border-radius:2px; box-shadow:0 0 5px currentColor; pointer-events:none; } #dkBTrack .lf.x { opacity:.5; } #dkBTrack .lf.hv { height:4px; box-shadow:0 0 0 1px #fff, 0 0 8px currentColor; opacity:1; z-index:2; } #dkBTrack .nm { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); font-size:9.5px; color:#8fa4cc; white-space:nowrap; pointer-events:none; } #dkBTrack .nowc { position:absolute; right:0; top:0; bottom:0; width:16px; background:linear-gradient(90deg,transparent,rgba(111,224,138,.4)); }
   #dkLast { display:flex; align-items:center; justify-content:center; gap:6px; font-size:11px; color:#dce9ff; white-space:nowrap; overflow:hidden; cursor:pointer; } #dkLast i { flex:none; width:7px; height:7px; border-radius:50%; background:var(--c,#6fe08a); box-shadow:0 0 8px var(--c,#6fe08a); } #dkLast span { overflow:hidden; text-overflow:ellipsis; min-width:0; } #dkLast small { flex:none; color:#8fa4cc; font-size:10px; }
-  #dkStat { display:flex; justify-content:center; align-items:center; gap:9px; font-size:10px; color:#a9bddf; white-space:nowrap; overflow:hidden; font-variant-numeric:tabular-nums; } #dkStat b { font-weight:600; color:#e6f0ff; } #dkStat .c::before { content:""; display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--c); margin-right:3px; vertical-align:0; box-shadow:0 0 5px var(--c); } #dkStat .v { color:#7fe0ff; }
-  #dkTrack .en { position:absolute; top:50%; transform:translateY(-50%); font-size:8.5px; line-height:1; color:#fff; opacity:.8; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; pointer-events:none; padding:0 3px; box-sizing:border-box; text-shadow:0 0 3px #000; }
+  #dkStat, #dkBStat { display:flex; justify-content:center; align-items:center; gap:7px; font-size:9.5px; min-height:12px; color:#a9bddf; white-space:nowrap; overflow:hidden; font-variant-numeric:tabular-nums; } #dkStat b, #dkBStat b { font-weight:600; color:#e6f0ff; } #dkStat .c::before, #dkBStat .c::before { content:""; display:inline-block; width:6px; height:6px; border-radius:50%; background:var(--c); margin-right:3px; vertical-align:0; box-shadow:0 0 5px var(--c); } #dkStat .v, #dkBStat .v { color:#7fe0ff; }
+  #dkTrack .en.curp { left:auto !important; right:20px; width:auto !important; transform:translateY(-50%); background:rgba(6,10,22,.72); border-radius:5px; padding:1px 5px; color:#fff; opacity:1; } #dkTrack .en { z-index:1; font-weight:600; position:absolute; top:50%; transform:translateY(-50%); font-size:8.5px; line-height:1; color:#fff; opacity:.8; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; pointer-events:none; padding:0 3px; box-sizing:border-box; text-shadow:0 0 3px #000; }
   #dkTip { position:absolute; bottom:calc(100% + 8px); transform:translateX(-50%); padding:5px 9px; border-radius:8px; background:rgba(8,12,24,.96); border:1px solid rgba(160,190,255,.3); font-size:11.5px; color:#fff; white-space:nowrap; pointer-events:none; opacity:0; transition:opacity .1s; z-index:40; text-align:center; } #dkTip small { display:block; color:#8fa4cc; font-size:10px; }
   /* compact graph strip */
   body:not(.mobile) #chips { margin-bottom:4px; gap:4px; } body:not(.mobile) #chips button { padding:1px 8px; font-size:11px; } body:not(.mobile) #gstrip { gap:5px; } body:not(.mobile) .gc { padding:3px 6px 2px; } body:not(.mobile) .gc canvas { height:36px; margin-top:2px; }
@@ -300,7 +303,7 @@
   #infoRows .lfl b, #infoRows .sp b, #infoRows .nat b { display:block; font-size:12.5px; } #infoRows small { display:block; font-size:11px; color:#8fa4cc; line-height:1.35; } #infoRows .pic { flex:none; border-radius:7px; box-shadow:0 1px 4px rgba(0,0,0,.5); } #infoRows .sp { margin-top:4px; } #infoRows .sp b { font-size:14px; color:#ffe6a8; } #infoRows .nat { margin-left:14px; } #infoRows .none { font-size:12px; color:#8fa4cc; padding:3px 0 6px; } #infoRows .sb table { margin-top:2px; }
   #infoRows table td { vertical-align:top; padding:2px 8px 2px 0; font-size:12px; } #infoRows table td:first-child { white-space:nowrap; }
   #tlFilter { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; } #tlFilter .fc { font-size:11px; padding:3px 9px; border-radius:12px; border:1px solid var(--c); background:transparent; color:#9fb2d8; opacity:.5; cursor:pointer; } #tlFilter .fc.on { opacity:1; background:color-mix(in srgb, var(--c) 18%, transparent); color:#fff; } #tlFilter .fc i { font-style:normal; opacity:.7; margin-left:3px; }
-  #tlBar { position:relative; height:14px; margin:0 0 10px; border-radius:7px; background:rgba(120,170,255,.08); overflow:hidden; } #tlBar i { position:absolute; top:3px; width:3px; height:8px; border-radius:2px; opacity:.9; }
+  #tlBar { position:relative; height:14px; margin:0 0 10px; border-radius:7px; background:rgba(120,170,255,.08); overflow:hidden; } #tlBar s { position:absolute; top:0; bottom:0; opacity:.6; box-shadow:inset -1px 0 rgba(0,0,0,.5); } #tlBar i { z-index:1; position:absolute; top:3px; width:3px; height:8px; border-radius:2px; opacity:.9; }
   #evts { font-size:12px; line-height:1.4; } #evts .tl { position:relative; margin:2px 0 0 7px; padding-left:17px; border-left:2px solid rgba(140,180,255,.25); }
   #evts .it { position:relative; margin:0 0 11px; } #evts .it::before { content:""; position:absolute; left:-24px; top:3px; width:9px; height:9px; border-radius:50%; background:var(--c); box-shadow:0 0 8px var(--c); }
   #evts .it .t { font-size:10.5px; color:#8fa4cc; letter-spacing:.04em; margin-bottom:1px; } #evts .it.evl { cursor:pointer; text-decoration:none; color:#dce9ff; } #evts .it.evl:hover { color:#fff; background:rgba(120,170,255,.08); border-radius:6px; }
@@ -3919,8 +3922,9 @@ function buildMobileHUD() {                                     // thumb-reach t
     const ck = document.createElement("div"); ck.id = "dkL"; ck.title = "Today's date and time, and how far this world has come";
     ck.innerHTML = '<div class="cl"><div class="r1"><b id="ckDate"></b><span id="ckTime"></span></div><div class="r2"><span id="ckSim"></span><span id="ckEra"></span><em id="ckSpd"></em></div></div><div class="od" title="Chance of life: how kind this world is to life right now (temperature, water, air). Chance of minds: rarer, they also need time and luck."><div class="l"><span>🌱 Life</span><i class="ob"><u id="odLb"></u></i><b id="odLv"></b></div><div class="m"><span>🧠 Minds</span><i class="ob"><u id="odMb"></u></i><b id="odMv"></b></div></div>';
     const tr = document.createElement("div"); tr.id = "dkR";
-    tr.innerHTML = '<div id="dkTrack" title="Scroll to zoom · drag to pan · double-click to reset · click for the full feed"></div><div id="dkStat" title="Event counts: whole history · in view"></div><div id="dkLast" title="Open the full timeline"></div><div id="dkTip"></div>';
-    bar.insertBefore(ck, nav); bar.insertBefore(tp, nav); bar.insertBefore(tr, nav); }
+    tr.innerHTML = '<div id="dkTrack" title="Eras and events. Scroll to zoom · drag to pan · double-click to reset · click for the full feed"></div><div id="dkBTrack" title="Life through time: each line is one lifeform, from its arrival to its end (faded = extinct). Hover for details, click to open it. Scroll to zoom."></div><div class="cols"><div><div id="dkStat" title="Current era, event counts"></div><div id="dkLast" title="Open the full timeline"></div></div><div><div id="dkBStat"></div><div id="dkBInfo"></div></div></div><div id="dkTip"></div>';
+    ck.appendChild(tp);
+    bar.insertBefore(ck, nav); bar.insertBefore(tr, nav); }
   $("bottom").insertBefore(bar, $("bottom").firstChild);
   document.querySelectorAll("#bottom .bg").forEach(g => { const l = g.querySelector("i"); if (l) g.dataset.g = l.textContent.trim().toLowerCase(); });
   const B = document.body, closeSheet = () => { B.classList.remove("mt-on", "mt-world", "mt-time", "mt-view", "mt-panels", "mt-more"); bar.querySelectorAll("[data-t]").forEach(b => b.classList.remove("on")); };
@@ -4667,7 +4671,7 @@ function renderTimeline() {                                       // history as 
   const W = S.world, ev = W.events, F = S.tlF || (S.tlF = { life: 1, impact: 1, planet: 1, civ: 1, minor: 0 }), N = S.tlN || (S.tlN = 40), now = S.age, cnt = {};
   ev.forEach(e => { cnt[e.cat] = (cnt[e.cat] || 0) + 1; });
   setHTML($("tlFilter"), Object.entries(TLC).map(([k, [c, n]]) => `<button class="fc${F[k] ? " on" : ""}" data-f="${k}" style="--c:${c}">${n}<i>${cnt[k] || 0}</i></button>`).join(""));
-  setHTML($("tlBar"), ev.filter(e => F[e.cat]).map(e => `<i style="left:${clamp(e.age / Math.max(now, 1) * 100, 0, 99).toFixed(1)}%;background:${TLC[e.cat][0]}"></i>`).join(""));
+  setHTML($("tlBar"), geoBands().filter(x => x.m0 / 2 <= now).map((x, i) => `<s title="${x.name} (${x.eon})" style="left:${(x.m0 / 2 / Math.max(now, 1) * 100).toFixed(2)}%;width:${((Math.min(x.m1 / 2, now) - x.m0 / 2) / Math.max(now, 1) * 100).toFixed(2)}%;background:hsl(${x.hue},55%,${i % 2 ? 29 : 37}%)"></s>`).join("") + ev.filter(e => F[e.cat]).map(e => `<i style="left:${clamp(e.age / Math.max(now, 1) * 100, 0, 99).toFixed(1)}%;background:${TLC[e.cat][0]}"></i>`).join(""));
   const rows = ev.map((e, i) => [e, i]).filter(([e]) => F[e.cat]), shown = rows.slice(0, N), myr = a => `${Math.round(a * 2).toLocaleString()} Myr`;
   let h = `<div class="tl"><div class="it now" style="--c:#6fe08a"><div class="t">Now · ${myr(now)}</div>${S.world.civs.length ? "Present day" : "The story so far"}</div>`;
   for (const [e, i] of shown) { const c = TLC[e.cat][0], ago = (now - e.age) * 2, agoT = ago < 1 ? "just now" : `${Math.round(ago).toLocaleString()} Myr ago`;
@@ -4686,6 +4690,14 @@ function tlSet(a, span, now) {
   span = clamp(span, Math.max(now * 0.002, 1), now);
   if (span >= now * 0.995) { TLV.full = true; return; }
   a = clamp(a, 0, now - span); TLV.full = false; TLV.span = span; TLV.a = a; TLV.b = a + span; TLV.pin = a + span >= now - span * 0.02; }
+const GEOEON = { Hadean: 12, Archean: 285, Proterozoic: 205, Phanerozoic: 135, "Deep time": 250 };
+function geoBands() {                                                      // the geologic eras (merged from the GEO table): name, eon, start/end in Myr, and the periods inside
+  if (geoBands.c) return geoBands.c; const out = [];
+  for (const r of GEO) { const nm = r[2] || r[1], l = out[out.length - 1]; if (l && l.eon === r[1] && l.name === nm) { if (r[3]) l.per.push(r[3]); continue; } out.push({ eon: r[1], name: nm, m0: r[0], per: r[3] ? [r[3]] : [] }); }
+  out.forEach((x, i) => { x.m1 = out[i + 1] ? out[i + 1].m0 : x.m0 + 2000; x.hue = GEOEON[x.eon] ?? 200; });
+  return geoBands.c = out;
+}
+const eraAt = ageU => geoBands().find(x => ageU * 2 >= x.m0 && ageU * 2 < x.m1) || null;
 { const tr = $("dkR"), track = $("dkTrack"), tip = $("dkTip"); let drag = null;
   const nearest = (clientX, maxPx) => { const W = S.world, now = Math.max(S.age, 1), [a, b] = tlRange(now), r = track.getBoundingClientRect(); let best = null, bd = maxPx;
     for (const x of W.events || []) { if (x.era || x.cat === "minor" || !(S.tlF || { life: 1, impact: 1, planet: 1, civ: 1 })[x.cat]) continue; const px = r.left + (x.age - a) / (b - a) * r.width, d = Math.abs(px - clientX); if (d < bd) { bd = d; best = x; } }
@@ -4695,7 +4707,12 @@ function tlSet(a, span, now) {
   track.addEventListener("pointerdown", e => { if (e.button) return; track.setPointerCapture(e.pointerId); const now = Math.max(S.age, 1), [a, b] = tlRange(now); drag = { x: e.clientX, a, span: b - a, moved: 0 }; track.classList.add("dn"); tip.style.opacity = 0; });
   track.addEventListener("pointermove", e => {
     if (drag) { const now = Math.max(S.age, 1), dx = e.clientX - drag.x; drag.moved = Math.max(drag.moved, Math.abs(dx)); if (!TLV.full || drag.span < now * 0.995) { tlSet(drag.a - dx / track.clientWidth * drag.span, drag.span, now); updateDock(true); } return; }
-    const best = nearest(e.clientX, 14); if (!best) { tip.style.opacity = 0; return; }
+    const best = nearest(e.clientX, 14);
+    if (!best) { const now0 = Math.max(S.age, 1), [a0, b0] = tlRange(now0), r0 = track.getBoundingClientRect(), tr0 = tr.getBoundingClientRect(), ag = a0 + (e.clientX - r0.left) / r0.width * (b0 - a0), er = ag <= now0 ? eraAt(ag) : null;
+      if (!er) { tip.style.opacity = 0; return; }
+      const per = (() => { try { return S.world.geoEra(ag).per; } catch (x) { return ""; } })(), ongoing = now0 * 2 < er.m1, len = Math.round((ongoing ? now0 * 2 : er.m1) - er.m0);
+      tip.innerHTML = `<b style="color:hsl(${er.hue} 70% 72%)">${er.name}</b>${per ? " · " + per : ""}<small>${er.eon} eon · ${er.m0.toLocaleString()}–${ongoing ? "now" : er.m1.toLocaleString()} Myr · ${len.toLocaleString()} Myr${ongoing ? " so far" : ""}</small>`;
+      tip.style.left = clamp(e.clientX - tr0.left, 80, tr0.width - 80) + "px"; tip.style.opacity = 1; return; }
     const now = Math.max(S.age, 1), [a, b] = tlRange(now), r = track.getBoundingClientRect(), tr2 = tr.getBoundingClientRect(), px = (best.age - a) / (b - a) * r.width + (r.left - tr2.left);
     let eraN = ""; try { eraN = S.world.geoEra(best.age).era || ""; } catch (e) {} tip.innerHTML = `${best.text}<small>${TLC[best.cat][1]} · ${Math.round(best.age * 2).toLocaleString()} Myr${eraN ? " · " + eraN : ""} · ${Math.round((S.age - best.age) * 2).toLocaleString()} Myr ago</small>`; tip.style.left = clamp(px, 80, tr2.width - 80) + "px"; tip.style.opacity = 1; });
   const up = e => { if (!drag) return; const moved = drag.moved; drag = null; track.classList.remove("dn"); if (moved < 4) { const best = nearest(e.clientX, 8); if (best && best.loc) flyTo(best.loc); tlToggle(); } };
@@ -4703,6 +4720,15 @@ function tlSet(a, span, now) {
   track.addEventListener("mouseleave", () => { tip.style.opacity = 0; });
   track.addEventListener("dblclick", () => { TLV.full = true; updateDock(true); });
   $("dkLast").onclick = tlToggle; }
+{ const lt = $("dkBTrack"), info = $("dkBInfo"); S.dkHov = null;
+  const pick = e => { const W = S.world, T = W.tree || [], now = Math.max(S.age, 1), [a, b] = tlRange(now), r = lt.getBoundingClientRect(), ag = a + (e.clientX - r.left) / r.width * (b - a), row = clamp(Math.floor((e.clientY - r.top - 2) / 4), 0, 4); let best = null, bs = 1e9;
+    T.forEach((n, i) => { if (n.born > ag + (b - a) * 0.02 || (n.died ?? now) < ag - (b - a) * 0.02) return; const sc = (i % 5 === row ? 0 : 1e5) + Math.abs(n.born - ag); if (sc < bs) { bs = sc; best = n; } }); return best; };
+  lt.addEventListener("pointermove", e => { const n = pick(e); S.dkHov = n; updateDock(true); });
+  lt.addEventListener("wheel", e => { e.preventDefault(); const now = Math.max(S.age, 1), [a, b] = tlRange(now), r = lt.getBoundingClientRect(), f0 = clamp((e.clientX - r.left) / r.width, 0, 1), f = f0 > 0.92 ? 1 : f0 < 0.03 ? 0 : f0, c = a + f * (b - a), ns = (b - a) * Math.pow(1.0017, e.deltaY); tlSet(c - f * ns, ns, now); updateDock(true); }, { passive: false });
+  lt.addEventListener("dblclick", () => { TLV.full = true; updateDock(true); });
+  lt.addEventListener("pointerleave", () => { S.dkHov = null; updateDock(true); });
+  lt.addEventListener("click", e => { const n = pick(e); if (n) openForm(n); else { try { tlToggle(); } catch (x) {} } });
+  info.addEventListener("click", () => { const T = S.world.tree || [], n = S.dkHov || T.filter(x => x.died == null).slice(-1)[0]; if (n) openForm(n); }); }
 function updateDock(force) {
   const W = S.world; if (!W || document.body.classList.contains("mobile")) return;
   const setT = (id, t) => { const el = $(id); if (el.__t !== t) { el.__t = t; el.textContent = t; } };
@@ -4717,17 +4743,29 @@ function updateDock(force) {
     if (last) { const ago = (S.age - last.age) * 2; setHTML(lastEl, `<i style="--c:${TLC[last.cat][0]}"></i><span>${last.text}</span><small>${ago < 1 ? "just now" : Math.round(ago).toLocaleString() + " Myr ago"}</small>`); }
     else setHTML(lastEl, '<i style="--c:#8896b3"></i><span>Nothing has happened yet…</span>'); }
   const ev = W.events || [], now = Math.max(S.age, 1), F = S.tlF || { life: 1, impact: 1, planet: 1, civ: 1, minor: 0 }, [a, b] = tlRange(now), sp = Math.max(b - a, 1e-6), X = ag => (ag - a) / sp * 100;
-  const eras = ev.filter(x => x.era).sort((p, q) => p.age - q.age); let h = "";
-  eras.forEach((x, i) => { const l = X(x.age), r = X(eras[i + 1] ? eras[i + 1].age : now); if (r < 0 || l > 100) return; const L = Math.max(l, 0), R = Math.min(r, 100); h += `<span class="eb" style="left:${L.toFixed(2)}%;width:${Math.max(R - L, 0.4).toFixed(2)}%;background:hsl(${(205 + i * 41) % 360},55%,${i % 2 ? 30 : 38}%)"></span>`; if (R - L > 14) h += `<span class="en" style="left:${L.toFixed(2)}%;width:${(R - L).toFixed(2)}%;text-align:center">${x.text.replace(/ (era|eon) begins$/i, "")}</span>`; });
+  let h = ""; geoBands().forEach((x, i) => { const l = X(x.m0 / 2), r = X(Math.min(x.m1 / 2, now)); if (x.m0 / 2 > now || r < 0 || l > 100) return; const L = Math.max(l, 0), R = Math.min(r, 100), cur = now * 2 < x.m1;
+    h += `<span class="eb${cur ? " cur" : ""}" style="left:${L.toFixed(2)}%;width:${Math.max(R - L, 0.4).toFixed(2)}%;background:hsl(${x.hue},${cur ? 62 : 50}%,${i % 2 ? 29 : 37}%)"></span>`;
+    if (cur && b >= now - sp * 0.01) h += `<span class="en curp">${x.name}</span>`; else if ((R - L) / 100 * ($("dkTrack").clientWidth || 420) >= x.name.length * 4.6 + 6) h += `<span class="en" style="left:${L.toFixed(2)}%;width:${(R - L).toFixed(2)}%">${x.name}</span>`; });
   for (const x of ev) if (!x.era && F[x.cat]) { const l = X(x.age); if (l < -1 || l > 101) continue; const c = TLC[x.cat][0]; h += `<i class="tk${x.cat === "civ" || x.cat === "impact" ? " big" : ""}" style="left:${l.toFixed(2)}%;color:${c};background:${c}"></i>`; }
   if (b >= now - sp * 0.01) h += '<span class="nowc"></span><span class="nowd"></span>';
-  h += `<span class="al">${Math.round(a * 2).toLocaleString()} Myr</span><span class="ar">${b >= now - sp * 0.01 ? "" : Math.round(b * 2).toLocaleString() + " Myr"}</span>`;
+  h += `${TLV.full ? "" : `<span class="al">${Math.round(a * 2).toLocaleString()} Myr</span>`}<span class="ar">${b >= now - sp * 0.01 ? "" : Math.round(b * 2).toLocaleString() + " Myr"}</span>`;
   if (!TLV.full) h += `<span class="az">🔍 ×${(now / sp).toFixed(now / sp < 10 ? 1 : 0)}</span>`;
   setHTML($("dkTrack"), h);
+  { const T = W.tree || [], hov = S.dkHov, col = n => `hsl(${Math.round(n.hue * 360)} 80% 62%)`, ago = m => m < 1 ? "just now" : Math.round(m).toLocaleString() + " Myr ago";
+    let lh = geoBands().map(x => { const l = X(x.m0 / 2), r = X(Math.min(x.m1 / 2, now)); if (x.m0 / 2 > now || r < 0 || l > 100) return ""; const L = Math.max(l, 0), R = Math.min(r, 100); return `<span class="eb2" style="left:${L.toFixed(2)}%;width:${Math.max(R - L, 0.3).toFixed(2)}%;background:hsl(${x.hue},55%,45%)"></span>`; }).join("");
+    T.forEach((n, i) => { const l = X(n.born), r = X(n.died ?? now); if (r < 0 || l > 100) return; const L = Math.max(l, 0), R = Math.min(r, 100); lh += `<i class="lf${n.died != null ? " x" : ""}${n === hov ? " hv" : ""}" style="left:${L.toFixed(2)}%;width:${Math.max(R - L, 0.3).toFixed(2)}%;top:${2 + (i % 5) * 4}px;background:${col(n)};color:${col(n)}"></i>`; });
+    if (!T.length) lh += '<span class="nm">no animal life yet</span>'; if (b >= now - sp * 0.01) lh += '<span class="nowc"></span>';
+    setHTML($("dkBTrack"), lh);
+    const alive = T.filter(n => n.died == null), gone = T.length - alive.length, hb = { sea: 0, shore: 0, deep: 0, land: 0, air: 0 }; alive.forEach(n => { hb[n.hab] = (hb[n.hab] || 0) + 1; });
+    setHTML($("dkBStat"), `<span><b>${alive.length}</b> alive</span><span><b>${gone}</b> gone</span>` + Object.entries(hb).filter(x => x[1]).map(([k, v]) => `<span title="${HABI[k] ? HABI[k][1] : k}">${HABI[k] ? HABI[k][0] : ""}<b>${v}</b></span>`).join(""));
+    const n = hov || alive[alive.length - 1];
+    if (!n) setHTML($("dkBInfo"), `<div><span>Life has not produced animals yet</span></div>`);
+    else { const h0 = HABI[n.hab] || HABI.sea, born = (S.age - n.born) * 2, end = n.died != null ? (S.age - n.died) * 2 : null;
+      setHTML($("dkBInfo"), `<div style="--c:${col(n)}"><i></i><span>${hov ? "" : "Newest: "}<b style="color:${col(n)}">${n.name}</b></span></div><small>${h0[0]} ${h0[1]} · ${n.diet} · ${fmtSz(n.size)}</small><small>arose ${ago(born)}${end != null ? ` · ✝ gone ${ago(end)}${n.cause ? " (" + n.cause + ")" : ""}` : " · still alive"}</small>`); } }
   { const all = {}, vis = {}; let nv = 0, na = 0; for (const x of ev) { if (x.era || x.cat === "minor") continue; na++; all[x.cat] = (all[x.cat] || 0) + 1; if (x.age >= a && x.age <= b) { nv++; vis[x.cat] = (vis[x.cat] || 0) + 1; } }
     const chip = k => `<span class="c" style="--c:${TLC[k][0]}" title="${TLC[k][1]}"><b>${all[k] || 0}</b>${TLC[k][1]}</span>`;
     const win = TLV.full ? "" : `<span class="v">${nv} in view · ${Math.round(a * 2).toLocaleString()}–${Math.round(b * 2).toLocaleString()} Myr</span>`;
-    const html = `<span><b>${na}</b> events</span>${chip("life")}${chip("impact")}${chip("planet")}${chip("civ")}${win}`, el = $("dkStat"); if (el.__h !== html) { el.__h = html; el.innerHTML = html; } }
+    const er = eraAt(S.age), eraChip = er ? `<span class="c" style="--c:hsl(${er.hue} 70% 62%)" title="Current geologic era (${er.eon} eon)"><b>${er.name}</b></span>` : "", html = `${eraChip}<span><b>${na}</b> events</span>${chip("life")}${chip("impact")}${chip("planet")}${chip("civ")}${win}`, el = $("dkStat"); if (el.__h !== html) { el.__h = html; el.innerHTML = html; } }
 }
 { let tab = "over"; try { tab = localStorage.getItem("pfLeftTab") || "over"; } catch (e) {}
   const setTab = t => { document.querySelectorAll("#ltabs [data-lt]").forEach(b => b.classList.toggle("on", b.dataset.lt === t)); document.querySelectorAll("#info .lt").forEach(d => d.classList.toggle("on", d.id === "lt-" + t)); try { localStorage.setItem("pfLeftTab", t); } catch (e) {} if (t === "time") renderTimeline(); };
