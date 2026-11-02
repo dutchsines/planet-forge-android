@@ -17,6 +17,9 @@ Copy `app-debug.apk` to the phone, open it, allow "install unknown apps". Or `ad
     ./update_game.sh path/to/new/index_hud.html
 then rebuild.
 
+## Live wallpaper
+Open the in-game Menu (☰) and tap "Set as live wallpaper", or pick Planet Forge in Android's Wallpaper settings. It runs the game in a hidden WebView at the lightest graphics and about 15 frames a second (experimental: some phones may show black or run slowly).
+
 ## Notes
 - Back button: first press = Esc in game, second within 2 s = leave. Quit on the title screen closes the app.
 - Phones are slower than PCs: lower the quality setting in the game's Settings if it stutters.

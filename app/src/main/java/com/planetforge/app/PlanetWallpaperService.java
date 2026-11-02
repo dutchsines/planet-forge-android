@@ -17,7 +17,7 @@ import android.webkit.WebViewClient;
  */
 public class PlanetWallpaperService extends WallpaperService {
     private static final String URL =
-            "file:///android_asset/index.html?wallpaper=1&lite=1&mobile=1&notitle=1&mins=30";
+            "file:///android_asset/index.html?wallpaper=1&lite=1&mobile=1&notitle=1&mins=30&fps=15";
     private static final int FRAME_MS = 66;
 
     @Override
