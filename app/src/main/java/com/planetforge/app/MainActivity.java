@@ -111,12 +111,8 @@ public class MainActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        long now = System.currentTimeMillis();
-        if (now - lastBack < 2000) { finishAndRemoveTask(); return; }
-        lastBack = now;
-        // first press: act like Esc inside the game (closes panels, settings), and warn that a second press leaves
-        web.evaluateJavascript("window.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape'}))", null);
-        Toast.makeText(this, "Press back again to leave", Toast.LENGTH_SHORT).show();
+        // Back acts like Esc inside the game: closes panels, otherwise pauses and opens the menu (Resume / New world / Load world / Settings / Quit)
+        web.evaluateJavascript("window.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true}))", null);
     }
 
     @Override protected void onPause()  {
