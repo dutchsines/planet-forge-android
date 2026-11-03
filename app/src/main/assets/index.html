@@ -155,6 +155,22 @@
   .cc .cr { display:flex; align-items:center; gap:8px; margin-top:5px; font-size:10.5px; text-transform:uppercase; letter-spacing:.07em; color:var(--mut); } .cc .cr span:first-child { width:48px; flex:none; } .cc .cr b { margin-left:auto; font-family:ui-monospace,Menlo,Consolas,monospace; color:var(--ink); font-weight:500; font-size:11.5px; text-transform:none; letter-spacing:0; }
   .cc .bar { flex:1; height:7px; border-radius:4px; background:rgba(255,255,255,.1); overflow:hidden; } .cc .bar i { display:block; height:100%; border-radius:4px; }
   .cc .cw { margin-top:6px; font-size:11.5px; color:#ff9a8a; } .cc .cw.ok { color:var(--mut); }
+  /* redesigned cards: big when "Nation cards" is on, small compact tags when it is off */
+  .pin.np .lbl, .pin.lfp .lbl { text-align:left; background:rgba(12,20,40,.92); border:1px solid rgba(160,200,255,.26); border-radius:16px; padding:12px 14px 13px; min-width:250px; max-width:340px; box-shadow:0 14px 40px rgba(0,0,0,.5); font-weight:400; color:#e8f0ff; display:flex; flex-direction:column; gap:9px; white-space:normal; font-size:12px; }
+  .pin.np .lbl small::after, .pin.lfp .lbl small::after { content:none !important; }
+  .pin .nh { display:flex; align-items:center; gap:10px; } .pin .nt { flex:1; min-width:0; } .pin .nt b { display:block; font-size:16px; color:#ffe9b0; line-height:1.15; } .pin.lfp .nt b { color:#eafff3; } .pin .nt small { display:block; color:#9db0d6; font-size:11.5px; }
+  .pin .nf { width:34px; height:34px; border-radius:50%; overflow:hidden; border:2px solid #ffb454; display:flex; align-items:center; justify-content:center; flex:none; background:#0b1224; }
+  .pin .nc { font:600 15px ui-monospace,Menlo,Consolas,monospace; text-align:right; line-height:1.1; color:#e8f0ff; } .pin .nc small { display:block; font:400 10px system-ui,sans-serif; color:#9db0d6; }
+  .pin .nm { display:grid; grid-template-columns:1fr 1fr; gap:8px 16px; } .pin .nm > span { font-size:11px; color:#9db0d6; display:block; } .pin .nm b { float:right; color:#e8f0ff; font:600 11px ui-monospace,Menlo,Consolas,monospace; } .pin .nm i { display:block; height:4px; border-radius:2px; background:rgba(160,200,255,.14); margin-top:4px; clear:both; } .pin .nm u { display:block; height:4px; border-radius:2px; }
+  .pin .nb { padding:6px 10px; border-radius:9px; font-size:12px; } .pin .nb.hol { background:rgba(255,180,84,.13); color:#ffd9a6; } .pin .nb.war { background:rgba(255,100,100,.15); color:#ff9d9d; }
+  .pin .lr { display:flex; justify-content:space-between; font-size:12px; } .pin .lr span { color:#9db0d6; } .pin .lr b { font:400 12px ui-monospace,Menlo,Consolas,monospace; } .pin .ln { font-size:11.5px; color:#6ee7a0; }
+  .pin .lf { width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex:none; }
+  .pin.np .lbl .st { white-space:normal; }
+  .pin.cmp .lbl { display:inline-flex; flex-direction:row; align-items:center; gap:8px; min-width:0; border-radius:999px; padding:3px 13px 3px 4px; white-space:nowrap; box-shadow:0 5px 18px rgba(0,0,0,.4); }
+  .pin.cmp .lbl b { font-size:14px; color:#ffe9b0; } .pin.lfp.cmp .lbl b { color:#eafff3; } .pin.cmp .lbl small { display:inline; color:#9db0d6; font:11.5px ui-monospace,Menlo,Consolas,monospace; }
+  .pin.cmp .nf, .pin.cmp .lf { width:26px; height:26px; } .pin.cmp .stem, .pin.cmp .dot { display:none; } .pin.cmp .lbl .nw { color:#ff9d9d; font-size:11.5px; }
+  .pin .lbl .st2 { white-space:normal; max-width:280px; color:#ffd9a0; }
+  .pin .lbl .st { display:block; color:#9fb4d8; font-weight:400; font-size:10px; margin-top:1px; white-space:nowrap; }
   .pin .lbl .wr { display:block; color:#ff8f7e; font-weight:600; font-size:10.5px; }
   .hr { display:flex; align-items:center; gap:8px; font-size:12px; margin:4px 0; } .hr span { flex:0 0 160px; } .hr .bar { flex:1; height:6px; border-radius:3px; background:rgba(255,255,255,.1); overflow:hidden; } .hr .bar i { display:block; height:100%; border-radius:3px; } .hr b { width:36px; text-align:right; font-weight:600; }
   .ctr { font-size:12px; letter-spacing:2px; margin-top:3px; opacity:.9; }
@@ -346,11 +362,69 @@
   #title.bye .tin { opacity:0; transition:opacity .6s; } #title .tbyetxt { position:absolute; inset:0; display:none; place-items:center; text-align:center; font-weight:200; letter-spacing:.4em; text-transform:uppercase; font-size:clamp(16px,2.4vw,30px); color:#d6e2ff; background:rgba(2,4,10,.82); } #title.bye .tbyetxt { display:grid; }
   @media (max-width:760px) { #title .tin { left:24px; right:24px; top:auto; bottom:12vh; transform:none; } #title .tshade { background:linear-gradient(0deg, rgba(2,4,10,.95) 0%, rgba(2,4,10,.6) 45%, rgba(2,4,10,0) 80%); } #title .tfoot { display:none; } }
   #gfx.open { z-index:60; }
+
+  /* ===== HUD v3: holo-glass neon (approved mockup) ===== */
+  :root { --ac:#37e6ff; --cy:#37e6ff; --lm:#b6ff5c; --mg:#ff5ad2; --am:#ffb454; --line:rgba(255,255,255,.12); }
+  .panel { background:linear-gradient(160deg,rgba(255,255,255,.07),rgba(255,255,255,.02)),rgba(8,10,24,.5); -webkit-backdrop-filter:blur(18px) saturate(140%); backdrop-filter:blur(18px) saturate(140%); border:1px solid rgba(255,255,255,.12); border-radius:20px; box-shadow:inset 0 1px 0 rgba(255,255,255,.08), 0 8px 40px rgba(0,0,0,.35); }
+  .panel::before { display:none; }
+  button.on { background:rgba(55,230,255,.16); border-color:var(--cy); box-shadow:0 0 14px rgba(55,230,255,.35), inset 0 1px 0 rgba(255,255,255,.12); color:#fff; }
+  button:hover { background:rgba(55,230,255,.12); border-color:rgba(55,230,255,.5); box-shadow:0 0 12px rgba(55,230,255,.2); }
+  #topbar { background:linear-gradient(160deg,rgba(255,255,255,.07),rgba(255,255,255,.02)),rgba(8,10,24,.5); border-color:rgba(255,255,255,.12); box-shadow:0 6px 28px rgba(55,230,255,.1), inset 0 1px 0 rgba(255,255,255,.08); }
+  #topbar .era { color:var(--cy); }
+  #leftcol { width:292px; }
+  #info { display:flex; flex-direction:column; padding:14px 16px 12px; }
+  #ltabs { order:-1; margin:0 0 12px; padding:3px; gap:2px; border:1px solid rgba(255,255,255,.12); background:transparent; border-radius:999px; }
+  #ltabs button { border-radius:999px; font-size:11.5px; font-weight:600; color:#8d93ab; }
+  #ltabs button.on { background:rgba(55,230,255,.14); color:var(--cy); box-shadow:0 0 12px rgba(55,230,255,.25); border:0; }
+  #info:not(:has(#ltabs [data-lt=over].on)) #infoTxt .stats, #info:not(:has(#ltabs [data-lt=over].on)) #infoTxt .seas { display:none; }
+  #infoTxt h1 { text-align:left; font-size:15px; } #infoTxt .sub, #info .seas { text-align:left; }
+  #info .stats { display:block; margin:8px 0 2px; }
+  #info .stats div.sr { background:transparent; border:0; border-top:1px solid rgba(255,255,255,.07); border-radius:0; padding:7px 0 5px; text-align:left; box-shadow:none; }
+  .sr .sl { display:flex; align-items:center; gap:9px; font-size:12px; color:#c9cee4; }
+  .sr .si { flex:none; width:24px; height:24px; border-radius:8px; display:grid; place-items:center; font-size:13px; background:color-mix(in srgb, var(--c) 18%, rgba(8,10,24,.6)); border:1px solid color-mix(in srgb, var(--c) 55%, transparent); box-shadow:0 0 8px color-mix(in srgb, var(--c) 35%, transparent); }
+  .sr .sn { flex:1; text-transform:capitalize; }
+  .sr .sd { font:9.5px ui-monospace,Menlo,Consolas,monospace; color:#8d93ab; } .sr .sd.up { color:var(--lm); } .sr .sd.dn { color:var(--cy); }
+  .sr .sw { font:9px ui-monospace,Menlo,Consolas,monospace; letter-spacing:.1em; color:var(--mg); border:1px solid var(--mg); border-radius:999px; padding:0 6px; box-shadow:0 0 8px rgba(255,90,210,.45); }
+  #info .stats .sr b { display:inline; font:12px ui-monospace,Menlo,Consolas,monospace; color:#f2f4ff; }
+  .sr.warn { border-top-color:rgba(255,90,210,.4) !important; }
+  .sr svg.sp { display:block; width:100%; height:20px; margin-top:4px; overflow:visible; } .sr .bar { height:3px; margin-top:7px; border-radius:2px; background:rgba(255,255,255,.1); overflow:hidden; } .sr .bar i { display:block; height:100%; background:var(--c); box-shadow:0 0 8px var(--c); }
+  svg.sp path.l { fill:none; stroke-width:1.7; stroke-linejoin:round; vector-effect:non-scaling-stroke; filter:drop-shadow(0 0 3px currentColor); }
+  svg.sp path.a { stroke:none; opacity:.22; }
+  #lt-over .odds, #lt-over .glance { background:transparent; }
+  #hudR { display:flex; flex-direction:column; gap:0; padding:14px 16px 10px; overflow:auto; font-size:12px; }
+  body:not(.mobile) #hudR { position:static; flex:0 1 auto; min-height:0; max-height:calc(100vh - var(--bh) - 42px); } body.mobile #hudR { display:none; }
+  #hudR .hl { font-size:10.5px; letter-spacing:.2em; font-weight:600; margin:0 0 8px; display:flex; justify-content:space-between; align-items:center; }
+  #hudR .hc { margin-bottom:8px; } #hudR .hc .t { display:flex; justify-content:space-between; align-items:baseline; color:#8d93ab; font-size:11.5px; } #hudR .hc .t b { font-size:18px; color:#fff; font-weight:600; text-shadow:0 0 12px var(--c); }
+  #hudR .hc .w { font-size:10.5px; color:#c9cee4; opacity:.8; margin-top:2px; }
+  #hudR .hr { border-top:1px solid rgba(255,255,255,.07); margin:6px 0 10px; }
+  #hudR .pp { display:flex; align-items:baseline; gap:10px; } #hudR .pp b { font-size:24px; font-weight:600; color:#fff; text-shadow:0 0 14px var(--lm); } #hudR .pp span { font-size:11.5px; color:#8d93ab; }
+  #hudR .hn { display:flex; align-items:center; gap:9px; padding:6px 0 5px; border-top:1px solid rgba(255,255,255,.07); cursor:pointer; } #hudR .hn:hover { background:rgba(255,255,255,.04); } #hudR .hn .nm { flex:1; color:#c9cee4; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; } #hudR .hn .pv { font:11.5px ui-monospace,Menlo,Consolas,monospace; color:#f2f4ff; }
+  #hudR .hn .fl { flex:none; display:flex; border-radius:50%; overflow:hidden; box-shadow:0 0 8px rgba(255,255,255,.2); }
+  #hudR .hb { height:3px; border-radius:2px; background:rgba(255,255,255,.1); margin:-1px 0 4px 31px; overflow:hidden; } #hudR .hb i { display:block; height:100%; background:var(--lm); box-shadow:0 0 8px var(--lm); }
+  #hudR .he { display:flex; align-items:center; gap:10px; padding:6px 0; border-top:1px solid rgba(255,255,255,.07); } #hudR .he.evl { cursor:pointer; } #hudR .he.evl:hover { background:rgba(255,255,255,.04); }
+  #hudR .he .ei { flex:none; width:30px; height:30px; border-radius:9px; display:grid; place-items:center; font-size:14px; background:color-mix(in srgb, var(--c) 18%, rgba(8,10,24,.6)); border:1px solid color-mix(in srgb, var(--c) 55%, transparent); box-shadow:0 0 10px color-mix(in srgb, var(--c) 40%, transparent); }
+  #hudR .he .et { font-size:12px; line-height:1.3; color:#e6efff; } #hudR .he .ea { font:10px ui-monospace,Menlo,Consolas,monospace; color:#8d93ab; }
+  #hudR .all { all:unset; cursor:pointer; font-size:10px; letter-spacing:0; font-weight:500; color:#8d93ab; } #hudR .all:hover { color:var(--cy); }
+  #info .stats .sr div { background:none; border:0; border-radius:0; padding:0; text-align:left; box-shadow:none; }
+  #info .stats .sr .bar { background:rgba(255,255,255,.1); border-radius:2px; }
+  #info .stats .sr .sl span { font-size:inherit; text-transform:none; letter-spacing:0; }
+  #info .stats .sr .sl .sn { font-size:12px; text-transform:capitalize; color:#c9cee4; }
+  #info .stats .sr .sl .si { font-size:13px; } #info .stats .sr .sl .sd { font:9.5px ui-monospace,Menlo,Consolas,monospace; color:#8d93ab; } #info .stats .sr .sl .sd.up { color:var(--lm); } #info .stats .sr .sl .sd.dn { color:var(--cy); }
+  #info .stats .sr .sl .sw { font:9px ui-monospace,Menlo,Consolas,monospace; letter-spacing:.1em; color:var(--mg); }
+  body:not(.mobile) #maps.closed { flex:0 0 auto; min-height:0; }
+  #hudR > * { flex:none; }
+  #hudR svg.sp { display:block; width:100%; height:22px; margin-top:4px; overflow:visible; }
+  body:not(.mobile) #rightcol { max-height:calc(100vh - var(--bh) - 76px); } body:not(.mobile) #hudR { max-height:calc(100vh - var(--bh) - 76px); }
+  #hudHide { position:fixed; right:14px; bottom:calc(var(--bh) + 22px); z-index:9; display:flex; align-items:center; gap:8px; height:28px; padding:0 12px; border-radius:999px; font:600 11.5px system-ui,sans-serif; color:#c9cee4; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.16); -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px); cursor:pointer; }
+  #hudHide svg { width:14px; height:14px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; } #hudHide kbd { font:9px ui-monospace,Menlo,monospace; color:#8d93ab; border:1px solid rgba(255,255,255,.2); border-radius:5px; padding:1px 5px; }
+  #hudHide .sh, body.hide #hudHide .hh { display:none; } body.hide #hudHide .sh { display:inline; } body.hide #hudHide { bottom:14px; opacity:.6; } body.hide #hudHide:hover { opacity:1; }
+  body.mobile #hudHide, body.wp #hudHide { display:none; }
+  body:not(.mobile) #rightcol { width:300px; }
 </style>
 </head>
 <body>
 <canvas id="c"></canvas>
-<div id="pins"></div><div id="wtimer" class="panel"></div><div id="toast"></div><div id="help" class="panel"><div class="gh"><span>Guide</span><button id="helpC">✕</button></div><div id="helpB"></div></div>
+<div id="pins"></div><button id="hudHide" title="Hide or show the whole HUD (H)" aria-label="Hide HUD"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18M10.6 5.1A10 10 0 0112 5c6 0 10 7 10 7a17 17 0 01-3.2 3.9M6.6 6.6A17 17 0 002 12s4 7 10 7a9.7 9.7 0 004-.9M9.9 9.9a3 3 0 004.2 4.2"/></svg><span class="hh">Hide HUD</span><span class="sh">Show HUD</span><kbd>H</kbd></button><div id="wtimer" class="panel"></div><div id="toast"></div><div id="help" class="panel"><div class="gh"><span>Guide</span><button id="helpC">✕</button></div><div id="helpB"></div></div>
 <div id="leftcol"><div id="info" class="panel"><div id="infoTxt" title="Click to collapse or expand"></div>
   <div id="ltabs"><button data-lt="over" class="on">Overview</button><button data-lt="time">Timeline</button><button data-lt="data">Data</button></div>
   <div id="lt-over" class="lt on"><div id="infoRows"></div></div>
@@ -379,13 +453,13 @@
     <div class="bg"><i>World</i><button id="bNew" title="Roll a brand-new random world (R)">New world</button><button id="bWall" data-ico="🖼" title="Hide everything and let the camera and sun drift on their own, for use as a live desktop wallpaper (W; click, Esc or W to leave)">Wallpaper (W)</button><button id="bEndless">Endless: off (E)</button><button id="bLink" data-ico="🔗" title="Copy a link that rebuilds this exact world from its seed">Copy link</button><button id="bExport" data-ico="📄" title="Download the planet and every nation's story as a web page">Export story</button></div>
     <div class="bg"><i>Time</i><button id="bPlay" data-ico="▶️" title="Normal speed">Play</button><button id="bPause" data-ico="⏸" title="Pause everything (Space)">Pause</button><button id="bFF3" data-ico="⏩" title="Fast forward ×3">Fast ×3</button><button id="bFF5" data-ico="⏭" title="Fast forward ×5">Fast ×5</button><button id="bReal" data-ico="🕰" title="Real time: the planet turns once every 24 hours and the weather moves at its true pace">Real time</button><button id="bClim" data-ico="🌡" title="Climate pace: a day lasts a few minutes so you can watch heat and weather spread, while evolution only creeps">Climate pace</button><button id="bCalm" data-ico="🌿" title="When minds appear, slow down the plates, climate and weather so their story is easy to follow">Calm</button><button id="bSpin" data-ico="🌀">Spin: on (S)</button><button id="bEvo" data-ico="🧬">Pause evolution (P)</button><button id="bSun" data-ico="☀️">Look at sun (F)</button><button id="bCam" data-ico="🎥">Camera: free (M)</button><button id="bLock" data-ico="🔒">Lock view (L)</button></div>
     <div class="bg" id="viewBg"><i>View</i><select id="selView" title="Map view (V)"></select><div id="viewGrid"></div></div>
-    <div class="bg"><i>Panels</i><button id="bInfo" data-ico="ℹ️">Info (I)</button><button id="bGraph" data-ico="📈" class="on">Graphs (J)</button><button id="bNat" data-ico="🏛">Nations (O)</button><button id="bTree" data-ico="🌳" title="How life branched and which lines died out">Tree of life</button><button id="bCrit" data-ico="🦎" class="on" title="Show the creatures themselves moving about inside their ranges (zoom in close)">Creatures</button><button id="bLife" data-ico="📍" title="Show where each new line of life began, how far it spread and where it died out">Life ranges</button><button id="bMoonB" data-ico="🌙" title="Fly the camera to the moon base (B)">Moon base (B)</button><button id="bSound" data-ico="🔊" title="Ambient wind, rumbles and thunder">Sound: off (X)</button><button id="bHelp" data-ico="❓" title="Keys and map guide">Help (?)</button><button id="bThumb" data-ico="🛰">Live views (T)</button><button id="bGfx" data-ico="⚙️">Graphics (G)</button><button id="bCtrl" data-ico="🎛">Controls</button><button id="bMobile" data-ico="📱">Mobile layout: auto</button></div>
+    <div class="bg"><i>Panels</i><button id="bInfo" data-ico="ℹ️">Info (I)</button><button id="bGraph" data-ico="📈" class="on">Graphs (J)</button><button id="bNat" data-ico="🏛">Nations (O)</button><button id="bTz" data-ico="🌐" class="on" title="Time zone lines, zone clocks and the international date line">Time zones</button><button id="bTzCam" data-ico="🕒" class="on" title="Show the local time under the camera">Camera clock</button><button id="bNatCards" data-ico="🏷" class="on" title="Floating name cards above each nation. When off, a new nation still shows its card for a few seconds.">Nation cards</button><button id="bTree" data-ico="🌳" title="How life branched and which lines died out">Tree of life</button><button id="bCrit" data-ico="🦎" class="on" title="Show the creatures themselves moving about inside their ranges (zoom in close)">Creatures</button><button id="bLife" data-ico="📍" title="Show where each new line of life began, how far it spread and where it died out">Life ranges</button><button id="bMoonB" data-ico="🌙" title="Fly the camera to the moon base (B)">Moon base (B)</button><button id="bSound" data-ico="🔊" title="Ambient wind, rumbles and thunder">Sound: off (X)</button><button id="bHelp" data-ico="❓" title="Keys and map guide">Help (?)</button><button id="bThumb" data-ico="🛰">Live views (T)</button><button id="bGfx" data-ico="⚙️">Graphics (G)</button><button id="bCtrl" data-ico="🎛">Controls</button><button id="bMobile" data-ico="📱">Mobile layout: auto</button></div>
   </div>
     <div id="gwrap"><div id="chips"></div><div id="gstrip"></div></div>
   <div id="civwrap"><div id="civcards"></div></div>
   <div id="thumbwrap"><div id="thumbs"></div></div>
 </div>
-<div id="rightcol"><div id="side" class="panel closed"><div id="sideHead"><span>Controls <span style="font-weight:400;color:#8fa4cc">(Tab)</span></span><button id="bSide">–</button></div><div id="sideBody"></div></div><div id="maps" class="panel closed"><div id="mapsHead"><span>Maps</span><span style="flex:1"></span><button id="bMapsC" title="Compact cards: two small maps per row" style="margin-right:6px">▤</button><button id="bMaps" title="Show or hide the flat live maps">+</button></div><div id="mapsBody"></div></div></div>
+<div id="rightcol"><div id="hudR" class="panel"></div><div id="side" class="panel closed"><div id="sideHead"><span>Controls <span style="font-weight:400;color:#8fa4cc">(Tab)</span></span><button id="bSide">–</button></div><div id="sideBody"></div></div><div id="maps" class="panel closed"><div id="mapsHead"><span>Maps</span><span style="flex:1"></span><button id="bMapsC" title="Compact cards: two small maps per row" style="margin-right:6px">▤</button><button id="bMaps" title="Show or hide the flat live maps">+</button></div><div id="mapsBody"></div></div></div>
 <pre id="err"></pre>
 
 <script>
@@ -398,6 +472,8 @@
 
 const OV = {};                              // manual overrides from the control panel (absent key = automatic)
 const ov = (k, v) => (k in OV ? OV[k] : v);
+const LAVA = [[1.0, 0.28, 0.06], [1.0, 0.55, 0.10], [1.0, 0.12, 0.04], [0.95, 0.9, 0.35], [0.2, 0.75, 1.0], [0.75, 0.25, 1.0], [0.3, 1.0, 0.45], [1.0, 0.25, 0.6]];     // basalt orange, gold, deep red, sulphur, then alien blue / violet / green / magenta lavas
+const FALL = { stony: { land: [0.42, 0.38, 0.34], sea: [0.55, 0.78, 0.72], sd: [0.10, 0.32, 0.36], o2: 0.05, w: "milky grey" }, iron: { land: [0.56, 0.22, 0.12], sea: [0.66, 0.33, 0.18], sd: [0.28, 0.10, 0.06], o2: 0.12, w: "rust-red" }, carbonaceous: { land: [0.14, 0.13, 0.12], sea: [0.22, 0.34, 0.20], sd: [0.05, 0.12, 0.06], o2: 0.03, w: "dark and murky" }, comet: { land: [0.82, 0.84, 0.86], sea: [0.62, 0.92, 0.97], sd: [0.10, 0.36, 0.56], o2: 0.0, w: "clear and bright" } };
 const NP = 14, NV = 10;                              // tectonic plates
 const TAU = Math.PI * 2;
 const Q = new URLSearchParams(location.search);
@@ -580,7 +656,13 @@ const ENDS = { stars: "{N} turns its works toward the stars", inward: "{N} turns
 const LADDER = [[0.04, 0, "starships take to the sky"], [0.08, 7, "raises habitats in orbit"], [0.15, 1, "completes a space elevator"], [0.20, 8, "shifts the moon onto a kinder orbit"], [0.30, 2, "closes an orbital ring around the world"], [0.36, 9, "assembles a ringworld fragment"],
   [0.42, 3, "learns to steer the weather"], [0.48, 10, "seeds the seas and forests anew"], [0.55, 4, "begins to terraform the planet"], [0.64, 11, "lights a stellar engine"], [0.72, 5, "casts a swarm of solar collectors"],
   [0.78, 12, ["wraps the star in a Matrioshka brain", "wraps the star in a Matrioshka brain", "builds a hive-lattice around the star", "weaves living light-sails around the star"]], [0.90, 13, "lifts mass from the star itself"], [0.95, 6, "reaches the end of what a planet can hold"]];
+const ERA_KIND = { traps: ["Basalt", "Ashen", "Magma"], impact: ["Crater", "Starfall", "Scar"], grb: ["Silent", "Gamma", "Burn"], anoxia: ["Murk", "Stagnant", "Gasp"], snowball: ["Frost", "Rime", "Whiteout"], toba: ["Ashfall", "Dark Year"], hothouse: ["Ember", "Scorch", "Swelter"], cambrian: ["Burst", "Bloom"], oxsurge: ["Breath", "Azure", "Rust"], greening: ["Canopy", "Verdant"], radiation: ["Branching", "Kaleidoscope"], industry: ["Smokestack", "Iron", "Lamplight"], ascend: ["Lattice", "Ascent", "Starlit"], nuke: ["Fallout", "Long Silence"], end: ["Stillness", "Last Light"], contact: ["Listening", "Signal"] };
 const LATE_RE = /^(capital|cult|ag_|fig_|conquer|empire|split|annexed|ruins|dark|smog|green|nuke|lpeace|aiG|aiB|race|contact|end_|asc(7|8|9|1\d)|ascR|merge|starwar|ascPeace|revive|deflect|depart)/;
+const RES = [["Timber", "🪵", 0.012, 8], ["Copper & tin", "🔶", 0.04, 5], ["Iron", "⛓️", 0.09, 5], ["Coal", "⚫", 0.17, 4], ["Oil & gas", "🛢️", 0.27, 3], ["Uranium", "☢️", 0.42, 3], ["Rare earths", "💎", 0.55, 2], ["Exotic matter", "✨", 0.72, 2]];     // [name, icon, tech gate: a nation cannot progress past it until it has found this, deposits on the world]
+const VAL = [["Curious", "🔭", { tech: 0.10 }], ["Devout", "🕯️", { hp: 0.05, fest: 0.6 }], ["Communal", "🤝", { pop: 0.8, hp: 0.03 }], ["Seafaring", "⛵", { reach: 0.22, fest: 0.1 }], ["Artistic", "🎭", { hp: 0.04, fest: 0.4 }], ["Frugal", "🪙", { cash: 0.25 }], ["Hospitable", "🏮", { hp: 0.03, fest: 0.3 }], ["Stoic", "🛡️", { hp: 0.05 }], ["Industrious", "🔨", { task: 0.35 }], ["Restless", "🧭", { reach: 0.3, tech: 0.05 }], ["Scholarly", "📚", { tech: 0.12 }], ["Fertile", "🌾", { pop: 1.2 }], ["Boastful", "📯", { fest: 0.5, task: 0.15 }], ["Patient", "⏳", { hp: 0.02, task: 0.1, tech: 0.04 }]];
+const TASKS = [["Granary", "🏺", 0.005, 0.2, -1, "food", 1], ["Timber palisade", "🪵", 0.005, 0.15, 0, "hp", 1], ["Irrigation canals", "💧", 0.015, 0.3, 0, "pop", 1], ["Great temple", "🛕", 0.02, 0.4, -1, "hp", 1], ["Village market", "🏪", 0.02, 0.4, -1, "cash", 2], ["Bronze foundry", "🔶", 0.045, 0.25, 1, "tech", 1], ["Paved roads", "🛣️", 0.03, 0.6, -1, "cash", 2], ["Harbour & shipyard", "⚓", 0.04, 0.5, 0, "cash", 1], ["Aqueduct", "🏛️", 0.05, 0.3, -1, "pop", 1], ["Great library", "📚", 0.06, 0.5, -1, "tech", 1], ["Observatory", "🔭", 0.08, 0.6, 1, "tech", 1], ["Ironworks", "⛓️", 0.095, 0.3, 2, "tech", 1], ["Coal-fired mills", "🏭", 0.175, 0.45, 3, "cash", 1], ["Railway network", "🚂", 0.18, 0.5, 2, "cash", 2], ["Public hospital", "🏥", 0.2, 1, -1, "hp", 2], ["Oil refinery", "🛢️", 0.28, 0.65, 4, "cash", 1], ["Electric grid", "⚡", 0.25, 1, 1, "cash", 1], ["Research university", "🎓", 0.3, 1, -1, "tech", 2], ["Nuclear reactor", "☢️", 0.43, 1, 5, "cash", 1], ["Spaceport", "🚀", 0.45, 1, -1, "tech", 1], ["Sky gardens", "🌿", 0.5, 1, -1, "food", 2], ["Semiconductor fab", "💎", 0.56, 1, 6, "tech", 1], ["Orbital foundry", "✨", 0.73, 1, 7, "tech", 1], ["Memorial gardens", "🌸", 0.02, 1, -1, "hp", 2]];     // [name, icon, tech from, tech to, resource it needs (-1 none), what it gives, how many times it can be built]
+const HOLS = [["harvest", ["Harvest Feast", "First Fruits", "Reaping Day", "Granary Night"], "🌾", 0], ["winter", ["Midwinter Vigil", "Long Night", "Hearth Festival", "Night of Candles"], "🕯️", 0], ["spring", ["Thaw Festival", "Greening Day", "Seedtime Rite", "Blossom Day"], "🌸", 0], ["ancestors", ["Day of Ancestors", "Feast of Ghosts", "Memory Night", "Gravewalk"], "🕊️", 0.005], ["rain", ["Rain Dance", "Flood Blessing", "Day of Waters", "Tide Festival"], "🌧️", 0], ["sun", ["Sun Festival", "Solstice Fires", "Day of Light", "High Sun"], "☀️", 0], ["stars", ["Star Watch", "Night of Falling Stars", "Comet Festival", "Sky Vigil"], "🌠", 0.01], ["founding", ["Founding Day", "Unity Day", "Day of the First Fire", "Charter Day"], "🎆", 0.03], ["victory", ["Victory Day", "Day of Banners", "Triumph Parade", "Soldiers' Day"], "🏆", 0.02], ["remember", ["Day of Mourning", "Remembrance Day", "Ash Day", "Day of Quiet"], "🕯️", 0.02], ["market", ["Great Fair", "Market Carnival", "Day of Bargains", "Traders' Revel"], "🎪", 0.03], ["masks", ["Mask Festival", "Night of Faces", "Mummers' Day", "Carnival"], "🎭", 0.02], ["music", ["Song Festival", "Drum Night", "Day of Instruments", "Choir Day"], "🎶", 0.02], ["lantern", ["Lantern Night", "Festival of Lights", "River of Lights", "Sky Lanterns"], "🏮", 0.04], ["peace", ["Peace Day", "Day of Truce", "Olive Day", "Handshake Day"], "🕊️", 0.03], ["machine", ["Day of Machines", "Workers' Day", "Steam Festival", "Iron Day"], "⚙️", 0.15], ["science", ["Discovery Day", "Science Fair", "Day of Reason", "Inventors' Day"], "🔬", 0.2], ["fireworks", ["Festival of Fireworks", "Night of Sparks", "Grand Illumination"], "🎇", 0.1], ["launch", ["Launch Day", "Day of the First Flight", "Rocket Festival", "Sky Day"], "🚀", 0.4], ["orbit", ["Orbit Day", "Day Above", "Weightless Festival"], "🛰️", 0.5], ["contact", ["Contact Day", "Day of Welcome", "Greeting of the Stars"], "👽", 0.45], ["newyear", ["Turning of the Year", "New Year's Eve", "Day Zero"], "🎉", 0]];
+const hsv2rgb = (h, s_, v_) => { const i = Math.floor(h * 6) % 6, f = h * 6 - Math.floor(h * 6), p = v_ * (1 - s_), q = v_ * (1 - f * s_), t = v_ * (1 - (1 - f) * s_); return [[v_, t, p], [q, v_, p], [p, v_, t], [p, q, v_], [t, p, v_], [v_, p, q]][i]; };
 const TRN = [["Cold tolerance", "❄"], ["Heat tolerance", "☀"], ["Drought tolerance", "🏜"], ["Radiation hardiness", "☢"], ["Toxin tolerance", "☣"], ["Disease resistance", "✚"], ["Martial vigour", "⚔"], ["Ingenuity", "💡"]];
 /* Earth's geologic time scale, as the world's age in Myr since formation: [start, eon, era, period] */
 const GEO = [[0, "Hadean", "", ""], [540, "Archean", "Eoarchean", ""], [840, "Archean", "Paleoarchean", ""], [1140, "Archean", "Mesoarchean", ""], [1540, "Archean", "Neoarchean", ""],
@@ -684,6 +766,10 @@ class World {
     this.civs = []; this.rkts = []; this.sats = 0; this.nextRocket = 3; this.species = makeName(rC); this.f2 = {};
     this.rngI = mulberry32(seed * 71 + 9); this.craters = []; this.rocks = []; this.impHeat = 0; this.seaDelta = 0; this.lumK = 0.00006 + 0.0001 * this.rngI();
     this.hasGiant = this.moonR > 0 || this.rngI() < 0.35; this.giantAt = 14 + 26 * this.rngI(); this.giantDone = false;
+    this.rngR = mulberry32(seed * 733 + 29); { const rl = mulberry32(seed * 313 + 7); this.litClassic = rl() < 0.2; this.litHue = rl(); }
+    { const rt = mulberry32(seed * 617 + 3); this.terr = { canyon: rt() < 0.3 ? 0 : 0.35 + 0.65 * rt(), peaks: rt() < 0.25 ? 0.15 * rt() : 0.3 + 0.7 * rt(), crust: 0.6 + 0.9 * rt() }; { const uv = () => norm3([rt() * 2 - 1, rt() * 2 - 1, rt() * 2 - 1]); this.terr.d1 = uv(); this.terr.d2 = uv(); } const rv = mulberry32(seed * 419 + 11); this.lavaWorld = rv() < 0.45 ? -1 : 4 + Math.floor(rv() * 4); }
+    this.fk = 0; this.fo = null; this.impTox = 0;
+    this.rngE = mulberry32(seed * 577 + 13); this.eraList = [{ m0: 0, eon: "Hadean", era: "", hue: 12, kind: null }]; this.eonLeft = 1;
     this.rngA = mulberry32(seed * 257 + 19); this.canAsc = this.rngA() < 0.35; this.asc = null; this.rngX = mulberry32(seed * 173 + 41); this.nextRare = 120 + 300 * this.rngX(); this.rngT = mulberry32(seed * 199 + 13); this.baseTr = null; this.rngK = mulberry32(seed * 311 + 29); this.rngM=mulberry32(seed*401+7); this.contact = null; this.poll = 0; this.ruins = []; this.contactN = 0; this.asc2 = null;      // rare events and heredity get their own random streams
     this.extK = 1; this.extHeat = 0; this.uvBurst = 0; this.extHist = -1e9;
     this.life = 0; this.settle(0, true);                                          // every world is born as a molten, lifeless ball
@@ -715,7 +801,7 @@ class World {
     if (birth) { Object.assign(this.chem, { o2: 0.01, co2: 0.35, ch4: 0.3, so2: 0.2 }); return; }
     for (let i = 0; i < 500; i++) this.stepChem(1, age, true);
   }
-  log(age, text, loc) { if (this.silent) return; if (/comet blazes|meteor shower|solar eclipse|lunar eclipse|tsunami|earthquake|mountain belt|island rises|settled a volcanic|base on the moon|ascends|starships take|space elevator|orbital ring|steer the weather|terraform|solar collectors|great works fall|mission to the moon|lander is lost|Supervolcano|extinction|nowball|othouse|Cambrian|era begins|impact|Giant|Matrioshka|stellar engine|ringworld|star itself|habitats|fleet of|departs the world|turns inward|destroys itself|goes quiet|caretaker|Nuclear fire|dark age|becomes an empire|signal from|probe from|war of the ascended|share the sky|join into one|green revolution|brings back/i.test(text)) this.toasts.push({ msg: text }); this.events.unshift({ age, text, loc, cat: evCat(text), era: /(era|eon) begins$/i.test(text) }); if (this.events.length > 400) this.events.pop(); }
+  log(age, text, loc) { if (this.silent) return; if (/comet blazes|meteor shower|solar eclipse|lunar eclipse|tsunami|earthquake|mountain belt|island rises|settled a volcanic|base on the moon|name the moon|ascends|starships take|space elevator|orbital ring|steer the weather|terraform|solar collectors|great works fall|mission to the moon|lander is lost|Supervolcano|extinction|nowball|othouse|Cambrian|era begins|impact|Giant|Matrioshka|stellar engine|ringworld|star itself|habitats|fleet of|departs the world|turns inward|destroys itself|goes quiet|caretaker|Nuclear fire|dark age|becomes an empire|signal from|probe from|war of the ascended|share the sky|join into one|green revolution|brings back/i.test(text)) this.toasts.push({ msg: text }); this.events.unshift({ age, text, loc, cat: evCat(text), era: /(era|eon) begins$/i.test(text) }); if (this.events.length > 400) this.events.pop(); }
   plumeCenter(p) { const pl = this.plates[p.k]; return mulMV(rotAxis(pl.axis, pl.rate * S.driftT * 0.01), p.local); }
   addPlume(age, site, spd) {                                         // an ash/dust front that spreads outward from where it started; a new hit inside (or near) an existing cloud feeds it instead of restarting it
     const L = this.plumes = (this.plumes || []).filter(q => age - q.tl < 40), E = this.plumeCenter(site);
@@ -726,13 +812,19 @@ class World {
     }
     L.push({ k: site.k, local: site.local, t0: age, tl: age, spd });
   }
+  volcStyle(v, i) {                                                   // every volcano has its own look: steep cone or broad shield, size, caldera, lava colour, number of lava tongues
+    const key = i + ":" + (v.gen || 0); if (v._sk === key) return v.sty;
+    const r = mulberry32(this.seed * 131 + i * 977 + (v.gen || 0) * 7919 + 3), shape = r(), cal = r(), size = 0.7 + 0.95 * r() * (1.25 - 0.6 * shape), rays = 3 + Math.floor(r() * 8);
+    const lava = this.lavaWorld >= 0 && r() < 0.65 ? LAVA[this.lavaWorld] : LAVA[Math.floor(r() * 4)];
+    v._sk = key; return v.sty = { shape, cal, size, rays, lava };
+  }
   rebirth(v, age) {
     const r = this.rng2, oc = this.plates.map((p, i) => i).filter(i => !this.plates[i].cont), cn = this.plates.map((p, i) => i).filter(i => this.plates[i].cont);
     const sea = oc.length && r() < 0.65, pool = sea ? oc : cn, k = pool[Math.floor(r() * pool.length)], ax = norm3([r() * 2 - 1, r() * 2 - 1, r() * 2 - 1]);
     v.k = k; v.local = mulMV(rotAxis(ax, 0.08 + 0.47 * r()), this.plates[k].site);
     const par = this.volcs.filter(q => q !== v && !q.retire && q.lava > 0.5).sort((a, b) => b.lava - a.lava)[0];
     if (par && r() < 0.45) { v.k = par.k; const t = norm3([r() * 2 - 1, r() * 2 - 1, r() * 2 - 1]); v.local = norm3(par.local.map((x, i) => x + (0.07 + 0.04 * r()) * (t[i] - dot3(t, par.local) * par.local[i]) / Math.max(0.2, Math.hypot(...t.map((y, j) => y - dot3(t, par.local) * par.local[j]))))); }   // a daughter volcano beside a mature one: chains of islands grow together into one landmass
-    v.born = age + 4; v.per = 40 + 70 * r(); v.ph = TAU * r(); v.act = 0; v.lava = 0; v.alive = 0; v.retire = false; v.dead = false; v.isl = false; v.life = 150 + 250 * r();
+    v.gen = (v.gen || 0) + 1; v.born = age + 4; v.per = 40 + 70 * r(); v.ph = TAU * r(); v.act = 0; v.lava = 0; v.alive = 0; v.retire = false; v.dead = false; v.isl = false; v.life = 150 + 250 * r();
   }
   spawnTsunami(age, dir, amp, why) {                              // a ring of high water racing across the sea; it floods low coasts as it passes
     (this.tsu ||= []).push({ c: dir, t: S.time, amp, dur: 55 }); if (this.tsu.length > 2) this.tsu.shift();
@@ -828,7 +920,7 @@ class World {
   capLocal(v) { const k = clamp((S.age - v.capT) / 6, 0, 1), e = k * k * (3 - 2 * k), A = v.capA || v.local; return norm3(A.map((x, j) => x + (v.capB[j] - x) * e)); }
   capPos(v) { const base = this.civPos(v); if (!v.capB) return base; const pl = this.plates[v.k], R = rotAxis(pl.axis, pl.rate * S.driftT * 0.01), k = clamp((S.age - v.capT) / 6, 0, 1), e = k * k * (3 - 2 * k), A = v.capA || v.local, l = norm3(A.map((x, j) => x + (v.capB[j] - x) * e)); return mulMV(R, l); }
   civPos(v) { const pl = this.plates[v.k]; return mulMV(rotAxis(pl.axis, pl.rate * S.driftT * 0.01), v.local); }
-  chronAdd(v, age, type, d) { if (this.silent) return; const c = (v.chron ||= []); c.push({ age, type, d: d || {}, n: LATE_RE.test(type) ? this.rngK() : this.rngS() }); if (c.length > 80) c.splice(1, 1); }
+  chronAdd(v, age, type, d) { if (this.silent) return; const c = (v.chron ||= []); c.push({ age, type, d: d || {}, n: /^x_/.test(type) ? (age * 0.61803 + c.length * 0.381966) % 1 : LATE_RE.test(type) ? this.rngK() : this.rngS() }); if (c.length > 80) c.splice(1, 1); }
   spawnCiv(age, o = {}) {
     const r = this.rngC, U = (a, b) => a + (b - a) * r(), conts = this.plates.map((p, i) => i).filter(i => this.plates[i].cont);
     let k = conts[Math.floor(r() * conts.length)], local, isle = null;
@@ -851,7 +943,7 @@ class World {
     v.env = { Ts: this.meanTemp(age), flora: this.flora.name, forms: this.lifeForms.slice(0, 2).map(f => f.name), ring: this.ringF > 0.5, moon: this.moonR > 0 || this.moons.some(m => age >= m.born), o2: this.ch(age).o2, impacts: this.craters.length, lat: Math.abs(this.civPos(v)[1]), life: this.life };
     v.isle = !!isle; { const rt = this.rngT; v.lang = o.lang && rt() < 0.7 ? { n: o.lang.n, kin: o.parent } : { n: makeName(rt) + LANGSUF[Math.floor(rt() * LANGSUF.length)] }; v.faith = o.faith && rt() < 0.6 ? o.faith : FAITH[Math.floor(rt() * FAITH.length)]; }
     v.cult = o.cult != null && CULT[o.cult] ? o.cult : (o.parentCult != null && this.rngK() < 0.7 ? o.parentCult : Math.floor(this.rngK() * CULT.length)); v.tj = {}; v.flag = this.makeFlag(o.parentFlag); v.cur = o.cur && this.rngT() < 0.5 ? o.cur : CUR[Math.floor(this.rngT() * CUR.length)]; v.cash = o.cash || 0; v.gdp = 0;
-    v.tr = o.tr ? o.tr.map(t => clamp(t + 0.04 * this.gaussT(), 0, 1)) : this.baseTraits(); v.trS = TRN.map(() => 0); v.peak = v.pop; v.hp = 0.8; v.war = null; this.civs.push(v); this.chronAdd(v, age, "found", { parent: o.parent }); this.chronAdd(v, age, "cult" + v.cult);
+    v.tr = o.tr ? o.tr.map(t => clamp(t + 0.04 * this.gaussT(), 0, 1)) : this.baseTraits(); v.trS = TRN.map(() => 0); v.peak = v.pop; v.hp = 0.8; v.war = null; this.civs.push(v); this.initX(v, o, age); this.chronAdd(v, age, "found", { parent: o.parent }); this.chronAdd(v, age, "cult" + v.cult);
     this.log(age, o.colony ? (v.isle ? `${v.name} settled a volcanic island` : `${v.name} nation founded`) : `Intelligent life: the ${v.species}`);
     return v;
   }
@@ -896,9 +988,10 @@ class World {
     { const sp = 0.4 * Math.max(0, lose.cash || 0) + 0.5 * (lose.gdp || 0); win.cash = (win.cash || 0) + sp; lose.cash = (lose.cash || 0) - 0.6 * sp; }
     lose.pop *= 1 - l; lose.tech *= 0.95; lose.hp = Math.max(0, lose.hp - 0.1); win.hp = Math.min(1, win.hp + 0.05);
     this.chronAdd(win, age, "war", { foe: lose.name, win: true, loss: l }); this.chronAdd(lose, age, "war", { foe: win.name, win: false, loss: l });
-    this.log(age, `${win.name} defeats ${lose.name}`); v.war = null; f.war = null;
+    this.log(age, `${win.name} defeats ${lose.name}`); win.vic = (win.vic || 0) + 1; v.war = null; f.war = null;
     if (win.pop > 4 * lose.pop && !lose.asc && !win.asc && lose.pop > 300 && this.rngK() < 0.3) {              // a decisive victory can swallow the loser: nations grow into empires
       win.pop += lose.pop * 0.5; win.realm = (win.realm || 0) + 1; lose.annexed = win.name; lose.pop = 0;
+      if (S.civLife !== false) { const gain = (lose.rs || 0) & ~(win.rs || 0); win.rs = (win.rs || 0) | (lose.rs || 0); for (let i = 0; i < RES.length; i++) if (gain & (1 << i)) this.chronAdd(win, age, "x_resC", { x: RES[i][0], ic: RES[i][1], foe: lose.name }); }
       this.chronAdd(win, age, "conquer", { foe: lose.name }); if (win.realm === 2) { this.chronAdd(win, age, "empire"); this.log(age, `${win.name} becomes an empire`); }
     }
   }
@@ -917,6 +1010,81 @@ class World {
         this.chronAdd(v, age, "storm", { kind: o.type, loss: shock }); this.log(age, `${o.name} batters ${v.name}`);
       }
     }
+  }
+
+  // ---- resources, civic projects, festivals and values: all on their own random stream (rngR), switched by S.civLife
+  initX(v, o, age) {
+    const r = this.rngR;
+    if (!this.worldName) { this.worldName = makeName(r); this.namedBy = v.name; this.log(age, `The ${v.species} of ${v.name} name their world ${this.worldName}`); this.chronAdd(v, age, "x_world", { x: this.worldName }); }   // the first people to appear give the whole world its name
+    v.rs = 0; for (let i = 0; i < RES.length; i++) if (v.tech >= RES[i][2]) v.rs |= 1 << i;   // a nation that starts advanced already knows these
+    const pool = VAL.map((_, i) => i), vs = []; if (o.vals) for (const i of o.vals) if (r() < 0.6 && !vs.includes(i)) vs.push(i);
+    while (vs.length < 3) { const i = pool[Math.floor(r() * pool.length)]; if (!vs.includes(i)) vs.push(i); } v.vals = vs;
+    v.litH = this.litClassic ? 0.07 : o.lit != null ? (o.lit + (r() - 0.5) * 0.1 + 1) % 1 : (this.litHue + (r() - 0.5) * 0.4 + 1) % 1;
+    v.lit = this.litClassic ? [1.0, 0.55, 0.2] : hsv2rgb(v.litH, 0.55 + 0.35 * r(), 1);
+    v.built = {}; v.hol = []; v.task = null; v.fuel = 1; v.holAt = age + 15 + 30 * r(); v.taskAt = age + 3 + 8 * r();
+  }
+  vsum(v, key) { let t = 0; for (const i of v.vals || []) t += VAL[i][2][key] || 0; return t; }
+  resMap() {
+    if (this._deps) return this._deps; const r = mulberry32(this.seed * 911 + 5);
+    return this._deps = RES.map(rs => Array.from({ length: rs[3] }, () => { const z = 2 * r() - 1, a = TAU * r(), q = Math.sqrt(1 - z * z); return { k: Math.floor(r() * this.plates.length), local: [q * Math.cos(a), z, q * Math.sin(a)], q: r() }; }));
+  }
+  celebrate(v, age, h, big) {                                      // a festival: the streets fill, spirits and numbers lift a little, the treasury pays
+    const fv = 1 + this.vsum(v, "fest") + (big ? 1 : 0); h.n = (h.n || 0) + 1;
+    v.hp = Math.min(1, v.hp + 0.012 * fv); v.pop *= 1 + 0.002 * fv; v.cash = (v.cash || 0) - 0.04 * (v.gdp || 0) * fv; v.fest = { name: h.name, ic: h.ic, until: age + 3 };
+    if (h.n === 1 || h.n % 8 === 0) this.chronAdd(v, age, "x_fest", { x: h.name, ic: h.ic, y: h.n });
+  }
+  stepLifeX(v, dt, age) {
+    const r = this.rngR, deps = this.resMap(), pos = this.civPos(v), pn = clamp(Math.log10(Math.max(v.pop, 1)) / 10, 0, 1); let cap = 1;
+    if (!v.vals) this.initX(v, {}, age);
+    const reach = 0.1 + 0.45 * pn + 0.5 * (1 - Math.exp(-(age - v.born) / 150)) + this.vsum(v, "reach");
+    for (let i = 0; i < RES.length; i++) {                           // 1. resources: a nation can't go past a resource's gate until it has found the thing
+      const g = RES[i][2]; if (v.rs & (1 << i)) continue; if (v.tech < g - 0.06) continue; cap = Math.min(cap, g);
+      let lp = 0.004;
+      if (i === 7) lp += 0.05 * (0.65 + 0.7 * v.tr[7]);                // exotic matter lies in orbit, found by whoever reaches for it
+      else for (const d of deps[i]) { const pl = this.plates[d.k], P = mulMV(rotAxis(pl.axis, pl.rate * S.driftT * 0.01), d.local), a = Math.acos(clamp(dot3(P, pos), -1, 1)); lp = Math.max(lp, 0.085 * Math.exp(-(a / reach) * (a / reach)) * (0.5 + d.q) * (0.65 + 0.7 * v.tr[7])); }
+      lp *= 1 + this.vsum(v, "tech");
+      const partners = v.war ? [] : this.civs.filter(x => x !== v && !x.war && (x.rs & (1 << i))), lt = partners.length ? 0.03 * Math.min(2, partners.length) * (1 + this.vsum(v, "fest")) : 0;
+      if (r() < 1 - Math.exp(-(lp + lt) * dt)) {
+        const tr_ = r() < lt / (lp + lt); v.rs |= 1 << i;
+        this.chronAdd(v, age, tr_ ? "x_resT" : "x_res", { x: RES[i][0], ic: RES[i][1], foe: tr_ ? partners[0].name : "" }); if (v.tech > 0.08) this.log(age, `${v.name} ${tr_ ? "trades for" : "finds"} ${RES[i][0].toLowerCase()}`);
+      }
+    }
+    if (v.tech < 0.55 && ((v.rs >> 3) & 3)) {                        // coal and oil run short, until the world moves past them
+      v.fuel -= dt * 0.0012 * (0.3 + v.tech) * (0.5 + pn);
+      if (v.fuel < 0.1) { v.fuel = 0.6; v.short = age + 40; this.chronAdd(v, age, "x_resD", { x: (v.rs & 16) ? "oil" : "coal", ic: (v.rs & 16) ? "🛢️" : "⚫" }); }
+      if (v.short > age) { v.hp -= dt * 0.003; v.gdp *= 0.78; }
+    }
+    // 2. civic projects ("tasks")
+    if (!v.task && age >= v.taskAt) {
+      const el = []; for (let i = 0; i < TASKS.length; i++) { const t = TASKS[i]; if (v.tech >= t[2] && v.tech <= t[3] && (t[4] < 0 || (v.rs & (1 << t[4]))) && (v.built[i] || 0) < t[6]) el.push([i, (v.built[i] ? 0.3 : 1) * (t[4] >= 0 ? 1.5 : 1)]); }
+      if (el.length) { let tot = 0; for (const e of el) tot += e[1]; let x = r() * tot, id = el[0][0]; for (const e of el) { if ((x -= e[1]) <= 0) { id = e[0]; break; } } v.task = { id, p: 0, need: 9 + 16 * r() }; } else v.taskAt = age + 10;
+    }
+    if (v.task) {
+      v.task.p += dt * (0.5 + 0.9 * pn) * (v.war ? 0.3 : 1) * (0.5 + v.hp) * (1 + this.vsum(v, "task"));
+      if (v.task.p >= v.task.need) {
+        const t = TASKS[v.task.id], k = t[5]; v.built[v.task.id] = (v.built[v.task.id] || 0) + 1;
+        if (k === "food") v.food = Math.min(v.foodCap || 1, (v.food ?? 0.8) + 0.4); else if (k === "hp") v.hp = Math.min(1, v.hp + 0.08); else if (k === "pop") v.pop *= 1.05;
+        else if (k === "cash") v.cash = (v.cash || 0) + 2.5 * (v.gdp || 0) * (1 + this.vsum(v, "cash")); else if (k === "tech") v.tech = Math.min(v.tech + 0.005, Math.max(v.tech, cap));
+        this.chronAdd(v, age, "x_task", { x: t[0], ic: t[1] }); if (v.tech > 0.15 && r() < 0.35) this.log(age, `${v.name} completes its ${t[0].toLowerCase()}`);
+        const hh = v.hol.length && r() < 0.6 ? v.hol[Math.floor(r() * v.hol.length)] : null; if (hh) this.celebrate(v, age, hh, true);
+        v.task = null; v.taskAt = age + 5 + 10 * r();
+      }
+    }
+    // 3. festivals and holidays
+    const cp = Math.min(8, 1 + Math.floor(v.tech * 7)) + (this.vsum(v, "fest") > 0.5 ? 1 : 0);
+    if (age >= v.holAt) {
+      v.holAt = age + 25 + 45 * r();
+      if (v.hol.length < cp) {
+        const el = HOLS.filter(h => !v.hol.some(x => x.kind === h[0]) && v.tech >= h[3] && (h[0] !== "victory" || v.vic) && (h[0] !== "remember" || v.plagueAt != null || v.starveAt != null) && (h[0] !== "peace" || this.civs.length > 1) && (h[0] !== "contact" || this.contactN > 0));
+        if (el.length) {
+          const h = el[Math.floor(r() * el.length)], nm = h[1][Math.floor(r() * h[1].length)], o = { kind: h[0], name: nm, ic: h[2], next: age + 10 + 20 * r(), n: 0 }; v.hol.push(o);
+          this.chronAdd(v, age, "x_hol", { x: nm, ic: h[2] });
+        }
+      }
+    }
+    for (const h of v.hol) if (age >= h.next) { h.next = age + 22 + 26 * r() / (1 + 0.5 * this.vsum(v, "fest")); if (!v.war || h.kind === "victory") this.celebrate(v, age, h, false); }
+    v.hp = Math.min(1, v.hp + dt * 0.0006 * (1 + this.vsum(v, "hp") * 10)); v.pop *= 1 + dt * 0.0008 * this.vsum(v, "pop");
+    return { mul: 1 + this.vsum(v, "tech") + 0.15 * Math.min(2, v.built[9] || 0) + 0.1 * (v.built[17] || 0), cap };
   }
   civEvent(v, age, comfort, c) {                                 // random history: plagues, wars, schisms, golden ages... they really change the nation
     const r = this.rngS, others = this.civs.filter(x => x !== v), U = (a, b) => a + (b - a) * r(), big = v.pop > 3000;
@@ -946,7 +1114,7 @@ class World {
   }
   eraLog(v, age) {
     for (const [key, t, txt] of [["a", 0.08, "learn farming"], ["i", 0.2, "enter the industrial age"], ["e", 0.35, "light up the night"], ["r", 0.6, "launch rockets"], ["s", 0.8, "settle in orbit"]])
-      if (v.tech >= t && !this.f2[v.name + key]) { this.f2[v.name + key] = 1; this.log(age, `${v.name} ${txt}`); this.chronAdd(v, age, "era", { key }); if (!this.silent) this.toasts.push({ v, idx: ERA_KEY[key] }); }
+      if (v.tech >= t && !this.f2[v.name + key]) { this.f2[v.name + key] = 1; if (key === "i") this.startEra(age, "industry"); this.log(age, `${v.name} ${txt}`); this.chronAdd(v, age, "era", { key }); if (!this.silent) this.toasts.push({ v, idx: ERA_KEY[key] }); }
   }
   agesLog(v, age) {
     for (const [key, t, txt] of AGES) { const th = t + ((v.tj ||= {})[key] ??= (this.rngK() - 0.5) * 0.03);
@@ -955,11 +1123,10 @@ class World {
   stepCiv(dt, age) {
     if (!S.civOn) return;
     const c = this.ch(age), Ts = this.meanTemp(age), heat = this.heat(age);
-    if (!this.civs.length && (this.canIntel || (S.endless && age > 1500))) {          // Endless mode: even a world that was not fated to grow minds gets there in the end
-      
-      const ok = this.life > 0.55 && c.o2 > 0.2 && Ts > -5 && Ts < 50 && c.so2 < 0.25;
+    if (!this.civs.length && (this.canIntel || S.endless)) {          // Endless mode: every world can grow minds, however long it takes, but only once life is at 90% or more and the climate has stayed right for long enough
+      const ok = this.life >= (S.endless ? (S.mindLife ?? 0.90) : 0.55) && c.o2 > 0.2 && Ts > -5 && Ts < 50 && c.so2 < 0.25;
       this.bioTime = ok ? this.bioTime + dt * S.intelRate : Math.max(0, this.bioTime - 0.5 * dt);
-      if (this.bioTime >= this.intelNeed) this.spawnCiv(age);
+      if (this.bioTime >= this.intelNeed * (S.endless ? (S.mindHold ?? 0.06) : 1)) this.spawnCiv(age);
     }
     const comfort = clamp(this.life * 1.2, 0, 1) * clamp(1.3 - Math.abs(Ts - 18) / 45, 0.05, 1) * (1 - 0.8 * clamp(c.so2 * 2, 0, 1)) * (heat < -0.5 ? 0.5 : 1);
     for (const v of this.civs) {
@@ -988,11 +1155,13 @@ class World {
       if (v.war) this.stepWar(v, dt, age);
       v.hp = clamp(v.hp, 0, 1);
       if (v.hp <= 0.03 && v.pop > 400) { v.pop *= 0.45; v.tech *= 0.85; v.hp = 0.4; this.chronAdd(v, age, "collapse", { pop: v.pop }); this.log(age, `${v.name} collapses into anarchy`); v.dark = age; this.chronAdd(v, age, "dark"); this.log(age, `A dark age falls on ${v.name}`, this.civPos(v)); if (v.war) this.endWar(v, v.war.foe, age, false); }
-      v.tech = Math.min(1, v.tech + dt * 0.0035 * (CULT[v.cult] ? CULT[v.cult].tech : 1) * (v.dark != null && age - v.dark < 60 ? 0.5 : 1) * clamp(v.pop / K, 0, 1) * (cmf > 0.2 ? 1 : 0.2) * (0.7 + 0.6 * v.tr[7]) * S.intelRate);
+      const X = S.civLife !== false ? this.stepLifeX(v, dt, age) : null, tech0 = v.tech;
+      v.tech = Math.min(1, v.tech + dt * (X ? X.mul : 1) * 0.0035 * (CULT[v.cult] ? CULT[v.cult].tech : 1) * (v.dark != null && age - v.dark < 60 ? 0.5 : 1) * clamp(v.pop / K, 0, 1) * (cmf > 0.2 ? 1 : 0.2) * (0.7 + 0.6 * v.tr[7]) * S.intelRate);
+      if (X && v.tech > X.cap) v.tech = Math.max(tech0, X.cap);                                              // progress stalls at the gate of a resource this nation has not yet found
       if (v.tech > 0.5) c.co2 = Math.min(1, c.co2 + 2e-5 * v.tech * (v.pop / 1e9) * dt);                // industrial warming
       if (v.tech > 0.55 && this.rngC() < dt * 0.0006) { v.pop *= 0.25; v.tech *= 0.7; v.hp = Math.max(0, v.hp - 0.5); this.chronAdd(v, age, "cat", { pop: v.pop }); this.log(age, `${v.name} suffers a global catastrophe`); }
       if (v.pop > 0.6 * K && v.tech > 0.1 && this.civs.length < 3 + Math.round(this.size * 1.6) && this.rngC() < dt * 0.02) {
-        v.cash = (v.cash || 0) * 0.95; v.pop *= 0.9; const ch = this.spawnCiv(age, { colony: true, parent: v.name, pop: v.pop * 0.02, tech: v.tech * 0.8, species: v.species, parentCult: v.cult, tr: v.tr, parentFlag: v.flag, lang: v.lang, faith: v.faith, cur: v.cur, cash: Math.max(0, v.cash || 0) * 0.05 }); this.chronAdd(v, age, "colony", { child: ch.name });
+        v.cash = (v.cash || 0) * 0.95; v.pop *= 0.9; const ch = this.spawnCiv(age, { colony: true, parent: v.name, pop: v.pop * 0.02, tech: v.tech * 0.8, species: v.species, parentCult: v.cult, vals: v.vals, lit: v.litH, tr: v.tr, parentFlag: v.flag, lang: v.lang, faith: v.faith, cur: v.cur, cash: Math.max(0, v.cash || 0) * 0.05 }); this.chronAdd(v, age, "colony", { child: ch.name });
       }
       if (age >= (v.nextEv ??= age + 6 + 14 * this.rngS())) { v.nextEv = age + 6 + 19 * this.rngS(); this.civEvent(v, age, cmf, c); }
       v.peak = Math.max(v.peak || 0, v.pop); this.eraLog(v, age); this.agesLog(v, age);
@@ -1015,14 +1184,16 @@ class World {
   ascend(v, age, rival) {                                           // a nation's people transcend: a superintelligent, spacefaring civilisation that builds megastructures
     if (!v || (!rival && this.asc)) return;
     const form = Math.floor(this.rngK() * FORMS.length); v.asc = true; v.tech = 1; v.form = form;
-    const A = { civ: v, lvl: 0, done: 0, t0: age, form, stars: 0, end: null, endT: 0 };
+    const A = { civ: v, lvl: 0, done: 0, t0: age, form, stars: 0, end: null, endT: 0 }; this.startEra(age, "ascend");
     if (rival) this.asc2 = A; else this.asc = A;
     this.chronAdd(v, age, "asc"); this.log(age, `${v.name} ascends: ${FORMS[form].people}`);
   }
   stepAsc(dt, age, lead) {
     let A = this.asc;
-    if (!A) { const open = this.canAsc || S.endless;               // in Endless mode every world gets there eventually, moon or no moon
-      if (lead && open && lead.tech >= 0.98 && (lead.base || S.endless) && this.rngA() < dt * (this.canAsc ? 0.0015 : 0.0006)) this.ascend(lead, age); return; }
+    if (!A) { const open = this.canAsc || S.endless;               // in Endless mode every world can get there, moon or no moon, but it is hard: a leading nation must stay healthy, at peace and clean for a very long stretch, then still be lucky
+      if (!(lead && open && lead.tech >= 0.98 && (lead.base || S.endless))) { this.ascT = Math.max(0, (this.ascT || 0) - dt * 0.5); return; }
+      if (S.endless) { const stable = (lead.hp ?? 0.8) > 0.6 && !lead.war && this.poll < 0.95 && lead.pop > 1e7 && (lead.dark == null || age - lead.dark > 100); this.ascT = stable ? (this.ascT || 0) + dt : Math.max(0, (this.ascT || 0) - 0.3 * dt); if (this.ascT < 90) return; }
+      if (this.rngA() < dt * (S.endless ? (this.canAsc ? 0.0012 : 0.0006) : 0.0015)) this.ascend(lead, age); return; }
     const alive = this.civs.includes(A.civ);
     if (alive && !A.dying) { A.lvl = Math.min(1, A.lvl + dt * 0.008); if (!A.end) { A.civ.tech = 1; A.civ.hp = Math.max(A.civ.hp ?? 0.8, 0.9); A.civ.food = Math.max(A.civ.food ?? 1, 0.9 * (A.civ.foodCap || 1)); } }
     else { A.lvl -= dt * (A.dying ? 0.02 : 0.01); if (A.lvl <= 0) { A.civ.asc = false; this.asc = null; this.log(age, "The great works fall dark"); return; } }
@@ -1041,7 +1212,7 @@ class World {
   }
   rollEnd(A, age) {                                                 // when a people has nothing left to build here, its story ends in one of six ways, weighted by what it is
     const w = FORMS[A.form].end; let t = 0; for (const x of w) t += x; let x = this.rngK() * t, k = ENDK[0]; for (let i = 0; i < ENDK.length; i++) if ((x -= w[i]) <= 0) { k = ENDK[i]; break; }
-    A.end = k; A.endT = age; this.chronAdd(A.civ, age, "end_" + k); this.log(age, ENDS[k].replace("{N}", A.civ.name));
+    A.end = k; A.endT = age; this.startEra(age, "end"); this.chronAdd(A.civ, age, "end_" + k); this.log(age, ENDS[k].replace("{N}", A.civ.name));
     if (k === "care") A.care = true;
     if (k === "self") { A.dying = true; A.civ.pop *= 0.03; A.civ.tech = 0.3; A.civ.hp = 0.1; this.poll = Math.min(1, this.poll + 0.3); this.extHeat -= 0.25; }
   }
@@ -1072,7 +1243,7 @@ class World {
   lateEvent(v, age) {                                               // the dangerous centuries: nuclear fire, long peace, thinking machines, space races
     const others = this.civs.filter(x => x !== v), C = CULT[v.cult] || CULT[1], opts = [["nuke", (v.war ? 2.6 : 0.7) * C.war], ["lpeace", others.length ? 1.2 / C.war : 0], ["ai", 1.2 * C.tech], ["race", v.tech > 0.55 ? 1 : 0]];
     let tot = 0; for (const o of opts) tot += o[1]; let x = this.rngK() * tot, t = "ai"; for (const o of opts) if ((x -= o[1]) <= 0) { t = o[0]; break; }
-    if (t === "nuke") { const foe = v.war ? v.war.foe : null, l = 0.5 + 0.35 * this.rngK(); v.pop *= 1 - l; v.tech *= 0.78; v.hp = Math.max(0, v.hp - 0.4); if (foe && this.civs.includes(foe)) { foe.pop *= 1 - l; foe.tech *= 0.8; foe.hp = Math.max(0, foe.hp - 0.4); if (v.war) this.endWar(v, foe, age, this.rngK() < 0.5); } this.poll = Math.min(1, this.poll + 0.2); this.extHeat -= 0.3;
+    if (t === "nuke") { this.startEra(age, "nuke"); const foe = v.war ? v.war.foe : null, l = 0.5 + 0.35 * this.rngK(); v.pop *= 1 - l; v.tech *= 0.78; v.hp = Math.max(0, v.hp - 0.4); if (foe && this.civs.includes(foe)) { foe.pop *= 1 - l; foe.tech *= 0.8; foe.hp = Math.max(0, foe.hp - 0.4); if (v.war) this.endWar(v, foe, age, this.rngK() < 0.5); } this.poll = Math.min(1, this.poll + 0.2); this.extHeat -= 0.3;
       this.chronAdd(v, age, "nuke", { loss: l }); this.log(age, `Nuclear fire falls on ${v.name}`, this.civPos(v)); }
     else if (t === "lpeace") { for (const c of this.civs) { c.hp = Math.min(1, c.hp + 0.1); if (c.war) { const f = c.war.foe; c.war = null; if (f) f.war = null; } } this.chronAdd(v, age, "lpeace"); this.log(age, `A long peace settles over the world, led by ${v.name}`); }
     else if (t === "ai") { if (this.rngK() < 0.55) { v.tech = Math.min(1, v.tech + 0.06); v.cash = (v.cash || 0) + 2 * (v.gdp || 0); this.chronAdd(v, age, "aiG"); this.log(age, `Thinking machines transform ${v.name}`); }
@@ -1092,7 +1263,7 @@ class World {
   }
   stepK(dt, age, top, lead) {                                       // the late-game systems: pollution, great figures, ruins, empires, dangerous centuries, contact
     const R = () => this.rngK();
-    let out = 0; for (const v of this.civs) if (v.tech > 0.2 && !v.asc) out += v.pop / 1e9 * v.tech * v.tech;
+    let out = 0; for (const v of this.civs) if (v.tech > 0.2 && !v.asc) out += v.pop / 1e9 * v.tech * v.tech * (1 - 0.85 * sstep(0.6, 0.95, v.tech));        // advanced nations clean up: fusion, recycling and clean industry cut their pollution
     this.poll = clamp(this.poll + (out * 0.02 - 0.01 * this.poll) * dt * (this.asc && this.asc.lvl > 0.5 ? 0.3 : 1), 0, 1);
     for (const v of this.civs.slice()) {
       if (!v.tr) continue;
@@ -1104,13 +1275,13 @@ class World {
       if (v.tech > 0.02 && !v.asc && age >= (v.nextFig ??= age + 25 + 70 * R())) { v.nextFig = age + 45 + 120 * R(); this.figure(v, age); }
       if (v.tech > 0.5 && !v.asc && (v.late || 0) < 3 && age >= (v.nextLate ??= age + 60 + 140 * R())) { v.nextLate = age + 120 + 220 * R(); v.late = (v.late || 0) + 1; this.lateEvent(v, age); }
       if (this.ruins.length && v.tech > 0.08 && !v.asc && R() < dt * 0.003) { const ru = this.ruins.filter(r => r.name !== v.name)[0] || null; if (ru) { v.tech = Math.min(1, v.tech + 0.01); v.hp = Math.min(1, v.hp + 0.04); this.chronAdd(v, age, "ruins", { foe: ru.name }); this.log(age, `Scholars of ${v.name} unearth the ruins of ${ru.name}`, ru.pos); if (++ru.n >= 2) this.ruins.splice(this.ruins.indexOf(ru), 1); } }
-      if ((v.realm || 0) >= 2 && (v.hp ?? 0.8) < 0.3 && R() < dt * 0.02) { v.realm = 0; v.pop *= 0.7; const ch = this.spawnCiv(age, { colony: true, parent: v.name, pop: v.pop * 0.25, tech: v.tech * 0.8, species: v.species, parentCult: v.cult, tr: v.tr, parentFlag: v.flag, lang: v.lang, faith: v.faith, cur: v.cur });
+      if ((v.realm || 0) >= 2 && (v.hp ?? 0.8) < 0.3 && R() < dt * 0.02) { v.realm = 0; v.pop *= 0.7; const ch = this.spawnCiv(age, { colony: true, parent: v.name, pop: v.pop * 0.25, tech: v.tech * 0.8, species: v.species, parentCult: v.cult, vals: v.vals, lit: v.litH, tr: v.tr, parentFlag: v.flag, lang: v.lang, faith: v.faith, cur: v.cur });
         this.chronAdd(v, age, "split", { child: ch.name }); this.log(age, `The empire of ${v.name} fractures; ${ch.name} breaks away`); }
     }
     if (this.poll > 0.45 && age >= (this.nextSmog ??= age + 40)) { this.nextSmog = age + 50 + 80 * R(); const c = this.civs.filter(v => v.tech > 0.3 && !v.asc); if (c.length) { const v = c[Math.floor(R() * c.length)]; v.pop *= 0.96; v.hp = Math.max(0, v.hp - 0.1); this.chronAdd(v, age, "smog"); this.log(age, `Smog chokes the cities of ${v.name}`); } }
     if (this.poll > 0.6 && lead && lead.tech > 0.55 && !lead.asc && R() < dt * 0.01) { this.poll *= 0.5; for (const v of this.civs) if (v.tech > 0.4) v.hp = Math.min(1, v.hp + 0.08); this.chronAdd(lead, age, "green"); this.log(age, `A green revolution cleans the air, led by ${lead.name}`); }
     if (lead && lead.tech > 0.6 && !lead.asc && this.contactN < 2 && R() < dt * 0.0012 * (this.canAsc ? 2 : 1)) {        // someone out there: a signal, a probe, or only the feeling of being watched
-      const t = Math.floor(R() * 3); this.contactN++; this.chronAdd(lead, age, "contact" + t); { const rq = mulberry32((this.seed + Math.floor(age * 1000)) | 0), z = rq() * 1.4 - 0.2, ph = rq() * TAU, rr = Math.sqrt(1 - z * z); this.contact = { t: age, ty: t, dir: [rr * Math.cos(ph), z, rr * Math.sin(ph)] }; }
+      const t = Math.floor(R() * 3); this.contactN++; this.startEra(age, "contact"); this.chronAdd(lead, age, "contact" + t); { const rq = mulberry32((this.seed + Math.floor(age * 1000)) | 0), z = rq() * 1.4 - 0.2, ph = rq() * TAU, rr = Math.sqrt(1 - z * z); this.contact = { t: age, ty: t, dir: [rr * Math.cos(ph), z, rr * Math.sin(ph)] }; }
       if (t === 0) { for (const v of this.civs) v.tech = Math.min(1, v.tech + 0.02); this.log(age, `A signal from the stars is heard by ${lead.name}`); }
       else if (t === 1) { this.sats += 0.8; this.log(age, `A probe from another world visits the sky of ${lead.name}`); }
       else this.log(age, `${lead.name} learns that it is being watched`);
@@ -1131,6 +1302,10 @@ class World {
     if (!this.civs.includes(v)) return;
     if (o.fail) { this.nextMoon = age + 20; this.log(age, `${v.name}'s moon lander is lost`); return; }
     v.base = { born: age, pop: 20 }; (this.moonBases ||= []).push({ civ: v, born: age }); this.baseFlash = S.time;
+    if (!this.moonName) {                                           // the first nation to land names the moon and plants its flag at the landing site
+      this.moonName = makeName(this.rngR); this.moonBy = v.name; this.moonFlag = { cols: v.flag && v.flag.cols ? v.flag.cols : null, who: v.name, t: age };
+      this.log(age, `${v.name} plants its flag on the moon and the ${v.species} name the moon ${this.moonName}`); this.chronAdd(v, age, "x_moon", { x: this.moonName });
+    }
     this.chronAdd(v, age, "moon"); this.log(age, `${v.name} founds a base on the moon`);
   }
   launchRocket(civ) { if (civ && this.rkts.length < 2) { this.rkts.push({ civ, t: 0, dur: 7 }); civ.rk = (civ.rk || 0) + 1; if (civ.rk === 1) this.chronAdd(civ, S.age, "rocket"); } }
@@ -1188,6 +1363,17 @@ class World {
     this.addPlume(age, { k: o.k, local: o.local }, 0.25 + 0.25 * s);
     this.chem.so2 = Math.min(1, this.chem.so2 + 0.03 + 0.5 * s); this.chem.co2 = Math.min(1, this.chem.co2 + 0.02 + 0.2 * s);
     this.life *= 1 - 0.75 * s * kill;
+    if (S.deformFx !== false) {                                    // fallout changes the air, the land and the seas, differently for each kind of rock
+      const f = FALL[o.kind] || FALL.stony, big = clamp(s * 1.8, 0, 1);
+      this.chem.o2 = Math.max(0, this.chem.o2 - f.o2 * s * 1.5); if (o.kind === "iron") this.chem.so2 = Math.min(1, this.chem.so2 + 0.04 * s); if (o.kind === "carbonaceous") this.chem.ch4 = Math.min(1, this.chem.ch4 + 0.06 * s);
+      const k0 = this.fk || 0, w = big / (k0 + big + 1e-6), mixc = (a, b) => a ? a.map((x, j) => x + (b[j] - x) * w) : b.slice();
+      this.fo = { land: mixc(this.fo && this.fo.land, f.land), sea: mixc(this.fo && this.fo.sea, f.sea), sd: mixc(this.fo && this.fo.sd, f.sd) }; this.fk = Math.min(1, k0 + big * 0.8); this.impTox = Math.min(1, (this.impTox || 0) + 0.9 * s * s + 0.15 * s);
+      if (s > 0.25) this.log(age, `Fallout from the ${o.kind} impact turns the seas ${f.w} and the land ${o.kind === "iron" ? "rusty" : o.kind === "comet" ? "pale with clay" : o.kind === "carbonaceous" ? "dark with carbon" : "grey with ash"}`);
+      if (s > 0.35 && this.volcs.length) {                          // shock waves focus on the far side of the world: a new volcano can rise at the antipode
+        const v = this.volcs.slice().sort((a, b) => (a.alive ? 1 : 0) - (b.alive ? 1 : 0) || a.lava - b.lava)[0]; v.k = o.k; v.local = o.local.map(x => -x); v.gen = (v.gen || 0) + 1; v.born = age + 2; v.act = 0; v.lava = 0; v.alive = 1; v.retire = false; v.dead = false; v.isl = false; v.life = 150 + 250 * this.rngR();
+        this.log(age, "Shock waves focus on the far side of the world: a new volcano rises");
+      }
+    }
     this.impHeat += 30 * s + 650 * s * s * s;
     if (o.kind === "comet") { this.seaDelta = Math.min(0.12, this.seaDelta + 0.02 * (0.3 + s)); this.chem.ch4 = Math.min(1, this.chem.ch4 + 0.05 * s); }
     const d = IMPACT_COMP[o.kind]; for (const e in d) this.deliv[e] = (this.deliv[e] || 0) + d[e] * s * 0.35;
@@ -1249,16 +1435,32 @@ class World {
     if (S.chemOn) this.stepChem(dp, age);
     this.stepLife(dt, age); this.stepCiv(dt, age); this.stepRing(dt, age); this.stepFlora(dt, age); this.stepWx(dp, age); this.watch(age);
   }
-  geoEra(age) {
-    const m = age * 2; let g = GEO[0]; for (const row of GEO) { if (m >= row[0]) g = row; else break; }
-    const per = g[1] === "Phanerozoic" && this.civs.some(v => v.tech > 0.2) ? "Anthropocene" : g[3];
-    return { eon: g[1], era: g[2], per, text: [g[1], g[2], per].filter(Boolean).join(" · ") };
+  geoEra(age) {                                                    // eras are endless and random: a new one begins only after a major event (see startEra)
+    const m = age * 2; let g = this.eraList[0]; for (const row of this.eraList) { if (m >= row.m0) g = row; else break; }
+    const per = g.civ ? "Anthropocene" : "";
+    return { eon: g.eon, era: g.era, per, text: [g.eon, g.era, per].filter(Boolean).join(" · ") };
+  }
+  eraWord() {                                                      // an invented name, from its own random stream
+    const r = this.rngE, P = r2 => r2[Math.floor(r() * r2.length)], A = ["ar", "bel", "cor", "dra", "el", "fen", "gor", "hal", "ith", "jor", "kes", "lur", "mor", "nys", "or", "pel", "quo", "rav", "sil", "tur", "umb", "vel", "wyn", "xen", "yar", "zel", "ost", "bryn", "cal", "thu"], B = ["a", "e", "i", "o", "u", "ae", "ia", "ou"], C = ["l", "r", "n", "m", "th", "s", "v", "k", "d", "g", "p"], E = ["an", "ic", "ian", "ean", "ine", "ite", "ar", "ic", "oid"];
+    const w = P(A) + P(B) + P(C) + (r() < 0.5 ? P(B) + P(C) : "") + P(E); return w[0].toUpperCase() + w.slice(1);
+  }
+  startEra(age, kind) {                                            // begin a new era, but only straight after a major event, and never too soon after the last one
+    const L = this.eraList, last = L[L.length - 1], m = age * 2, civK = kind === "industry" || kind === "ascend" || kind === "nuke" || kind === "end" || kind === "contact";
+    if (m - last.m0 < (civK ? 20 : 50)) return false;
+    const r = this.rngE, used = new Set(L.map(x => x.era).concat(L.map(x => x.eon))), N = ERA_KIND[kind] || ["Quiet"];
+    let name = "", tries = 0;
+    if (kind === "cambrian" && !used.has("Cambrian")) name = "Cambrian"; else if (kind === "industry" && !used.has("Anthropocene") && r() < 0.5) name = "Anthropocene";
+    while (!name && tries++ < 20) { const w = this.eraWord(), n = r() < 0.5 ? w + " " + N[Math.floor(r() * N.length)] : w; if (!used.has(n)) name = n; }
+    if (!name) name = this.eraWord() + " " + (L.length + 1);
+    let eon = last.eon, hue = last.hue; if (--this.eonLeft <= 0) { do { eon = this.eraWord(); } while (used.has(eon)); hue = Math.floor(r() * 360); this.eonLeft = 3 + Math.floor(r() * 4); }
+    L.push({ m0: m, eon, era: name, hue: (hue + 18 * (L.length % 3)) % 360, kind, civ: kind === "industry" }); return true;
   }
   rareEvent(age, force) {                                          // rare, planet-wide: the Big-Five-style extinctions, snowballs and hothouses, and the booms that follow
     const r = this.rngX, c = this.chem, life = this.life, up = (k, d) => (c[k] = clamp(c[k] + d, 0, 1));
     const opts = [["traps", 1], ["impact", 0.7], ["grb", 0.6], ["anoxia", 0.8], ["snowball", 0.7], ["toba", 0.8], ["hothouse", 0.7],
       ["cambrian", life > 0.05 ? 1.2 : 0], ["oxsurge", life > 0.1 ? 0.8 : 0], ["greening", life > 0.08 ? 0.8 : 0], ["radiation", age - this.extHist < 150 ? 2 : 0]];
     this.hotLoc = undefined; let t = force; if (!t) { let tot = 0; for (const o of opts) tot += o[1]; let x = r() * tot; t = "traps"; for (const o of opts) { if ((x -= o[1]) <= 0) { t = o[0]; break; } } }
+    this.startEra(age, t);
     const kill = (frac, sev, what, tk, msg) => {
       this.lastCause = what; this.log(age, msg, this.hotLoc); this.life *= frac; this.extK = Math.min(this.extK, 0.3 + 0.7 * frac); this.extHist = age; this.extFlag = true;
       if (this.lifeForms.length) { this.cull(age); if (sev > 0.6) this.cull(age); }
@@ -1435,14 +1637,22 @@ class World {
   lifeTarget(age) {
     const heat = this.heat(age), wet = this.wet(age);
     const Tm = this.meanTemp(age), tol = sstep(-42, -6, Tm) * (1 - sstep(36, 62, Tm));      // life all but vanishes in deep ice ages and extreme heat
-    return this.lifeCap * (0.02 + 0.98 * tol * tol) * clamp(1.45 - Math.abs(heat - 0.05), 0, 1) * clamp((wet + 0.95) / 0.9, 0, 1)
-      * (1 - 0.9 * clamp(this.ch(age).so2 * 1.3, 0, 1)) * clamp((120 - this.meanTemp(age)) / 60, 0, 1) * this.extK;
+    return (S.endless ? 1 : this.lifeCap) * (0.02 + 0.98 * tol * tol) * clamp(1.45 - Math.abs(heat - 0.05), 0, 1) * clamp((wet + 0.95) / 0.9, 0, 1)
+      * (1 - 0.9 * clamp(this.ch(age).so2 * 1.3, 0, 1)) * clamp((120 - this.meanTemp(age)) / 60, 0, 1) * this.extK * (S.deformFx !== false ? 1 - 0.35 * (this.impTox || 0) : 1);
+  }
+  mindChance(age) {                                                      // how close this world is to growing minds (0..1); in Endless mode every world can, so it is readiness: full life, the right climate, and time held
+    if (this.civs.length) return 1;
+    const lc = this.lifeChance(age);
+    if (!S.endless) return clamp(0.28 * lc, 0, 1);
+    const c = this.ch(age), Ts = this.meanTemp(age), air = c.o2 > 0.2 && Ts > -5 && Ts < 50 && c.so2 < 0.25 ? 1 : 0, g = Math.pow(clamp(this.life / (S.mindLife ?? 0.90), 0, 1), 3), prog = clamp(this.bioTime / (this.intelNeed * (S.mindHold ?? 0.06)), 0, 1);
+    return clamp(air * g * (0.3 + 0.7 * prog), 0, 1);
   }
   lifeChance(age) {                                                       // how kind the conditions are to life right now (0..1): temperature, water, air chemistry; ignores this world's hidden luck
     const heat = this.heat(age), wet = this.wet(age), Tm = this.meanTemp(age), tol = sstep(-42, -6, Tm) * (1 - sstep(36, 62, Tm));
     return clamp((0.02 + 0.98 * tol * tol) * clamp(1.45 - Math.abs(heat - 0.05), 0, 1) * clamp((wet + 0.95) / 0.9, 0, 1) * (1 - 0.9 * clamp(this.ch(age).so2 * 1.3, 0, 1)) * clamp((120 - Tm) / 60, 0, 1), 0, 1);
   }
   stepLife(dt, age) {
+    if (this.fk) { this.fk *= Math.exp(-dt / 150); if (this.fk < 0.01) this.fk = 0; } if (this.impTox) this.impTox *= Math.exp(-dt / 40);
     const target = this.lifeTarget(age), Tm = this.meanTemp(age), ext = Math.max(sstep(-6, -35, Tm), sstep(40, 60, Tm)), rate = target > this.life ? 0.012 : 0.03 + 0.06 * ext;
     this.life = Math.min(1, this.life + (target - this.life) * (1 - Math.exp(-rate * dt)));
   }
@@ -1500,15 +1710,18 @@ class World {
     const anP = [rgb(150, 70, 170), rgb(70, 30, 100)], anK = 0.5 * anox * (life > 0.01 ? 1 : 0);
     pal = pal.map((cc, i) => mix3(cc, anP[i === 1 || i === 3 ? 1 : 0], anK));
     // ocean chemistry: iron-rich green (anoxic), milky sulfur turquoise, acidic yellow-green
+    const fkk = S.deformFx !== false && this.fo ? Math.min(0.85, this.fk || 0) : 0;
     let wsh = mix3(rgb(20, 190, 205), this.wTint.s, this.wTint.k), wdp = mix3(rgb(4, 24, 130), this.wTint.d, this.wTint.k);
     const fe = anox * (1 - clamp(c.so2 * 2, 0, 1)), sul = clamp(c.so2 * 1.6, 0, 1), acid = clamp((c.co2 - 0.7) * 3.3, 0, 1);
     wsh = mix3(wsh, rgb(70, 170, 115), 0.75 * fe); wdp = mix3(wdp, rgb(14, 80, 64), 0.75 * fe);
     wsh = mix3(wsh, rgb(150, 225, 200), 0.6 * sul); wdp = mix3(wdp, rgb(40, 110, 120), 0.6 * sul);
     wsh = mix3(wsh, rgb(185, 205, 90), 0.7 * acid); wdp = mix3(wdp, rgb(80, 100, 40), 0.7 * acid);
+    if (fkk > 0) { wsh = mix3(wsh, this.fo.sea, 0.75 * fkk); wdp = mix3(wdp, this.fo.sd, 0.75 * fkk); }
+    if (S.deformFx !== false && this.impTox > 0.02) { const at = clamp(this.impTox, 0, 1); wsh = mix3(wsh, rgb(185, 205, 90), 0.45 * at); wdp = mix3(wdp, rgb(80, 100, 40), 0.45 * at); }
     if (alien) { wsh = mix3(wsh, Lq.sh, 0.95); wdp = mix3(wdp, Lq.dp, 0.95); }
     // oxidation reddens the rock; anaerobic flora are purple
     const ox = sstep(0.05, 0.6, c.o2) * 0.45, rustP = [rgb(200, 86, 42), rgb(150, 56, 30), rgb(80, 32, 26)];
-    const deadC = dead0.map((col, i) => mix3(col, rustP[i], ox));
+    const deadC = dead0.map((col, i) => mix3(mix3(col, rustP[i], ox), fkk > 0 ? this.fo.land : col, 0.5 * fkk));
     const era = age < 10 ? "Accretion & bombardment" : this.hasGiant && age >= this.giantAt && age < this.giantAt + 22 ? "Giant-impact aftermath" : Ts > 700 ? "Hadean magma ocean" : Ts > 130 ? "Crust forming" : Ts > 100 ? "Oceans condensing" : age < 110 ? "Late heavy bombardment" : c.so2 > 0.35 ? "Volcanic winter" : heat < -0.55 ? "Ice age" : c.co2 > 0.62 ? "Hothouse"
       : c.ch4 > 0.4 ? "Methane haze" : c.o2 < 0.15 && this.lifeCap > 0.2 ? "Anoxic age" : c.o2 < 0.32 && life > 0.05 ? "Oxygenation" : "Stable climate";
     const lf = life > 0.65 ? "Lush" : life > 0.35 ? "Living" : life > 0.1 ? "Sparse" : "Barren";
@@ -1598,8 +1811,8 @@ uniform float uTanHalf;
 uniform mat3 uM;                       // world -> planet frame (spin + tilt)
 uniform vec3 uSunDir, uSunColor;       // world space
 uniform float uTime;
-uniform vec3 uMoonPos; uniform float uBaseK, uBaseF;
-uniform float uSeas, uItcz; uniform vec3 uMoonP0; uniform vec3 uMX[3], uMXC[3], uMXP[3]; uniform float uMXR[3]; uniform float uMoonR; uniform vec3 uMoonCol; uniform float uTerrAmp, uTerrSc;
+uniform vec3 uMoonPos; uniform float uBaseK, uBaseF; uniform vec3 uMoonFlag; uniform float uMoonFlagOn;
+uniform float uSeas, uItcz; uniform vec3 uMoonP0; uniform vec3 uMX[3], uMXC[3], uMXP[3]; uniform float uMXR[3]; uniform float uMoonR; uniform vec3 uMoonCol; uniform float uBound, uPlants, uTZ, uTZk; uniform float uTerrAmp, uTerrSc, uCanyon, uPeakK, uCrustK, uDeform, uCanT, uCanE; uniform vec3 uCanD1, uCanD2;
 uniform float uRingOn, uRingIn, uRingOut, uRingSeed, uRingOpa;
 uniform vec3 uRingCol;
 uniform float uTide; uniform vec3 uTideDir;
@@ -1621,10 +1834,10 @@ uniform vec3 uBio[8]; uniform float uBioGlow, uBiasT, uNebula, uBioLum; uniform 
 const int NC = 16;
 uniform vec4 uCr[NC]; uniform vec4 uCrP[NC];
 uniform vec4 uAst[3]; uniform vec4 uAstP[3]; uniform vec3 uAstD[3];
-uniform vec4 uCiv[8]; uniform vec4 uCivP[8]; uniform float uCivAll;
-uniform vec4 uShip[8]; uniform int uShipN; uniform vec3 uElevP; uniform float uElevG, uRingG; uniform vec3 uAscCol; uniform vec3 uCivC[8]; uniform float uNatDay, uPoll; uniform vec3 uCivK[8]; uniform vec4 uMgA, uMgB, uCt; uniform vec3 uCtD; uniform float uMgOn, uTer, uAscF; uniform float uPlank, uFire, uDust, uHalo, uNoct, uCorona, uFlare, uDeep;
+uniform vec4 uCiv[8]; uniform vec4 uCivP[8]; uniform float uCivAll; uniform vec3 uCivL[8]; uniform vec3 uLitW; uniform vec3 uLnA[12], uLnB[12], uLnN[12]; uniform int uLnC;
+uniform vec4 uShip[8]; uniform int uShipN; uniform vec3 uElevP; uniform float uElevG, uRingG; uniform vec3 uAscCol; uniform vec3 uCivC[8]; uniform float uNatDay, uPoll; uniform vec3 uCivK[8]; uniform vec4 uMgA, uMgB, uCt; uniform vec3 uCtD; uniform float uMgOn, uTer, uAscF; uniform float uGL, uRainbow, uLanes, uLPol; uniform float uPlank, uFire, uDust, uHalo, uNoct, uCorona, uFlare, uDeep;
 uniform vec4 uRkt[2]; uniform vec4 uRktP[2]; uniform vec3 uRktD[2]; uniform vec3 uSatPos[24]; uniform int uSatN; uniform float uProbe, uBake, uCine, uFlat, uLens; uniform vec3 uNebA, uNebB; uniform sampler2D uSky; uniform vec3 uProbeDir[24]; uniform vec2 uGrid; uniform sampler2D uRiv0, uRiv1; uniform float uRivF, uRivK, uRoadK;
-uniform float uVGrow[NV], uVAct[NV], uVLava[NV];
+uniform float uVGrow[NV], uVAct[NV], uVLava[NV]; uniform vec4 uVSt[NV]; uniform vec3 uVLC[NV];
 const float VR = 0.045;              // volcano radius (radians)
 uniform float uAtmoQ, uAurQ, uCloudPh, uWindK, uRivQ, uMeteor, uOro; uniform vec4 uComet; uniform vec4 uTsu[2], uTsuP[2]; uniform vec4 uLF[9]; uniform vec4 uLFc[9]; uniform vec4 uLFh[9]; uniform vec4 uLFd[9]; uniform float uCrit; uniform float uHQ; uniform float uLFon; uniform vec4 uMov[24]; uniform int uMovN;
 uniform float uRelief, uRA, uExposure, uSat, uStars, uShadow, uCShadow, uOct;
@@ -1654,7 +1867,7 @@ float volcAsh(vec3 dir) {                       // ash plumes above erupting vol
     float cd = dot(dir, uVSite[i]);
     if (cd > 0.97 && uVGrow[i] > 0.001) {
       float d = sqrt(max(0.0, 2.0 * (1.0 - cd)));
-      a = max(a, uVAct[i] * smoothstep(0.1, 0.5, uVGrow[i]) * exp(-pow(d / 0.05, 2.0)));
+      a = max(a, uVAct[i] * smoothstep(0.1, 0.5, uVGrow[i]) * exp(-pow(d / (0.05 * uVSt[i].z), 2.0)));
     }
   }
   return a;
@@ -1737,6 +1950,7 @@ float fbm(vec3 p, float octf) {
   return s;
 }
 
+const float TAU_ = 6.2831853;
 vec2 rsi(vec3 ro, vec3 rd, float r) {           // ray / sphere at origin; near > far = miss
   float b = dot(ro, rd), c = dot(ro, ro) - r * r, h = b * b - c;
   if (h < 0.0) return vec2(1e9, -1e9);
@@ -1751,7 +1965,7 @@ vec3 rotInv(vec3 v, int k) {                    // express a point in plate k's 
   return v * c + cross(a, v) * s + a * dot(a, v) * (1.0 - c);
 }
 
-struct PInfo { int i1; int i2; ivec3 id; vec3 w; float gap; float raw; float conv; };
+struct PInfo { int i1; int i2; ivec3 id; vec3 w; float gap; float raw; float conv; float shear; };
 
 PInfo plateInfo(vec3 p) {
   PInfo r;
@@ -1781,6 +1995,8 @@ PInfo plateInfo(vec3 p) {
   float c12 = dot(v2 - v1, n12), c13 = dot(v3 - v1, n13), c23 = dot(v3 - v2, n23);          // closing speed of each pair of plates
   float q12 = r.w.x * r.w.y, q13 = r.w.x * r.w.z, q23 = r.w.y * r.w.z;                       // symmetric pair weights: swapping which plate is 2nd or 3rd changes nothing
   r.conv = clamp((q12 * c12 + q13 * c13 + q23 * c23) / (q12 + q13 + q23 + 1e-6) * 1.8, -1.0, 1.0);   // > 0 : plates colliding, < 0 : pulling apart
+  vec3 t12 = cross(pw, n12), t13 = cross(pw, n13), t23 = cross(pw, n23);
+  r.shear = clamp((q12 * abs(dot(v2 - v1, t12)) + q13 * abs(dot(v3 - v1, t13)) + q23 * abs(dot(v3 - v2, t23))) / (q12 + q13 + q23 + 1e-6) * 1.8, 0.0, 1.0);   // sliding past each other
   return r;
 }
 
@@ -1799,17 +2015,44 @@ float terrain(vec3 p, PInfo pi, float octf) {
   float conv = max(pi.conv, 0.0), div = max(-pi.conv, 0.0);
   if (b > 0.0) {
     float rd = 1.0 - abs(gnoise(p * 4.0 + uNoiseOff));                 // plate-independent, so ridges stay continuous across edges
-    h += conv * b * (0.20 + 0.75 * rd * rd) * mix(0.45, 1.0, contAvg) * uOro;      // mountain belts / island arcs (worn down by erosion, raised again by new mountain-building)
+    h += conv * b * (0.20 + 0.75 * rd * rd) * mix(0.45, 1.0, contAvg) * uOro * uCrustK;      // mountain belts / island arcs (worn down by erosion, raised again by new mountain-building)
     h -= div * b * mix(-0.10, 0.16, contAvg);                               // mid-ocean ridge / rift valley
     float oceanSide = 1.0 - contW;
     h -= conv * b * oceanSide * 0.14;                                       // subduction trench
+  }
+  if (uPeakK > 0.001 && octf > 0.2) {                                         // tall massifs standing well above the belts
+    float rd2 = 1.0 - abs(gnoise(p * 7.0 + uNoiseOff * 1.3)), mk = smoothstep(0.50, 0.85, gnoise(p * 2.1 + uNoiseOff * 0.7) * 0.5 + 0.5);
+    h += uPeakK * 0.45 * rd2 * rd2 * rd2 * mk * mix(0.25, 1.0, contAvg) * uCrustK;
+  }
+  if (uCanyon > 0.001 && octf > 0.2) {                                        // deep canyons: jagged fault-line gashes in a few provinces, carried by their plate, migrating and fading with time
+    vec3 pc = rotInv(p, pi.id.x);
+    float jg = 0.16 * gnoise(pc * 26.0) + 0.07 * gnoise(pc * 70.0), wp = 0.45 * gnoise(pc * 2.4 + uNoiseOff);
+    float c1 = abs(sin(dot(pc, uCanD1) * 10.5 + wp + jg + uCanT)), c2 = abs(sin(dot(pc, uCanD2) * 8.0 + 1.7 * wp + 1.5 * jg - 0.7 * uCanT)), cn = min(c1, c2);
+    float zone = smoothstep(0.56, 0.80, gnoise(pc * 1.35 + uNoiseOff * 1.7 + vec3(0.0, uCanT * 0.25, 0.0)) * 0.5 + 0.5);
+    float prof = 1.0 - smoothstep(0.0, 0.11, cn); prof = 0.55 * prof + 0.45 * floor(prof * 3.0 + 0.5) / 3.0;          // stepped cliff walls
+    h -= uCanyon * uCanE * 0.38 * prof * zone * smoothstep(0.0, 0.35, contAvg + 0.15) * smoothstep(0.45, 0.8, pi.w.x);
+    h -= div * b * uCanyon * uCanE * 0.10 * contAvg;
+  }
+  if (uBound > 0.001 && octf > 0.2) {                                         // landforms where plates meet: rift canyons where they pull apart, gorges where they slide, high ranges and foreland valleys where they collide
+    float ag = abs(pi.gap), jt = ag + 0.012 * gnoise(p * 55.0 + uNoiseOff) + 0.006 * gnoise(p * 140.0);
+    float cb = 1.0 - smoothstep(0.0, 0.032, abs(jt));
+    cb = 0.6 * cb + 0.4 * floor(cb * 3.0 + 0.5) / 3.0;                          // stepped, rough walls
+    float eb = mix(0.4, 1.0, uCanE) * mix(0.55, 1.0, uCanyon) * uBound;
+    float cl = mix(0.35, 1.0, contAvg);
+    h -= div * cb * (0.12 + 0.30 * contAvg) * eb;                               // rift canyon / central trough
+    h -= pi.shear * (1.0 - abs(pi.conv)) * cb * 0.22 * cl * eb;                 // transform-fault gorge
+    float rr = 1.0 - abs(gnoise(p * 9.0 + uNoiseOff * 0.9));
+    h += conv * b * uPeakK * 0.5 * rr * rr * rr * rr * mix(0.3, 1.0, contAvg) * uCrustK * uBound;   // extra tall peaks on the collision belt
+    float fv = smoothstep(0.07, 0.12, ag) * (1.0 - smoothstep(0.12, 0.22, ag));
+    h -= conv * fv * 0.10 * contAvg * eb;                                       // long valleys running alongside the ranges
   }
   for (int i = 0; i < NV; i++) {                                            // volcano cones that grow over time
     float cd = dot(p, uVSite[i]);
     if (cd > 0.985 && (uVGrow[i] > 0.001 || uVLava[i] > 0.001)) {
       float d = sqrt(max(0.0, 2.0 * (1.0 - cd)));
-      h += uVGrow[i] * (0.9 * exp(-pow(d / VR, 1.4) * 2.2) - 0.20 * exp(-pow(d / (0.2 * VR), 2.0)));
-      h += uVLava[i] * 0.85 * mix(1.0, 0.4, contAvg) * exp(-pow(d / (2.0 * VR), 1.5) * 2.0);       // lava piles up into a broad shield: seamounts break the surface as new islands, chains merge into land
+      vec4 vst = uVSt[i]; float Ri = VR * vst.z;
+      h += uVGrow[i] * (mix(0.55, 1.15, vst.x) * 0.9 * exp(-pow(d / Ri, mix(1.9, 1.0, vst.x)) * 2.2) - mix(0.10, 0.34, vst.y) * exp(-pow(d / (0.2 * Ri * (0.8 + 0.5 * vst.y)), 2.0)));
+      h += uVLava[i] * 0.85 * mix(1.0, 0.4, contAvg) * exp(-pow(d / (2.0 * Ri), 1.5) * 2.0);       // lava piles up into a broad shield: seamounts break the surface as new islands, chains merge into land
     }
   }
   for (int i = 0; i < NC; i++) {                                            // impact craters: bowl, raised rim, ejecta, central peak
@@ -1817,10 +2060,12 @@ float terrain(vec3 p, PInfo pi, float octf) {
     if (r > 0.0 && uCrP[i].x > 0.001) {
       float cd = dot(p, uCr[i].xyz);
       if (cd > 1.0 - 4.5 * r * r) {
-        float d = sqrt(max(0.0, 2.0 * (1.0 - cd))), u = d / r, dep = min(1.3 * r, 0.32) * uCrP[i].x;
+        float d = sqrt(max(0.0, 2.0 * (1.0 - cd))), u = d / r, dep = min(1.3 * r, 0.32) * uCrP[i].x * uDeform;
         h += -dep * (1.0 - smoothstep(0.0, 1.0, u)) * 1.15 + 0.35 * dep * exp(-pow((u - 1.05) / 0.22, 2.0)) + 0.10 * dep * exp(-(u - 1.0) * 1.2) * step(1.0, u)
            + (r > 0.10 ? 0.30 * dep * exp(-pow(u / 0.14, 2.0)) : 0.0);
+        if (r > 0.08 && uDeform > 1.05) h += dep * (0.20 * exp(-pow((u - 1.75) / 0.26, 2.0)) - 0.10 * exp(-pow((u - 2.2) / 0.2, 2.0)) + 0.12 * exp(-pow((u - 2.7) / 0.26, 2.0))) * (uDeform - 1.0);       // big basins: concentric rings
       }
+      if (r > 0.12 && uDeform > 1.05) { float da = sqrt(max(0.0, 2.0 * (1.0 + dot(p, uCr[i].xyz)))); if (da < 1.8 * r) h += 0.22 * min(1.3 * r, 0.32) * uCrP[i].x * (uDeform - 1.0) * exp(-pow(da / (1.2 * r), 2.0)) * gnoise(p * 38.0 + uNoiseOff); }       // the far side is shaken into broken, chaotic hills
     }
   }
   return h;
@@ -2114,10 +2359,26 @@ vec3 shadeMoon(vec3 hit, vec3 center, vec3 mcol, vec3 par, float bk) {         /
     }
     mc += vec3(1.0, 0.82, 0.5) * ba * (nightM * 2.4 + 0.5);
   }
+  if (uMoonFlagOn > 0.5) {                      // the flag of the first nation to land: a pole and a small banner, planted at the first landing site
+    vec3 pd2 = normalize(-center), perp2 = normalize(cross(pd2, vec3(0.0, 1.0, 0.0)) + vec3(1e-4)), bd2 = normalize(pd2 * cos(0.28) + perp2 * sin(0.28));
+    if (dot(n, bd2) > 0.9) {
+      vec3 ex2 = normalize(perp2 - bd2 * dot(perp2, bd2)), ey2 = cross(bd2, ex2), tg2 = n - bd2 * dot(n, bd2); vec2 uv2 = vec2(dot(tg2, ex2), dot(tg2, ey2)) - vec2(0.0, -0.013);
+      float pole = (1.0 - smoothstep(0.0003, 0.0006, abs(uv2.x))) * step(0.0, uv2.y) * step(uv2.y, 0.011);
+      float ban = step(0.0006, uv2.x) * step(uv2.x, 0.0066) * step(0.0058, uv2.y) * step(uv2.y, 0.0108);
+      float lit2 = 0.35 + 0.65 * clamp(dot(n, uSunDir) * 3.0, 0.0, 1.0);
+      mc = mix(mc, vec3(0.9) * lit2, pole); mc = mix(mc, uMoonFlag * lit2, ban);
+    }
+  }
   return mc;
 }
 
-vec3 background(vec3 rd) {
+vec3 background(vec3 rd0) {
+  vec3 rd = rd0;
+  if (uGL > 0.01) {                                                       // gravitational lensing: starlight bends round the sun, smearing the stars into arcs and doubling them across a faint Einstein ring
+    float an = acos(clamp(dot(rd0, uSunDir), -1.0, 1.0)), te = 0.05 * uGL, be = an - te * te / max(an, 0.004);
+    vec3 pr = rd0 - uSunDir * dot(rd0, uSunDir); pr = dot(pr, pr) > 1e-9 ? normalize(pr) : vec3(0.0, 1.0, 0.0);
+    rd = normalize(uSunDir * cos(be) + pr * sin(be));
+  }
   vec3 col = vec3(0.0006, 0.0009, 0.002);
   float band = dot(rd, normalize(vec3(0.3, 0.8, 0.5)));
   vec3 sk = textureLod(uSky, vec2(atan(rd.z, rd.x) * 0.15915494 + 0.5, asin(clamp(rd.y, -1.0, 1.0)) * 0.31830989 + 0.5), 0.0).rgb;
@@ -2157,14 +2418,22 @@ vec3 background(vec3 rd) {
     float ion = tl * exp(-pe * pe / (1.2e-4 + 4e-4 * u * u)), dust = tl * exp(-pow(pe - 0.18 * u * u, 2.0) / (1.5e-4 + 6e-4 * u * u));
     col += uComet.w * (vec3(1.0, 0.95, 0.85) * head * 2.5 + vec3(0.45, 0.7, 1.0) * ion * 2.6 * (1.0 - 0.6 * u / L) + vec3(1.0, 0.85, 0.6) * dust * 1.6 * (1.0 - 0.6 * u / L));
   }
-  float sd = dot(rd, uSunDir);
+  float sd = dot(rd0, uSunDir);
   float disc = smoothstep(0.99972, 0.99982, sd);
   float glow = pow(max(sd, 0.0), 500.0) * 0.9 + pow(max(sd, 0.0), 60.0) * 0.10 + pow(max(sd, 0.0), 8.0) * 0.012;
   glow += uCine * (pow(max(sd, 0.0), 220.0) * 0.5 + pow(max(sd, 0.0), 24.0) * 0.04);
   col += uSunColor * (disc * 9.0 + glow);
+  if (uGL > 0.01) { float ae = acos(clamp(sd, -1.0, 1.0)); col += uSunColor * exp(-pow((ae - 0.05 * uGL) / 0.004, 2.0)) * 0.05 * uGL; }
   return col;
 }
 
+float cylHit(vec3 ro, vec3 rd, vec3 c, vec3 a, float r, float hl, out vec3 nrm, out float ax) {   // ray against a finite cylinder with end caps (an orbital habitat)
+  vec3 oc = ro - c; float rda = dot(rd, a), oca = dot(oc, a); vec3 rdp = rd - a * rda, ocp = oc - a * oca;
+  float A = dot(rdp, rdp), B = dot(ocp, rdp), C = dot(ocp, ocp) - r * r, h = B * B - A * C, t = -1.0; nrm = vec3(0.0); ax = 0.0;
+  if (h > 0.0 && A > 1e-9) { float t0 = (-B - sqrt(h)) / A, y = oca + t0 * rda; if (t0 > 0.0 && abs(y) < hl) { t = t0; nrm = normalize(ocp + rdp * t0); ax = y / hl; } }
+  if (abs(rda) > 1e-6) { for (int k = 0; k < 2; k++) { float sg = k == 0 ? 1.0 : -1.0, tc = (sg * hl - oca) / rda; if (tc > 0.0 && (t < 0.0 || tc < t)) { vec3 pc = ocp + rdp * tc; if (dot(pc, pc) < r * r) { t = tc; nrm = a * sg; ax = sg * 2.0; } } } }
+  return t;
+}
 float plumeF(vec3 dir) {                         // how much of the ash/dust haze has reached this spot: a ragged front spreading out from each source, fading away as it ages
   float f = 0.0, w = 0.35 * gnoise(dir * 3.0 + uNoiseOff);
   for (int i = 0; i < 3; i++) { float R = uPl[i].w; if (R > 0.0 && uPlA[i] > 0.001) { float an = acos(clamp(dot(dir, uPl[i].xyz), -1.0, 1.0)) + w; f = max(f, uPlA[i] * (1.0 - smoothstep(R - 0.5, R, an))); } }
@@ -2278,6 +2547,93 @@ float snowDepthCm(vec3 p, float hl, float T) {
   return 400.0 * pow(cold * (0.25 + 0.75 * rainClimate(p, hl)), 1.15) * (1.0 + 2.0 * (1.0 - smoothstep(-45.0, -18.0, T)));
 }
 
+
+// ---- 3D plants: shells of grass tufts and ray-marched trees, drawn only when the camera is close. Heights are exaggerated so they read at planet scale. Cells live on cube-face coordinates so they never move with the camera.
+vec3 pcgH(ivec3 c) {
+  uvec3 v = uvec3(c + ivec3(1048576)) * 1664525u + 1013904223u;
+  v.x += v.y * v.z; v.y += v.z * v.x; v.z += v.x * v.y; v ^= v >> 16u;
+  v.x += v.y * v.z; v.y += v.z * v.x; v.z += v.x * v.y;
+  return vec3(v) * (1.0 / 4294967296.0);
+}
+vec2 faceUV(vec3 g, out int fid) {
+  vec3 a = abs(g);
+  if (a.x >= a.y && a.x >= a.z) { fid = g.x > 0.0 ? 0 : 1; return g.yz / a.x; }
+  if (a.y >= a.z) { fid = g.y > 0.0 ? 2 : 3; return g.xz / a.y; }
+  fid = g.z > 0.0 ? 4 : 5; return g.xy / a.z;
+}
+vec3 uvDir(int fid, vec2 uv) {
+  if (fid == 0) return normalize(vec3(1.0, uv));
+  if (fid == 1) return normalize(vec3(-1.0, uv));
+  if (fid == 2) return normalize(vec3(uv.x, 1.0, uv.y));
+  if (fid == 3) return normalize(vec3(uv.x, -1.0, uv.y));
+  if (fid == 4) return normalize(vec3(uv, 1.0));
+  return normalize(vec3(uv, -1.0));
+}
+void plantsApply(vec3 p, vec3 rd, float pxr, float bi, inout vec3 col, inout vec3 N) {
+  float tt = (1.0 - smoothstep(5.0e-6, 1.0e-5, pxr)) * min(uPlants, 1.0), tg = (1.0 - smoothstep(1.4e-6, 2.6e-6, pxr)) * min(uPlants, 1.0);
+  if (tt < 0.01 || uPlants < 0.01) return;
+  const float CT = 3.0e-5, CG = 3.2e-6, HT = 5.0e-5, HG = 5.5e-6;
+  const float gDn[8] = float[8](0.25, 0.7, 0.9, 1.0, 1.0, 0.35, 0.15, 0.8);
+  const float tDn[8] = float[8](0.03, 0.5, 0.4, 0.7, 0.05, 0.04, 0.05, 0.3);
+  const float tHs[8] = float[8](0.5, 1.0, 1.0, 1.3, 0.7, 0.55, 0.6, 0.6);
+  const float tTy[8] = float[8](1.0, 1.0, 2.0, 2.0, 2.0, 2.0, 1.0, 2.0);
+  int b = int(clamp(bi + 0.5, 0.0, 7.0));
+  vec3 flo = clamp(uBio[b], 0.0, 1.0);
+  float c = clamp(-dot(p, rd), 0.03, 1.0);
+  float pa = smoothstep(-0.35, 0.25, gnoise(p * 45.0 + 3.0)) * (0.45 + 0.55 * smoothstep(-0.4, 0.3, gnoise(p * 160.0 + 9.0)));
+  float dT = tDn[b] * pa * min(uPlants, 1.5), hS = tHs[b], ty = tTy[b];
+  bool hit = false;
+  if (dT > 0.003) {
+    for (int k = 0; k < 10; k++) {
+      float z = HT * 1.25 * hS * (1.0 - (float(k) + 0.5) / 10.0);
+      vec3 q = p - rd * (z / c);
+      int fid; vec2 uv = faceUV(normalize(q), fid) / CT;
+      vec2 fl = floor(uv); ivec3 cid = ivec3(int(fl.x), int(fl.y), fid);
+      vec3 h = pcgH(cid);
+      if (h.x > dT) continue;
+      vec3 h2 = pcgH(cid + ivec3(7, 13, 5));
+      vec2 ctr = 0.3 + 0.4 * h.yz;
+      float H = HT * hS * (0.65 + 0.7 * h2.x), Rc = (0.26 + 0.14 * h2.y) * CT, d = length((uv - fl - ctr) * CT);
+      if (z > H) continue;
+      float zr = z / H;
+      vec3 axd = uvDir(fid, (fl + ctr) * CT), ax = axd * length(q);
+      if (zr < 0.28 && d < 0.05 * CT * (1.0 - 0.4 * zr)) { col = mix(col, vec3(0.40, 0.28, 0.19) * (0.8 + 0.4 * h2.z), tt); hit = true; break; }
+      if (ty < 1.5) {                                                       // conifer: tiered cone
+        float u = (zr - 0.2) / 0.8, r = Rc * 0.85 * (1.0 - u) * (0.88 + 0.12 * sin(u * 19.0));
+        if (u > 0.0 && d < r) {
+          vec3 tc = flo * vec3(0.8, 1.0, 0.85) * (0.75 + 0.6 * zr) * (0.85 + 0.3 * h2.z);
+          vec3 nt = normalize((q - ax) + N * Rc * 0.8);
+          col = mix(col, tc, tt); N = normalize(mix(N, nt, tt)); hit = true; break;
+        }
+      } else {                                                              // broadleaf: ellipsoid crown
+        float zc = 0.64, a = 0.34, e = (d / (Rc * 1.15)) * (d / (Rc * 1.15)) + ((zr - zc) / a) * ((zr - zc) / a);
+        if (e < 1.0) {
+          vec3 tc = flo * (0.85 + 0.6 * zr) * (0.85 + 0.3 * h2.z) * (1.0 + 0.12 * (0.5 - fract(h.y * 7.0 + zr * 3.0)));
+          vec3 nt = normalize((q - ax) / (Rc * Rc) + axd * ((zr - zc) * H / (a * a * H * H)) * 1.0);
+          col = mix(col, tc, tt); N = normalize(mix(N, nt, tt)); hit = true; break;
+        }
+      }
+    }
+  }
+  if (!hit && tg > 0.01) {
+    float gDen = gDn[b] * (0.55 + 0.45 * smoothstep(-0.3, 0.3, gnoise(p * 90.0 + 5.0))) * min(uPlants, 1.2);
+    bool gh = false;
+    for (int k = 0; k < 6; k++) {
+      float z = HG * (1.0 - (float(k) + 0.5) / 6.0);
+      vec3 q = p - rd * (z / c);
+      int fid; vec2 uv = faceUV(normalize(q), fid) / CG;
+      vec2 fl = floor(uv); vec3 h = pcgH(ivec3(int(fl.x), int(fl.y), fid + 11));
+      if (h.x > gDen) continue;
+      float r = CG * 0.45 * (1.0 - 0.8 * z / HG) * (0.7 + 0.5 * h.z), d = length((uv - fl - (0.25 + 0.5 * h.yz)) * CG);
+      if (d < r) {
+        vec3 gc = mix(flo * 0.7, flo * 1.3 + 0.03, z / HG) * (0.8 + 0.4 * h.y);
+        col = mix(col, gc, tg); N = normalize(mix(N, normalize(N + 0.6 * (q - p) / HG * 0.2), tg * 0.5)); gh = true; break;
+      }
+    }
+    if (!gh) col *= 1.0 - 0.28 * tg * gDn[b];
+  }
+}
+
 vec3 shadePlanet(vec3 p, vec3 rd, float t, vec3 sun, float pixAng, vec3 moonP) {
   float px = max(t * pixAng, 1e-6);
   float octf = clamp(log2(1.0 / (px * 1.5)) - 0.3 + uOct, 2.0, 10.5);
@@ -2296,20 +2652,21 @@ vec3 shadePlanet(vec3 p, vec3 rd, float t, vec3 sun, float pixAng, vec3 moonP) {
   if (vol > 0.001) crack = (1.0 - smoothstep(0.0, 0.012 + 0.03 * vol, abs(pi.gap))) * vol * (0.4 + 0.6 * smoothstep(0.1, 0.6, abs(pi.conv)));
 
   Surf s = biome(p, h0, crack, px);
-  float vdark = 0.0, vglow = 0.0;
+  float vdark = 0.0, vglow = 0.0, vwS = 0.0; vec3 vcS = vec3(0.0);
   for (int i = 0; i < NV; i++) {
     float cd = dot(p, uVSite[i]);
     if (cd > 0.98 && uVGrow[i] > 0.001) {
-      float d = sqrt(max(0.0, 2.0 * (1.0 - cd))), g = uVGrow[i];
-      vdark = max(vdark, g * exp(-pow(d / (1.6 * VR), 1.5)));
-      float act = uVAct[i] * smoothstep(0.1, 0.5, g);
-      float crater = exp(-pow(d / (0.22 * VR), 2.0));
+      float d = sqrt(max(0.0, 2.0 * (1.0 - cd))), g = uVGrow[i]; vec4 vst = uVSt[i]; float Ri = VR * vst.z;
+      vdark = max(vdark, g * exp(-pow(d / (1.6 * Ri), 1.5)));
+      float act = uVAct[i] * smoothstep(0.1, 0.5, g), vg0 = vglow;
+      float crater = exp(-pow(d / (0.22 * Ri * (0.8 + 0.5 * vst.y)), 2.0));
       float veins = smoothstep(0.45, 0.8, gnoise(p * clamp(0.045 / px, 60.0, 900.0) + float(i) * 3.7) * 0.5 + 0.5);
-      float flow = exp(-pow(d / (0.8 * VR), 2.0)) * veins * smoothstep(0.1, 0.6, d / VR);
+      float flow = exp(-pow(d / (0.8 * Ri), 2.0)) * veins * smoothstep(0.1, 0.6, d / Ri);
       vglow = max(vglow, act * (crater * 1.2 + flow * 0.45));
       { vec3 e1 = normalize(cross(uVSite[i], vec3(0.0, 1.0, 0.0)) + vec3(1e-3, 0.0, 0.0)), e2 = cross(uVSite[i], e1); float th = atan(dot(p, e2), dot(p, e1));        // lava tongues running down the flanks, cooling to black basalt
-        float rays = pow(max(0.0, sin(th * 6.0 + uNoiseOff.x * 2.0 + 1.6 * gnoise(p * 140.0 + float(i) * 5.3) + 2.0 * gnoise(p * 40.0) + float(i))), 8.0), run = smoothstep(0.15 * VR, 0.6 * VR, d) * (1.0 - smoothstep(1.6 * VR, 3.2 * VR * (0.5 + 0.5 * g), d));
+        float rays = pow(max(0.0, sin(th * vst.w + uNoiseOff.x * 2.0 + 1.6 * gnoise(p * 140.0 + float(i) * 5.3) + 2.0 * gnoise(p * 40.0) + float(i))), 8.0), run = smoothstep(0.15 * Ri, 0.6 * Ri, d) * (1.0 - smoothstep(1.6 * Ri, 3.2 * Ri * (0.5 + 0.5 * g), d));
         vglow = max(vglow, act * rays * run * 0.6 * smoothstep(0.1, 0.5, g)); vdark = max(vdark, rays * run * 0.55 * g); }
+      float gi = max(vglow - vg0, 0.0) + 0.0001; vcS += uVLC[i] * gi; vwS += gi;
     }
   }
   s.col = mix(s.col, vec3(0.18, 0.12, 0.10), vdark * 0.7);
@@ -2535,6 +2892,17 @@ vec3 shadePlanet(vec3 p, vec3 rd, float t, vec3 sun, float pixAng, vec3 moonP) {
     }
     return clamp(mc * shade * 1.12, 0.0, 1.0);
   }
+  if (uTZ > 0.5) {                                                        // time zones: a meridian every 15 degrees, alternate bands tinted, and a bent international date line
+    float lat = asin(clamp(p.y, -1.0, 1.0)), cl = max(cos(lat), 0.04), lonE = -atan(p.z, p.x), zf = lonE * 12.0 / PI, w = max(px * 1.6, 0.0008);
+    float dm = abs(fract(zf) - 0.5) * (PI / 12.0) * cl, dp = abs(lonE) * cl;
+    float wig = 0.10 * sin(lat * 4.0 + uTZk) + 0.05 * sin(lat * 9.0 + 2.0 * uTZk), xx = lonE - PI - wig; xx -= TAU_ * floor((xx + PI) / TAU_);
+    float dl = abs(xx) * cl, pole = 1.0 - smoothstep(0.86, 0.98, abs(p.y));
+    float am = (1.0 - smoothstep(0.0, w, dm)) * 0.20 * pole, ap = (1.0 - smoothstep(0.0, w * 1.2, dp)) * 0.45 * pole;
+    float ad = (1.0 - smoothstep(w * 0.8, w * 1.9, dl)) * 0.9 * (0.6 + 0.4 * step(0.5, fract(lat * 38.0)));
+    s.col *= 1.0 - 0.07 * mod(floor(zf + 0.5), 2.0) * pole;
+    s.col = mix(s.col, vec3(1.0, 0.96, 0.82), am); s.col = mix(s.col, vec3(0.45, 0.95, 1.0), ap); s.col = mix(s.col, vec3(1.0, 0.55, 0.10), ad);
+  }
+  if (uPlants > 0.01 && px < 1.2e-5 && s.alive > 0.3 && s.ocean < 0.3 && s.ice < 0.4 && s.bi < 7.5) plantsApply(p, rd, t * pixAng, s.bi, s.col, N);
   float lum0 = dot(s.col, vec3(0.299, 0.587, 0.114));
   vec3 alb = pow(clamp(mix(vec3(lum0), s.col, 1.55 - 0.5 * s.ice), 0.0, 1.0), vec3(2.2));
   // coast foam
@@ -2598,7 +2966,7 @@ vec3 shadePlanet(vec3 p, vec3 rd, float t, vec3 sun, float pixAng, vec3 moonP) {
   vec3 col = alb * (sunlight * lambert * shadow + uAtmoCol * ambient);
   float flicker = 0.88 + 0.12 * sin(uTime * 1.7 + p.x * 400.0 + p.y * 300.0);
   col += alb * s.emis * 2.2 * flicker;
-  col += vec3(1.0, 0.28, 0.06) * vglow * 3.5 * (0.85 + 0.15 * flicker);
+  col += (vwS > 0.0002 ? vcS / vwS : vec3(1.0, 0.28, 0.06)) * vglow * 3.5 * (0.85 + 0.15 * flicker);
   { vec3 cf = craterFx(p); col += vec3(1.0, 0.32, 0.07) * cf.x * 1.8 * (0.85 + 0.15 * flicker) + vec3(1.0, 0.8, 0.5) * cf.z; }
   { float nF = 1.0 - smoothstep(-0.06, 0.12, ndl0); col += pow(uBio[4], vec3(2.2)) * 0.9 * s.bio * uBioGlow * nF * (0.8 + 0.2 * sin(uTime * 0.8 + p.x * 30.0)); }   // bioluminescence
   if (uBioLum > 0.01) { float nL = 1.0 - smoothstep(-0.10, 0.18, ndl0);                                    // luminous worlds: living veins of light on the land, glowing seas along the coasts, slow pulses rolling across the planet
@@ -2614,8 +2982,9 @@ vec3 shadePlanet(vec3 p, vec3 rd, float t, vec3 sun, float pixAng, vec3 moonP) {
     float pop = smoothstep(0.05, 0.45, reg * 0.9 + 0.35 * (1.0 - s.hl * 1.6) - 0.12);
     float f = clamp(1.0 / (px * 3.0), 40.0, 4000.0);
     float cell = gnoise(p * f) * 0.5 + 0.5;
-    float cm = uCivAll;
-    for (int i = 0; i < 8; i++) { if (uCivP[i].x > 0.0) { float d2 = 2.0 * (1.0 - clamp(dot(p, uCiv[i].xyz), -1.0, 1.0)); cm = max(cm, uCivP[i].x * exp(-d2 / (uCiv[i].w * uCiv[i].w))); } }
+    float cm = uCivAll, wsA = 0.0; vec3 acA = vec3(0.0);
+    for (int i = 0; i < 8; i++) { if (uCivP[i].x > 0.0) { float d2 = 2.0 * (1.0 - clamp(dot(p, uCiv[i].xyz), -1.0, 1.0)); float wi = uCivP[i].x * exp(-d2 / (uCiv[i].w * uCiv[i].w)); cm = max(cm, wi); wsA += wi; acA += wi * uCivL[i]; } }
+    vec3 lA = wsA > 0.0001 ? acA / wsA : uLitW, lB = mix(lA, vec3(1.0, 0.9, 0.7), 0.55);
     pop *= smoothstep(0.02, 0.35, cm);
     { vec2 ruv2 = vec2(fract(atan(p.z, p.x) * 0.15915494), 0.5 - asin(clamp(p.y, -1.0, 1.0)) * 0.31830989); float lod2 = clamp(log2(max(px, 1e-5) / 0.0031), 0.0, 8.0);
       vec4 rt = mix(textureLod(uRiv1, ruv2, lod2 + 2.0), textureLod(uRiv0, ruv2, lod2 + 2.0), uRivF);
@@ -2623,7 +2992,7 @@ vec3 shadePlanet(vec3 p, vec3 rd, float t, vec3 sun, float pixAng, vec3 moonP) {
       rtL = mix(textureLod(uRiv1, ruv2, lod2), textureLod(uRiv0, ruv2, lod2), uRivF).b * uRoadK; }
     float spots = smoothstep(0.66 - 0.28 * pop, 0.92, cell);
     float haze = pop * pop * 0.10 + pop * 0.02;
-    vec3 lc = mix(vec3(1.0, 0.55, 0.2), vec3(1.0, 0.88, 0.62), hash13(floor(p * f)));
+    vec3 lc = mix(lA, lB, hash13(floor(p * f)));
     float rLit = smoothstep(0.55, 0.95, rtL), bead = smoothstep(0.30, 0.70, gnoise(p * f * 0.55) * 0.5 + 0.5);
     col += lc * rLit * (0.25 + 1.1 * bead) * uCity * nightF * 1.7 * (1.0 + 1.0 * uCine);                    // street lights strung along the roads
     col += lc * (spots * pop * 1.5 + haze) * uCity * smoothstep(0.0, 0.6, cm) * nightF * 1.8 * (1.0 + 1.0 * uCine) * (0.9 + 0.1 * sin(uTime * 3.0 + cell * 40.0));
@@ -2631,6 +3000,16 @@ vec3 shadePlanet(vec3 p, vec3 rd, float t, vec3 sun, float pixAng, vec3 moonP) {
   { float nf = nightF;
     col += vec3(1.0, 0.38, 0.07) * fireG * (0.5 + 3.0 * nf) * (0.8 + 0.2 * sin(uTime * 9.0 + p.x * 900.0));                         // wildfire fronts glow, fiercest at night
     col += vec3(1.0, 0.45, 0.1) * warG * (0.5 + 2.5 * nf) * (0.6 + 0.4 * sin(uTime * 6.0 + gnoise(p * 80.0) * 8.0));               // flashes and fires along a war front
+    if (uLPol > 0.01 && nf > 0.01) {                                                                                              // light pollution: a wide orange glow of scattered light over the cities and their surroundings
+      float hz = 0.0; for (int i = 0; i < 8; i++) { float rw = uCiv[i].w; if (rw > 0.0 && uCivP[i].x > 0.02) { float d2 = 2.0 * (1.0 - clamp(dot(p, uCiv[i].xyz), -1.0, 1.0)); hz += uCivP[i].x * uCivP[i].y * exp(-d2 / (rw * rw * 0.5)); } }
+      col += uLitW * hz * nf * 0.10 * uLPol * (1.0 - 0.5 * s.ocean); }
+    if (uLanes > 0.01 && s.ocean > 0.5 && s.ice < 0.5 && nf > 0.01) {                                                              // night-side shipping lanes: strings of lights on the sea between the great ports
+      float ln = 0.0;
+      for (int k = 0; k < 12; k++) { if (k >= uLnC) break;                                                          // pairs and their great-circle normals are worked out once on the CPU
+        vec3 nn = uLnN[k]; float d = abs(dot(p, nn));
+        if (d < 0.02) { vec3 a = uLnA[k], b2 = uLnB[k]; float wd = max(0.0028, px * 2.2), btw = step(0.0, dot(cross(a, p), nn)) * step(0.0, dot(cross(p, b2), nn));
+          float along = acos(clamp(dot(p, a), -1.0, 1.0)); ln += btw * (1.0 - smoothstep(0.0, wd, d)) * (0.35 + 0.65 * pow(0.5 + 0.5 * sin(along * 320.0 - uTime * 0.5), 5.0)); } }
+      col += mix(uLitW, vec3(1.0), 0.45) * clamp(ln, 0.0, 1.0) * 0.6 * nf * uLanes; }
     if (uPlank > 0.01 && s.ocean > 0.5 && s.ice < 0.5 && nf > 0.01) {                                                              // bioluminescent seas: drifting blooms of glowing plankton, sparking where the water is stirred
       float bl = smoothstep(0.52, 0.8, gnoise(p * 6.0 + uNoiseOff) * 0.5 + 0.5), sp = pow(max(0.0, gnoise(p * clamp(1.0 / (px * 8.0), 60.0, 2500.0) + vec3(uTime * 0.2, 0.0, 0.0))), 3.0);
       col += vec3(0.04, 0.55, 0.75) * uPlank * nf * (bl * (0.25 + 2.6 * sp) + 0.5 * smoothstep(0.4, 1.0, s.shore) * (0.2 + sp)) * (0.6 + 0.4 * sin(uTime * 0.7 + p.y * 20.0)); }
@@ -2639,7 +3018,7 @@ vec3 shadePlanet(vec3 p, vec3 rd, float t, vec3 sun, float pixAng, vec3 moonP) {
     if (i >= uMovN) break; float cdm = dot(p, uMov[i].xyz); if (cdm < 0.99985) continue;
     float dm = sqrt(max(0.0, 2.0 * (1.0 - cdm))), ship = step(0.0, uMov[i].w), lit = abs(uMov[i].w), core = exp(-pow(dm / (0.0011 + 0.0006 * ship), 2.0)), wake = exp(-pow(dm / 0.0028, 2.0)) * ship;
     col = mix(col, vec3(0.95, 0.96, 0.98), clamp(core * (1.0 - nightF) * 0.9 + wake * (1.0 - nightF) * 0.28, 0.0, 0.95));
-    col += vec3(1.0, 0.78, 0.42) * core * nightF * lit * 2.2;
+    col += mix(uLitW, vec3(1.0), 0.4) * core * nightF * lit * 2.2;
   }
 
   vec3 V = -rd;
@@ -2651,6 +3030,12 @@ vec3 shadePlanet(vec3 p, vec3 rd, float t, vec3 sun, float pixAng, vec3 moonP) {
   col += sunlight * (glint + iceSpec) * shadow;
   col += sunlight * pow(max(dot(Nw, Hh), 0.0), 14.0) * s.ocean * day * pow(1.0 - max(dot(p, V), 0.0), 3.0) * 0.45 * shadow;      // broad sheen of reflected sun on the sea, strongest at grazing angles (Fresnel)
   col += uAtmoCol * fres * (0.05 + 0.5 * smoothstep(-0.2, 0.5, ndl0));
+  if (uRainbow > 0.01 && ndl0 > 0.12) {                                           // rainbows: sunlight through falling rain, a ring 42 degrees round the point opposite the sun
+    float ang = acos(clamp(dot(rd, -sun), -1.0, 1.0)), x = (ang - 0.69) / 0.05, mk = smoothstep(0.0, 0.15, x) * (1.0 - smoothstep(0.85, 1.0, x));
+    if (mk > 0.01) { float pr = precipNow(p, s.hl), h = (1.0 - clamp(x, 0.0, 1.0)) * 0.78;
+      vec3 rb = clamp(abs(fract(h + vec3(0.0, 0.6667, 0.3333)) * 6.0 - 3.0) - 1.0, 0.0, 1.0);
+      col += rb * mk * smoothstep(0.04, 0.35, pr) * smoothstep(0.12, 0.5, ndl0) * 0.55 * uRainbow; }
+  }
   return col;
 }
 
@@ -2958,6 +3343,17 @@ void main() {
       col += mix(vec3(0.75, 0.92, 1.0), uAscCol, 0.5) * (lit * 0.8 + pod * 2.5 + st) * exp(-pow(dist / w, 2.0)) * uElevG * 1.0;
     }
   }
+  if (uElevG > 0.4 && uProbe < 0.5 && !(uView > 0.5 && uCut < 0.5)) {                       // the elevator's counterweight station: a lit hull with a slowly turning habitat wheel
+    vec3 EA2 = normalize(uElevP), SC = EA2 * (1.0 + 0.9 * uElevG); vec2 tsx = rsi(ro - SC, rd, 0.022);
+    if (tsx.x < tsx.y && tsx.x > 0.0 && tsx.x < tSolid) { vec3 hp = ro + rd * tsx.x, nn = normalize(hp - SC); float lt = 0.18 + 0.82 * clamp(dot(nn, sun), 0.0, 1.0), lat = dot(nn, EA2);
+      vec3 sc2 = mix(vec3(0.70, 0.76, 0.86), uAscCol, 0.4) * lt * (0.8 + 0.2 * sin(lat * 40.0)) + vec3(1.0, 0.85, 0.55) * pow(0.5 + 0.5 * sin(lat * 60.0 + 1.0), 12.0) * (1.0 - lt) * 1.5;
+      col = mix(col, sc2 * 1.3, uElevG); }
+    float tw = (dot(SC, EA2) - dot(ro, EA2)) / dot(rd, EA2);
+    if (abs(dot(rd, EA2)) > 1e-4 && tw > 0.0 && tw < tSolid) { vec3 hw = ro + rd * tw - SC; float rw = length(hw), spin = atan(dot(hw, cross(EA2, vec3(0.0, 1.0, 0.01))), dot(hw, normalize(cross(cross(EA2, vec3(0.0, 1.0, 0.01)), EA2)))) + uTime * 0.25;
+      float wh = (1.0 - smoothstep(0.0, 0.0022 + tw * pixAng * 0.6, abs(rw - 0.044))) * (0.6 + 0.4 * step(0.5, fract(spin * 5.0 / 6.2832 * 6.0)));
+      vec3 wc = mix(vec3(0.78, 0.84, 0.95), uAscCol, 0.45) * (0.4 + 0.6 * clamp(dot(EA2, sun) * 0.5 + 0.6, 0.0, 1.0)) + vec3(1.0, 0.85, 0.5) * 0.4;
+      col = mix(col, wc * 1.3, clamp(wh, 0.0, 0.9) * uElevG); }
+  }
   if (uRingG > 0.01 && abs(rd.y) > 1e-4 && uProbe < 0.5 && !(uView > 0.5 && uCut < 0.5)) {  // orbital ring: a thin metal band round the equator, studded with lights on the night side
     float tr2 = -ro.y / rd.y;
     if (tr2 > 0.0 && tr2 < tSolid) {
@@ -2965,7 +3361,9 @@ void main() {
       if (a > 0.003) {
         vec2 ts = rsi(hp, sun, 1.0); float shd = (ts.x < ts.y && ts.x > 0.0) ? 0.12 : 1.0, lit = 0.55 + 0.45 * clamp(dot(normalize(hp), sun) + 0.3, 0.0, 1.0);
         float lamps = pow(0.5 + 0.5 * sin(atan(hp.z, hp.x) * 240.0), 10.0);
-        vec3 rc = mix(vec3(0.78, 0.84, 0.95), uAscCol, 0.5) * lit * shd * 1.5 + mix(vec3(1.0, 0.82, 0.5), uAscCol * 1.3, 0.5) * lamps * (1.5 - shd) * 1.2;
+        float ang = atan(hp.z, hp.x), xr = (rr - 1.19) / wid, panel = 0.62 + 0.38 * step(0.5, fract(ang * 150.0)), rib = smoothstep(0.82, 1.0, abs(fract(ang * 37.5) - 0.5) * 2.0), rail = smoothstep(0.6, 0.95, abs(xr));
+        vec3 hull = mix(vec3(0.78, 0.84, 0.95), uAscCol, 0.5) * (panel * (1.0 - 0.35 * rail) + 0.45 * rail + 0.25 * rib);
+        vec3 rc = hull * lit * shd * 1.5 + mix(vec3(1.0, 0.82, 0.5), uAscCol * 1.3, 0.5) * lamps * (1.5 - shd) * 1.2;
         col = mix(col, rc, clamp(a, 0.0, 0.95));
       }
     }
@@ -2978,11 +3376,11 @@ void main() {
       col += (mix(vec3(0.8, 0.9, 1.0), uAscCol, 0.5) * g * 1.6 + vec3(0.35, 0.65, 1.0) * g2) * uShip[i].w;
     }
   }
-  if (uMgOn > 0.5 && tSolid > 1e8 && !moonFront && uView < 0.5) {         // the works of a super-intelligent people, seen in the sky
+  if (uMgOn > 0.5 && !moonFront && uView < 0.5) {         // the works of a super-intelligent people, seen in the sky
     vec3 aS = mix(vec3(0.9, 0.95, 1.0), uAscCol, 0.5);
     float sdm = dot(rdw, uSunDir);
     vec3 sp1 = normalize(cross(uSunDir, vec3(0.0, 1.0, 0.0)) + vec3(1e-4)), sp2 = cross(uSunDir, sp1);
-    vec2 sq = vec2(dot(rdw, sp1), dot(rdw, sp2)); float rr = length(sq), th = atan(sq.y, sq.x), nearS = step(0.0, sdm);
+    vec2 sq = vec2(dot(rdw, sp1), dot(rdw, sp2)); float rr = length(sq), th = atan(sq.y, sq.x), nearS = step(0.0, sdm) * (tSolid > 1e8 ? 1.0 : 0.0);
     if (uMgA.x > 0.01) {                                                   // dyson swarm: a glittering belt of collectors round the star
       float band = smoothstep(0.04, 0.05, rr) * (1.0 - smoothstep(0.10, 0.14, rr));
       vec2 cell = vec2(th * 34.0 + uTime * 0.12 * (1.0 + 0.5 * floor(rr * 90.0)), rr * 420.0); vec3 hc = vec3(floor(cell), 3.0);
@@ -3014,17 +3412,23 @@ void main() {
       float lit = 0.5 + 0.5 * smoothstep(-0.2, 0.6, dot(rdw, uSunDir));
       float lamps = pow(0.5 + 0.5 * sin(phi * 260.0), 8.0), stripe = 0.5 + 0.5 * sin(d / bw * 3.0 + 1.0);
       vec3 rc = mix(vec3(0.46, 0.62, 0.42), aS, 0.3) * lit * (0.55 + 0.45 * stripe) + vec3(1.0, 0.8, 0.5) * lamps * (1.2 - lit);
-      col = mix(col, rc * 1.4, clamp(band, 0.0, 0.9) * uMgA.z);
+      col = mix(col, rc * 1.4, clamp(band, 0.0, 0.9) * uMgA.z * (tSolid > 1e8 ? 1.0 : 0.0));
     }
     if (uMgA.y > 0.01) {                                                   // orbital habitats: little spinning cities circling the world
       for (int k = 0; k < 6; k++) {
         float fk = float(k), inc = fract(fk * 0.618) * 2.6 + 0.3, nd = fk * 2.399, an = fk * 1.7 + uTime * (0.07 + 0.01 * fk) * (mod(fk, 2.0) < 1.0 ? 1.0 : -1.0);
         vec3 A = vec3(cos(nd), 0.0, sin(nd)), B = vec3(-sin(nd) * cos(inc), sin(inc), cos(nd) * cos(inc));
         vec3 q = 1.16 * (cos(an) * A + sin(an) * B), v = q - camP; float tpj = dot(v, rdw);
-        if (tpj > 0.0 && tpj < 1e8) {
+        if (tpj > 0.0 && tpj < min(tSolid, 1e8)) {
           vec2 tq = rsi(camP, rdw, 1.0); bool hid = tq.x < tq.y && tq.x > 0.0 && tq.x < tpj;
           float dd = length(v - rdw * tpj), g = 1.0 / (1.0 + pow(dd / (0.0035 + tpj * pixAng * 0.9), 2.0)), g2 = 0.25 / (1.0 + pow(dd / (0.012 + tpj * pixAng), 2.0));
-          col += (hid ? 0.0 : 1.0) * (aS * g * 1.5 + vec3(1.0, 0.8, 0.5) * g2 * (0.7 + 0.3 * sin(uTime * 2.0 + fk))) * uMgA.y * (0.7 + 0.3 * smoothstep(-0.3, 0.5, dot(normalize(q), uSunDir)));
+          { vec3 nrm; float axp; vec3 qn = normalize(q), tgv = normalize(-sin(an) * A + cos(an) * B) * (mod(fk, 2.0) < 1.0 ? 1.0 : -1.0), axv = normalize(cross(qn, tgv));
+            float th2 = cylHit(camP, rdw, q, axv, 0.0075, 0.026, nrm, axp);
+            if (th2 > 0.0 && th2 < tSolid && !hid) { vec3 e1 = normalize(cross(axv, qn)), e2 = cross(axv, e1); float phi = atan(dot(nrm, e2), dot(nrm, e1)) + uTime * 0.6, lt = 0.2 + 0.8 * clamp(dot(nrm, uSunDir), 0.0, 1.0);
+              float win = abs(axp) < 1.5 ? smoothstep(0.55, 0.8, 0.5 + 0.5 * sin(phi * 6.0)) * (0.5 + 0.5 * step(0.2, fract(axp * 6.0))) : 0.0;
+              vec3 hc = mix(vec3(0.62, 0.66, 0.72), aS, 0.35) * lt * 1.3 * (abs(axp) > 1.5 ? 0.6 : 1.0) + vec3(1.0, 0.85, 0.55) * win * (1.4 - 0.9 * lt);
+              col = mix(col, hc, uMgA.y); } }
+          col += (hid ? 0.0 : 1.0) * smoothstep(0.06, 0.45, tpj) * (aS * g * 1.5 + vec3(1.0, 0.8, 0.5) * g2 * (0.7 + 0.3 * sin(uTime * 2.0 + fk))) * uMgA.y * (0.7 + 0.3 * smoothstep(-0.3, 0.5, dot(normalize(q), uSunDir)));
         }
       }
     }
@@ -3066,11 +3470,11 @@ void main() {
     float fz = dot(uSunDir, uCamFwd);
     if (fz > 0.08) {
       vec2 su = vec2(dot(uSunDir, uCamRight), dot(uSunDir, uCamUp)) / (fz * uTanHalf); vec2 tpl = rsi(camP, uSunDir, 1.0); float vis = (tpl.x < tpl.y && tpl.x > 0.0) ? 0.0 : 1.0;
-      vec2 dd = uv - su; float k = vis * uFlare * smoothstep(1.8, 0.6, length(su));
+      vec2 dd = uv - su; float k = vis * uFlare * smoothstep(1.8, 0.6, length(su)); vec3 sc = uSunColor / max(max(uSunColor.r, max(uSunColor.g, uSunColor.b)), 1e-4), sw = mix(sc, vec3(1.0), 0.22);
       float streak = exp(-abs(dd.y) * 55.0) * exp(-abs(dd.x) * 1.8);
-      col += vec3(0.35, 0.55, 1.0) * streak * 0.28 * k;
+      col += sw * streak * 0.28 * k;
       for (int g = 1; g < 4; g++) { vec2 gp = -su * (0.45 * float(g)); float gr = 0.05 + 0.035 * float(g), rg = length(uv - gp);
-        col += mix(vec3(1.0, 0.6, 0.35), vec3(0.4, 0.7, 1.0), float(g) / 3.0) * (exp(-pow((rg - gr) / 0.012, 2.0)) * 0.10 + exp(-rg * rg / (gr * gr * 0.6)) * 0.04) * k; }
+        col += mix(sw, sc.bgr * 0.6 + 0.4 * sc, float(g) / 3.0) * (exp(-pow((rg - gr) / 0.012, 2.0)) * 0.10 + exp(-rg * rg / (gr * gr * 0.6)) * 0.04) * k; }
     }
   }
   vec3 atm = vec3(0.0);
@@ -3078,8 +3482,8 @@ void main() {
   if (uAurora > 0.01 && uAtmoOn > 0.5 && !moonFront) atm += aurora(ro, rd, sun, tSolid);
   if (uNoct > 0.01 && uAtmoOn > 0.5 && tSolid > 1e8 && !moonFront && uView < 0.5 && dot(ro, rd) < 0.0) {            // noctilucent clouds: electric-blue wisps at the very top of the air, lit by a sun that has already set below
     vec3 tq = ro - rd * dot(ro, rd); float rc = length(tq), ntl = dot(normalize(tq), sun), litb = smoothstep(-0.42, -0.08, ntl) * (1.0 - smoothstep(-0.02, 0.10, ntl));
-    float prof = exp(-pow((rc - 1.04) / 0.02, 2.0)), wav = smoothstep(0.35, 0.8, gnoise(vec3(dot(tq, vec3(1.0, 0.2, 0.0)) * 70.0, tq.y * 160.0, tq.z * 60.0) + uNoiseOff) * 0.5 + 0.5);
-    atm += vec3(0.45, 0.72, 1.0) * prof * litb * (0.3 + wav) * uNoct * 0.9;
+    float prof = exp(-pow((rc - 1.04) / 0.02, 2.0)), wav = smoothstep(0.30, 0.85, gnoise(vec3(dot(tq, vec3(1.0, 0.2, 0.0)) * 14.0, tq.y * 26.0, tq.z * 12.0) + uNoiseOff) * 0.5 + 0.5);
+    atm += vec3(0.45, 0.72, 1.0) * prof * litb * (0.15 + 0.7 * wav) * uNoct * 0.5;
   }
   atm *= mix(vec3(1.0), vec3(1.0, 0.84, 0.66), clamp(uPoll, 0.0, 1.0) * 0.55);              // dirty air: a brown cast to the sky where industry has fouled it
 
@@ -3169,7 +3573,15 @@ void main() { vec2 uv = gl_FragCoord.xy / uRes, st = uDir / vec2(textureSize(uTe
   c += (texture(uTex, uv + st * 1.3846).rgb + texture(uTex, uv - st * 1.3846).rgb) * 0.3162162;
   c += (texture(uTex, uv + st * 3.2308).rgb + texture(uTex, uv - st * 3.2308).rgb) * 0.0702703;
   oc = vec4(c, 1.0); }`;
-const PS_COMP = PH + `uniform sampler2D uScene, uB1, uB2, uB3; uniform vec2 uRes; uniform float uBloom, uFxaa, uVig, uGrain, uCA, uTime, uFilter;
+const PS_COMP = PH + `uniform sampler2D uScene, uB1, uB2, uB3; uniform vec2 uRes; uniform float uBloom, uFxaa, uVig, uGrain, uCA, uTime, uFilter, uDof, uFocus, uMR, uShaft, uTan; uniform vec3 uCP, uCF, uCR, uCU, uSunW, uMP, uStarC; uniform vec2 uShf;
+float sceneDepth(vec2 uv) {                                       // analytic distance to what is drawn at this pixel (planet with its air, or the moon), used for depth of field
+  vec2 q = (uv * uRes - 0.5 * uRes) / (0.5 * uRes.y) - uShf; vec3 rd = normalize(uCF + (uCR * q.x + uCU * q.y) * uTan);
+  float b = dot(uCP, rd), cc = dot(uCP, uCP) - 1.0, disc = b * b - cc, t = 1.0e4;
+  if (disc > 0.0) { float tp = -b - sqrt(disc); if (tp > 0.0) t = tp; }
+  else if (dot(uCP, uCP) - b * b < 1.17 && b < 0.0) t = -b;
+  if (uMR > 0.0) { vec3 oc = uCP - uMP; float b2 = dot(oc, rd), d2 = b2 * b2 - (dot(oc, oc) - uMR * uMR); if (d2 > 0.0) { float tm = -b2 - sqrt(d2); if (tm > 0.0) t = min(t, tm); } }
+  return t;
+}
 vec3 fxaa(vec2 uv, vec2 px) {
   vec3 L = vec3(0.299, 0.587, 0.114), M = texture(uScene, uv).rgb;
   vec3 nw = texture(uScene, uv + vec2(-1.0, -1.0) * px).rgb, ne = texture(uScene, uv + vec2(1.0, -1.0) * px).rgb, sw = texture(uScene, uv + vec2(-1.0, 1.0) * px).rgb, se = texture(uScene, uv + vec2(1.0, 1.0) * px).rgb;
@@ -3186,6 +3598,26 @@ vec3 fxaa(vec2 uv, vec2 px) {
 void main() {
   vec2 uv = gl_FragCoord.xy / uRes, px = 1.0 / uRes;
   vec3 c = uFxaa > 0.5 ? fxaa(uv, px) : texture(uScene, uv).rgb;
+  if (uDof > 0.001) {                                              // depth of field: the planet stays sharp at the focus distance; the far sky, the horizon and a distant moon melt into soft bokeh
+    float t0 = sceneDepth(uv), coc0 = clamp(uDof * abs(t0 - uFocus) / t0, 0.0, 1.0), Rp = 0.03 * uRes.y;
+    vec3 acc = c; float wsum = 1.0;
+    for (int i = 1; i < 22; i++) {
+      float fi = float(i), r = sqrt(fi / 22.0), a = fi * 2.39996; vec2 o = vec2(cos(a), sin(a)) * r;
+      vec2 suv = uv + o * (Rp * coc0) * px;
+      float cs = clamp(uDof * abs(sceneDepth(suv) - uFocus) / sceneDepth(suv), 0.0, 1.0), d = r * Rp * coc0;
+      float w = clamp(cs * Rp - d + 1.0, 0.0, 1.0); acc += texture(uScene, suv).rgb * w; wsum += w;
+    }
+    c = acc / wsum;
+  }
+  if (uShaft > 0.01) {                                             // light shafts: bright air and clouds smeared toward the sun, broken up by whatever blocks them
+    float fz = dot(uSunW, uCF);
+    if (fz > 0.05) {
+      vec2 su = (vec2(dot(uSunW, uCR), dot(uSunW, uCU)) / (fz * uTan) + uShf) * (0.5 * uRes.y) + 0.5 * uRes, d = (su - gl_FragCoord.xy) * px; float len = length(d * vec2(uRes.x / uRes.y, 1.0));
+      vec3 acc = vec3(0.0); float wt = 1.0; vec2 p2 = uv, st = d / 26.0;
+      for (int i = 0; i < 26; i++) { p2 += st; vec3 sm = texture(uScene, p2).rgb; float l = dot(sm, vec3(0.3, 0.59, 0.11)); acc += sm * smoothstep(0.62, 1.0, l) * wt; wt *= 0.935; }
+      c += (acc / 26.0 * 0.5 + vec3(dot(acc, vec3(0.3, 0.59, 0.11))) / 26.0 * 0.5 * uStarC) * uShaft * 1.6 * smoothstep(1.7, 0.15, len);
+    }
+  }
   if (uCA > 0.0) { vec2 d = (uv - 0.5) * uCA * 0.012; c.r = texture(uScene, uv + d).r; c.b = texture(uScene, uv - d).b; }
   c += (texture(uB1, uv).rgb * 0.55 + texture(uB2, uv).rgb * 0.8 + texture(uB3, uv).rgb * 0.45) * uBloom;
   float v = length((uv - 0.5) * vec2(uRes.x / uRes.y, 1.0)); c *= 1.0 - uVig * smoothstep(0.45, 1.15, v);
@@ -3269,7 +3701,7 @@ function pass(pr, texs, dst, f) {
   const U = n => (n in pr.U ? pr.U[n] : (pr.U[n] = gl.getUniformLocation(pr, n)));
   texs.forEach(([n, t], i) => { gl.activeTexture(gl.TEXTURE0 + i); gl.bindTexture(gl.TEXTURE_2D, t.tex); gl.uniform1i(U(n), i); });
   gl.uniform2f(U("uRes"), dst ? dst.w : canvas.width, dst ? dst.h : canvas.height);
-  for (const k in f) { const v = f[k]; Array.isArray(v) ? gl.uniform2f(U(k), v[0], v[1]) : gl.uniform1f(U(k), v); }
+  for (const k in f) { const v = f[k]; if (Array.isArray(v)) { v.length === 3 ? gl.uniform3f(U(k), v[0], v[1], v[2]) : gl.uniform2f(U(k), v[0], v[1]); } else gl.uniform1f(U(k), v); }
   gl.drawArrays(gl.TRIANGLES, 0, 3);
 }
 function runPost(w, h) {
@@ -3283,7 +3715,7 @@ function runPost(w, h) {
     pass(pBl, [["uTex", bA]], cA, { uDir: [1.5, 0] }); pass(pBl, [["uTex", cA]], cB, { uDir: [0, 1.5] });
     pass(pBl, [["uTex", cB]], dA, { uDir: [1.5, 0] }); pass(pBl, [["uTex", dA]], dB, { uDir: [0, 1.5] });                  // a third, very wide scale: the soft halo around the sun, city glow and hot lava
   }
-  pass(pC, [["uScene", scene], ["uB1", bA], ["uB2", cB], ["uB3", dB]], null, { uBloom: S.bloom > 0.001 ? S.bloom + 0.4 * S.cine : 0, uFxaa: S.fxaa && !taa ? 1 : 0, uVig: S.vig + 0.12 * S.cine, uGrain: S.grain, uCA: S.ca, uTime: S.time, uFilter: S.filter || 0 });
+  pass(pC, [["uScene", scene], ["uB1", bA], ["uB2", cB], ["uB3", dB]], null, { uBloom: S.bloom > 0.001 ? S.bloom + 0.4 * S.cine : 0, uFxaa: S.fxaa && !taa ? 1 : 0, uVig: S.vig + 0.12 * S.cine, uGrain: S.grain, uCA: S.ca, uTime: S.time, uFilter: S.filter || 0, uDof: mobOn() ? 0 : (S.dof || 0), uFocus: Math.max(0.2, S.dist - 1.0 + (S.focusOff || 0)), uMR: S.moonRw || 0, uShaft: S.shafts && !mobOn() ? (S.shaftK ?? 1) : 0, uStarC: (() => { const sc = ov("sunCol", S.world.starColor), m = Math.max(sc[0], sc[1], sc[2], 1e-4); return [sc[0] / m, sc[1] / m, sc[2] / m]; })(), uTan: Math.tan(0.5 * S.fov * Math.PI / 180), uCP: S.cam ? S.cam.cp : [0, 0, 3], uCF: S.cam ? S.cam.fwd : [0, 0, -1], uCR: S.cam ? S.cam.right : [1, 0, 0], uCU: S.cam ? S.cam.up : [0, 1, 0], uSunW: S.sunDir, uMP: S.moonMainW || [0, 0, 0], uShf: [S.shift[0], S.shift[1]] });
   gl.useProgram(prog);
 }
 const loc = {}; const L = n => (n in loc) ? loc[n] : (loc[n] = gl.getUniformLocation(prog, n));
@@ -3499,7 +3931,7 @@ const S = {
   quality: Q.has("q") ? +Q.get("q") : 1, auto: Q.get("auto") !== "0", frozen: Q.has("freeze"),
   sunDir: Q.has("sunaz") ? norm3([Math.sin(+Q.get("sunaz")) * 0.95, 0.25, Math.cos(+Q.get("sunaz")) * 0.95]) : norm3([0.8, 0.25, 0.55]), fps: 60, moonAng: 0, hidden: false,
   p: null, fov: 46, timeScale: 1, camOrbit: 0, sunAz: Q.has("sunaz") ? +Q.get("sunaz") * 180 / Math.PI : 55.5, sunEl: 14.6, sunOrbit: 0, sunBright: 1, realSun: false, taa: true, hq: false, cl3: 2, dynClim: true, climTr: 1, climDay: 1, heatTint: 0.25, camEase: 4, rotK: 1, zoomK: 1, invX: false, invY: false, wheelZoom: true, ux: 0, uy: 0, autoCam: false,
-  natDay: 0.85, plank: true, fire: true, dust: true, halo: true, noct: true, corona: true, flare: true, deepSky: true, filter: 0, mega: true, terraVis: true, contactVis: true, pollVis: true, lens: 0.6, cine: Q.has("cine") ? +Q.get("cine") : 0.85, fbK: 1, cloudSz: 1, atmoGain: 0.34, atmoH: 0.07, cShadow: 1, shadow: 1, relief: 0.13, oct: 0, exposure: 0.85, sat: 1.30, stars: 1, keepOv: false, fpsText: "", unit: "F", mult: 1, view: +(Q.get("view") || 0), cloudPh: 0, sm: {}, shift: [0, 0], shiftT: [0, 0], bloom: 0.3, fxaa: true, vig: 0.25, grain: 0.01, ca: 0.15, nebula: 1, civOn: true, pins: true, intelRate: 1, impactRate: 1, climSpeed: 1, wxRate: 1, endless: false, endlessSecs: 1800, worldClock: 0, fading: false, gfxPreset: "high", tFps: 60, maxDpr: 1.25, atmoQ: 16, aurQ: 20, fxAur: true, fxThu: true, fxCity: true, showFps: true, panelA: 0.62, hover: null, chemOn: true, swing: 1, eventRate: 1, coolTime: 240, rand: 1, hist: [],
+  natDay: 0.85, gLens: true, rainbow: true, lanes: true, lpol: true, shafts: true, shaftK: 1, flareK: 1, dof: 0.4, focusOff: 0, plank: true, fire: true, dust: true, halo: true, noct: true, corona: true, flare: true, deepSky: true, filter: 0, mega: true, terraVis: true, contactVis: true, pollVis: true, lens: 0.6, cine: Q.has("cine") ? +Q.get("cine") : 0.85, fbK: 1, cloudSz: 1, atmoGain: 0.34, atmoH: 0.07, cShadow: 1, shadow: 1, relief: 0.13, oct: 0, exposure: 0.85, sat: 1.30, stars: 1, keepOv: false, fpsText: "", unit: "F", mult: 1, view: +(Q.get("view") || 0), cloudPh: 0, sm: {}, shift: [0, 0], shiftT: [0, 0], bloom: 0.3, fxaa: true, vig: 0.25, grain: 0.01, ca: 0.15, nebula: 1, civOn: true, pins: true, intelRate: 1, impactRate: 1, climSpeed: 1, wxRate: 1, endless: false, endlessSecs: 1800, worldClock: 0, fading: false, gfxPreset: "high", tFps: 60, maxDpr: 1.25, atmoQ: 16, aurQ: 20, fxAur: true, fxThu: true, fxCity: true, showFps: true, panelA: 0.62, hover: null, chemOn: true, swing: 1, eventRate: 1, coolTime: 240, rand: 1, hist: [],
 };
 S.tYaw = S.yaw; S.tPitch = S.pitch; S.tDist = S.dist; S.camMode = "free"; S.camLock = false;
 
@@ -3764,14 +4196,14 @@ function setUniforms(W, p, w, h) {
   // moon (world space)
   const a = W.moonPhase + S.moonAng;
   const mF = W.moonF(S.age), md = ov("moonDist", W.moonDist * (0.5 + 0.5 * mF) * (0.55 + 0.45 * W.moonK));
-  S.moonMainW = [md * Math.cos(a), md * Math.sin(a) * Math.sin(W.moonInc), md * Math.sin(a) * Math.cos(W.moonInc)]; u3("uMoonPos", S.moonMainW); u1("uBaseK", (W.moonBases || []).length); u1("uBaseF", W.baseFlash != null ? Math.exp(-(S.time - W.baseFlash) / 4) : 0);
+  S.moonMainW = [md * Math.cos(a), md * Math.sin(a) * Math.sin(W.moonInc), md * Math.sin(a) * Math.cos(W.moonInc)]; u3("uMoonPos", S.moonMainW); u1("uBaseK", (W.moonBases || []).length); { const mf = W.moonFlag; u1("uMoonFlagOn", mf ? 1 : 0); const fc = mf && mf.cols ? flagRGB(mf.cols[0]) : [0.9, 0.2, 0.2]; u3("uMoonFlag", fc); } u1("uBaseF", W.baseFlash != null ? Math.exp(-(S.time - W.baseFlash) / 4) : 0);
   S.moonRw = ov("moonR", W.moonR * mF * W.moonK); u1("uMoonR", S.moonRw); u3("uMoonCol", W.moonCol); u3("uMoonP0", W.moonPar);
   { const se = W.seasonInfo(S.age), calm = 1 - p.hot; S.season = se; u1("uSeas", se.x * se.amp * calm * ov("seasonK", 1)); u1("uItcz", clamp(se.x * 0.22 * Math.sin(se.tilt) / Math.sin(0.41), -0.32, 0.32) * calm); }
   { const px = new Float32Array(9), pr = new Float32Array(3), pc = new Float32Array(9), pp = new Float32Array(9);
     W.moons.forEach((m, i) => { const f = sstep(m.born, m.born + 25, S.age), d = m.dist * (0.5 + 0.5 * f), ca = Math.cos(m.ang), sa = Math.sin(m.ang);
       px.set([d * ca, d * sa * Math.sin(m.inc), d * sa * Math.cos(m.inc)], i * 3); if (f > 0.5) (S.moonW ||= {})[i] = [d * ca, d * sa * Math.sin(m.inc), d * sa * Math.cos(m.inc)]; pr[i] = m.R * f; pc.set(m.col, i * 3); pp.set(m.par, i * 3); });
     gl.uniform3fv(L("uMX[0]"), px); gl.uniform1fv(L("uMXR[0]"), pr); gl.uniform3fv(L("uMXC[0]"), pc); gl.uniform3fv(L("uMXP[0]"), pp); }
-  u1("uTerrAmp", W.terrAmp); u1("uTerrSc", W.terrSc);
+  u1("uTerrAmp", W.terrAmp); u1("uTerrSc", W.terrSc); u1("uBound", S.relief === false ? 0 : 1); u1("uPlants", S.plants === false ? 0 : (S.plantK ?? 1)); u1("uTZ", S.tzLines === false ? 0 : 1); u1("uTZk", W.seed % 97 * 0.37); u1("uCanyon", S.relief === false ? 0 : W.terr.canyon); u1("uCanT", S.age * 0.004); u1("uCanE", sstep(60, 400, S.age) * (1 - 0.4 * (W.eroS ?? 0.3))); u3("uCanD1", W.terr.d1); u3("uCanD2", W.terr.d2); u1("uPeakK", S.relief === false ? 0 : W.terr.peaks); u1("uCrustK", S.relief === false ? 1 : W.terr.crust); u1("uDeform", S.deformFx === false ? 1 : (S.deform ?? 1.6));
   const ringOpa = ov("ringOpa", W.ringOpa * W.ringF), ringIn = ov("ringIn", W.ringIn);
   u1("uRingOn", ringOpa > 0.01 ? 1 : 0); u1("uRingIn", ringIn); u1("uRingOut", ringIn + ov("ringW", (W.ringOut - W.ringIn) * (0.4 + 0.6 * W.ringF))); u1("uRingSeed", W.ringSeed); u1("uRingOpa", ringOpa); u3("uRingCol", ov("ringCol", W.ringCol));
   // climate
@@ -3798,7 +4230,7 @@ function setUniforms(W, p, w, h) {
     W.craters.forEach((c, i) => {
       const pl = W.plates[c.k], P = mulMV(rotAxis(pl.axis, pl.rate * S.driftT * 0.01), c.local), da = S.age - c.born;
       cr.set([P[0], P[1], P[2], c.R], i * 4);
-      cp.set([Math.max(0.1, Math.exp(-da / 450)) * (1 - 0.9 * p.magma), clamp((0.3 + 1.5 * c.s) * Math.exp(-da / (2 + 60 * c.s)), 0, 1) * (p.Ts < 600 ? 1 : 0.4),
+      cp.set([Math.max(S.deformFx === false ? 0.1 : 0.1 + 0.55 * c.s, Math.exp(-da / 450)) * (1 - 0.9 * p.magma), clamp((0.3 + 1.5 * c.s) * Math.exp(-da / (2 + 60 * c.s)), 0, 1) * (p.Ts < 600 ? 1 : 0.4),
               Math.exp(-da / (90 + 260 * c.s)) * clamp(0.4 + 1.5 * c.s, 0, 1), S.time - c.bornT], i * 4);
     });
     for (let i = W.craters.length; i < 16; i++) cp[i * 4 + 3] = -1;
@@ -3808,10 +4240,10 @@ function setUniforms(W, p, w, h) {
       ast.set([P[0], P[1], P[2], clamp(o.t / o.dur, 0, 1)], i * 4); astP.set([o.s, o.type, 0, 0], i * 4); astD.set(o.dir, i * 3);
     });
     gl.uniform4fv(L("uCr[0]"), cr); gl.uniform4fv(L("uCrP[0]"), cp); gl.uniform4fv(L("uAst[0]"), ast); gl.uniform4fv(L("uAstP[0]"), astP); gl.uniform3fv(L("uAstD[0]"), astD); }
-  { const civ = new Float32Array(32), civP = new Float32Array(32), civC = new Float32Array(24), civK = new Float32Array(24), rk = new Float32Array(8), rkP = new Float32Array(8), rkD = new Float32Array(6), sat = new Float32Array(72), toW = v => mulMV(transpose(S.M), v);
+  { const civ = new Float32Array(32), civP = new Float32Array(32), civL = new Float32Array(24), civC = new Float32Array(24), civK = new Float32Array(24), rk = new Float32Array(8), rkP = new Float32Array(8), rkD = new Float32Array(6), sat = new Float32Array(72), toW = v => mulMV(transpose(S.M), v);
     W.civs.slice(0, 8).forEach((v, i) => {
       const P = W.civPos(v), pn = clamp(Math.log10(Math.max(v.pop, 1)) / 10, 0, 1);
-      civ.set([P[0], P[1], P[2], 0.07 + 0.38 * pn], i * 4); civP.set([sstep(0.28, 0.6, v.tech) * (0.5 + 0.5 * pn), 0.25 + 0.75 * pn, sstep(0.05, 0.18, v.tech), v.war ? 1 : 0], i * 4); civC.set(flagRGB(v.flag && v.flag.cols ? v.flag.cols[0] : ""), i * 3); civK.set(W.capPos(v), i * 3);
+      civ.set([P[0], P[1], P[2], 0.07 + 0.38 * pn], i * 4); civP.set([sstep(0.28, 0.6, v.tech) * (0.5 + 0.5 * pn), 0.25 + 0.75 * pn, sstep(0.05, 0.18, v.tech), v.war ? 1 : 0], i * 4); civC.set(flagRGB(v.flag && v.flag.cols ? v.flag.cols[0] : ""), i * 3); civL.set(S.alienLights !== false && v.lit ? v.lit : [1.0, 0.55, 0.2], i * 3); civK.set(W.capPos(v), i * 3);
     });
     for (let i = 0; i < 2; i++) rk[i * 4 + 3] = -1;
     W.rkts.slice(0, 2).forEach((o, i) => {
@@ -3832,6 +4264,12 @@ function setUniforms(W, p, w, h) {
       const A = [Math.cos(node), 0, Math.sin(node)], B = [-Math.sin(node) * Math.cos(inc), Math.sin(inc), Math.cos(node) * Math.cos(inc)];
       sat.set([0, 1, 2].map(j => alt * (Math.cos(ang) * A[j] + Math.sin(ang) * B[j])), i * 3);
     }
+    { const A_ = [], cv = W.civs.slice(0, 8).map((v, i) => ({ v, i, P: [civ[i * 4], civ[i * 4 + 1], civ[i * 4 + 2]], on: civP[i * 4] > 0.05 && civ[i * 4 + 3] > 0 }));
+      for (let i = 0; i < cv.length; i++) for (let j = i + 1; j < cv.length; j++) if (cv[i].on && cv[j].on) { const ab = dot3(cv[i].P, cv[j].P); if (ab > 0.25 && ab < 0.985) A_.push([cv[i].v.pop + cv[j].v.pop, cv[i].P, cv[j].P, norm3(cross3(cv[i].P, cv[j].P))]); }
+      A_.sort((x, y) => y[0] - x[0]); const n_ = Math.min(12, A_.length), la = new Float32Array(36), lb = new Float32Array(36), ln_ = new Float32Array(36);
+      for (let k = 0; k < n_; k++) { la.set(A_[k][1], k * 3); lb.set(A_[k][2], k * 3); ln_.set(A_[k][3], k * 3); }
+      gl.uniform3fv(L("uLnA[0]"), la); gl.uniform3fv(L("uLnB[0]"), lb); gl.uniform3fv(L("uLnN[0]"), ln_); gl.uniform1i(L("uLnC"), S.lanes ? n_ : 0); }
+    gl.uniform3fv(L("uCivL[0]"), civL); { const lead = W.civs.slice().sort((a, b) => b.pop - a.pop)[0], lw = S.alienLights !== false ? (lead && lead.lit ? lead.lit : (W.litClassic ? [1.0, 0.55, 0.2] : hsv2rgb(W.litHue, 0.75, 1))) : [1.0, 0.55, 0.2]; gl.uniform3f(L("uLitW"), lw[0], lw[1], lw[2]); }
     gl.uniform4fv(L("uCiv[0]"), civ); gl.uniform4fv(L("uCivP[0]"), civP); gl.uniform3fv(L("uCivC[0]"), civC); gl.uniform3fv(L("uCivK[0]"), civK); u1("uNatDay", S.nations && S.civOn ? S.natDay : 0); u1("uPoll", S.pollVis ? (W.poll || 0) : 0); u1("uCivAll", "city" in OV ? 1 : 0);
     gl.uniform4fv(L("uRkt[0]"), rk); gl.uniform4fv(L("uRktP[0]"), rkP); gl.uniform3fv(L("uRktD[0]"), rkD); gl.uniform3fv(L("uSatPos[0]"), sat); gl.uniform1i(L("uSatN"), nS); }
   { const A = W.asc, lv = A ? clamp(A.lvl, 0, 1) : 0, mm = S.moonMainW, ships = new Float32Array(32); let nsh = 0;
@@ -3858,17 +4296,17 @@ function setUniforms(W, p, w, h) {
   u1("uCity", S.fxCity ? (Q.has("civ") ? +Q.get("civ") : p.city) : 0); u1("uAurora", S.fxAur ? (Q.has("aur") ? +Q.get("aur") : p.aur) : 0); u1("uThunder", S.fxThu ? (Q.has("thu") ? +Q.get("thu") : p.thu) : 0);
   u1("uAtmoQ", S.atmoQ); u1("uAurQ", S.aurQ);
   u3("uAuroraLo", ov("auroraLo", W.auroraLo)); u3("uAuroraHi", ov("auroraHi", W.auroraHi));
-  { const vs = new Float32Array(NV * 3), vg = new Float32Array(NV), va = new Float32Array(NV), vl = new Float32Array(NV), nVis = Math.round(2 + 8 * clamp(ov("volc", W.volc), 0, 1.25) * 0.9);
+  { const vst_ = new Float32Array(NV * 4), vlc_ = new Float32Array(NV * 3), vs = new Float32Array(NV * 3), vg = new Float32Array(NV), va = new Float32Array(NV), vl = new Float32Array(NV), nVis = Math.round(2 + 8 * clamp(ov("volc", W.volc), 0, 1.25) * 0.9);
     W.volcs.forEach((v, i) => {
       const pl = W.plates[v.k], ang = pl.rate * S.driftT * 0.01;
-      vs.set(mulMV(rotAxis(pl.axis, ang), v.local), i * 3);
+      vs.set(mulMV(rotAxis(pl.axis, ang), v.local), i * 3); { const st = W.volcStyle(v, i); vst_.set([st.shape, st.cal, st.size, st.rays], i * 4); vlc_.set(st.lava, i * 3); }
       vg[i] = i < nVis && p.Ts < 650 ? sstep(0, 1, (S.age - v.born) / 140) : 0; va[i] = v.act; vg[i] *= v.alive; vl[i] = i < nVis && p.Ts < 650 ? v.lava * v.alive : 0;
     });
-    gl.uniform3fv(L("uVSite[0]"), vs); gl.uniform1fv(L("uVGrow[0]"), vg); gl.uniform1fv(L("uVAct[0]"), va); gl.uniform1fv(L("uVLava[0]"), vl); u1("uHaze", 0); S.plKs = S.plKs == null ? p.plK : S.plKs; u1("uPlK", S.plKs); gl.uniform4fv(L("uPl[0]"), W.plumeUniforms(S.age)); gl.uniform3fv(L("uPlA"), W.plumeA); }
+    gl.uniform4fv(L("uVSt[0]"), vst_); gl.uniform3fv(L("uVLC[0]"), vlc_); gl.uniform3fv(L("uVSite[0]"), vs); gl.uniform1fv(L("uVGrow[0]"), vg); gl.uniform1fv(L("uVAct[0]"), va); gl.uniform1fv(L("uVLava[0]"), vl); u1("uHaze", 0); S.plKs = S.plKs == null ? p.plK : S.plKs; u1("uPlK", S.plKs); gl.uniform4fv(L("uPl[0]"), W.plumeUniforms(S.age)); gl.uniform3fv(L("uPlA"), W.plumeA); }
   u1("uView", S.view === 20 ? 0 : S.view); u1("uCut", S.view === 20 ? 1 : 0); { const cl = S.world.layers(S.age); u1("uCoreR", cl.coreR); u1("uInnerR", cl.innerR); u1("uCutHeat", 0.7 + 0.3 * Math.exp(-S.age / 900)); u1("uOcean", p.fill > 0.5 && p.magma < 0.5 ? 1 : 0); } u1("uTs", p.Ts); u1("uEqD", (12 * p.pole + 6) * (1 - p.hot)); u1("uPoD", (26 * p.pole + 4) * (1 - p.hot));
   u1("uMagma", p.magma); u1("uBasalt", p.basalt); u1("uGlow", p.glow); u1("uHot", p.hot);
   u1("uRelief", S.relief); u1("uRA", 1 + S.atmoH); u3("uWSh", p.wSh); u3("uWDp", p.wDp);
-  u1("uNebula", S.nebula); u1("uPlank", S.plank ? clamp(p.life * 1.3, 0, 1) : 0); u1("uFire", S.fire ? 1 : 0); u1("uDust", S.dust ? 1 : 0); u1("uHalo", S.halo ? 1 : 0); u1("uNoct", S.noct ? 1 : 0); u1("uCorona", S.corona ? 1 : 0); u1("uFlare", S.flare ? 1 : 0); u1("uDeep", S.deepSky ? 1 : 0); u1("uExposure", S.exposure); u1("uSat", S.sat); u1("uStars", S.stars); u1("uShadow", S.shadow); u1("uCShadow", S.cShadow); u1("uOct", S.oct);
+  u1("uNebula", S.nebula); u1("uGL", S.gLens ? 1 : 0); u1("uRainbow", S.rainbow ? 1 : 0); u1("uLanes", S.lanes ? 1 : 0); u1("uLPol", S.lpol ? 1 : 0); u1("uPlank", S.plank ? clamp(p.life * 1.3, 0, 1) : 0); u1("uFire", S.fire ? 1 : 0); u1("uDust", S.dust ? 1 : 0); u1("uHalo", S.halo ? 1 : 0); u1("uNoct", S.noct ? 1 : 0); u1("uCorona", S.corona ? 1 : 0); u1("uFlare", S.flare ? (S.flareK ?? 1) : 0); u1("uDeep", S.deepSky ? 1 : 0); u1("uExposure", S.exposure); u1("uSat", S.sat); u1("uStars", S.stars); u1("uShadow", S.shadow); u1("uCShadow", S.cShadow); u1("uOct", S.oct);
   // tectonic plates at their current drifted positions
   const axis = new Float32Array(NP * 3), cs = new Float32Array(NP * 2), rate = new Float32Array(NP), site = new Float32Array(NP * 3),
         cont = new Float32Array(NP), off = new Float32Array(NP * 3);
@@ -3892,6 +4330,7 @@ function updateButtons() {
   $("bCam").textContent = "Camera: " + CAMMODES.find(c => c[0] === S.camMode)[1].toLowerCase() + " (M)"; $("bCam").classList.toggle("on", S.camMode !== "free");
   $("bLock").textContent = "Lock view: " + (S.camLock ? "on" : "off") + " (L)"; $("bLock").classList.toggle("on", S.camLock);
   $("bPause").classList.toggle("on", S.frozen); $("bPlay").classList.toggle("on", !S.frozen && S.tmode === "play"); $("bFF3").classList.toggle("on", !S.frozen && S.tmode === "ff3"); $("bFF5").classList.toggle("on", !S.frozen && S.tmode === "ff5"); $("bReal").classList.toggle("on", !S.frozen && S.tmode === "real"); $("bClim").classList.toggle("on", !S.frozen && S.tmode === "clim");
+  $("bNatCards").classList.toggle("on", S.natCards !== false); $("bTz").classList.toggle("on", S.tzLines !== false); $("bTzCam").classList.toggle("on", S.tzCam !== false);
   $("bCalm").textContent = "Calm with minds: " + (S.civCalm ? "on" : "off"); $("bCalm").classList.toggle("on", S.civCalm);
   { const on = (id, v) => { const b = $(id); if (b) b.classList.toggle("on", !!v); }; on("tpPause", S.frozen); on("tpPlay", !S.frozen && S.tmode === "play"); on("tpFF3", !S.frozen && S.tmode === "ff3"); on("tpFF5", !S.frozen && S.tmode === "ff5"); on("tpClim", !S.frozen && S.tmode === "clim"); on("tpReal", !S.frozen && S.tmode === "real"); }
   $("bEvo").textContent = S.evoPaused ? "Resume evolution (P)" : "Pause evolution (P)";
@@ -4023,6 +4462,14 @@ R(g, "Evolution speed", () => S.evoSpeed, v => S.evoSpeed = v, 0, 10, 0.05);
 R(g, "Time scale", () => S.timeScale, v => S.timeScale = v, 0, 5, 0.05);
 T(g, "Calm the planet when minds appear", () => S.civCalm, v => { S.civCalm = v; updateButtons(); });
 T(g, "Nations by day: borders, fields, cities, capitals", () => S.natDay > 0, v => { S.natDay = v ? 0.85 : 0; });
+R(g, "Impact deformation (how deeply asteroids reshape the crust: basins, rings, far-side chaos)", () => S.deform ?? 1.6, v => S.deform = v, 0.5, 3, 0.1);
+T(g, "3D plants and grasses (zoom right in to see them)", () => S.plants !== false, v => S.plants = v);
+R(g, "Plant density", () => S.plantK ?? 1, v => { S.plantK = v; }, 0.2, 1.5, 0.05);
+T(g, "Impact fallout changes air, land and seas (and raises an antipodal volcano)", () => S.deformFx !== false, v => S.deformFx = v);
+T(g, "Terrain extremes: deep canyons and tall massifs, differing per planet", () => S.relief !== false, v => S.relief = v);
+T(g, "Alien city-light colours (each world and nation lights its cities its own colour)", () => S.alienLights !== false, v => S.alienLights = v);
+T(g, "Resources, civic projects, festivals & values (nations must find resources to progress)", () => S.civLife !== false, v => S.civLife = v);
+T(g, "Nation name cards show stats (tech, health, GDP, power)", () => S.natStats !== false, v => S.natStats = v);
 T(g, "Megastructures: habitats, swarm, ringworld, star shell, engine, lifting", () => S.mega, v => S.mega = v);
 T(g, "Terraforming: greener land, deeper seas", () => S.terraVis, v => S.terraVis = v);
 T(g, "Contact: signals, probes, watchers in the sky", () => S.contactVis, v => S.contactVis = v);
@@ -4036,6 +4483,15 @@ T(g2, "Noctilucent clouds at twilight", () => S.noct, v => S.noct = v);
 T(g2, "Eclipse corona", () => S.corona, v => S.corona = v);
 T(g2, "Sun halo and sun-dogs (low camera)", () => S.halo, v => S.halo = v);
 T(g2, "Lens flare", () => S.flare, v => S.flare = v);
+T(g2, "Gravitational lensing round the sun", () => S.gLens, v => S.gLens = v);
+T(g2, "Rainbows through rain", () => S.rainbow, v => S.rainbow = v);
+T(g2, "Light shafts (god rays)", () => S.shafts, v => S.shafts = v);
+T(g2, "Night-side shipping lanes", () => S.lanes, v => S.lanes = v);
+T(g2, "Light-pollution glow over cities", () => S.lpol, v => S.lpol = v);
+R(g2, "Depth of field strength (0 = off)", () => S.dof, v => S.dof = v, 0, 1.5, 0.01);
+R(g2, "Depth of field focus (nearer ← → farther)", () => S.focusOff, v => S.focusOff = v, -1.5, 3, 0.05);
+R(g2, "Light shaft intensity", () => S.shaftK, v => S.shaftK = v, 0, 3, 0.05);
+R(g2, "Lens flare intensity", () => S.flareK, v => S.flareK = v, 0, 3, 0.05);
 R(g2, "Photo filter (0 off, 1 film, 2 heat, 3 hologram, 4 noir)", () => S.filter, v => S.filter = Math.round(v), 0, 4, 1);
 R(g, "Calm strength (1 = no slowdown)", () => S.civCalmK, v => S.civCalmK = v, 0.05, 1, 0.01);
 
@@ -4140,9 +4596,16 @@ B(g, [["Evolve new flora", () => Wd().evolveFlora(S.age)], ["New life form", () 
 T(g, "Endless: never restart (E)", () => S.endless, v => { S.endless = v; S.worldClock = 0; });
 R(g, "Auto-restart after (s)", () => S.endlessSecs, v => S.endlessSecs = v, 0, 1800, 10);
 
+g = grp("Time zones");
+T(g, "Zone lines, zone clocks and the date line", () => S.tzLines !== false, v => S.tzLines = v);
+T(g, "Clock under the camera", () => S.tzCam !== false, v => S.tzCam = v);
+T(g, "Clock and date on nation cards", () => S.tzCards !== false, v => S.tzCards = v);
+T(g, "12-hour clocks (AM / PM)", () => !!S.tz12, v => S.tz12 = v);
 g = grp("Intelligent life", true);
 T(g, "Intelligent life", () => S.civOn, v => S.civOn = v);
 T(g, "Name pins (N)", () => S.pins, v => S.pins = v);
+R(g, "Endless: life level a world must reach before minds can appear (0.90 = default)", () => S.mindLife ?? 0.90, v => S.mindLife = v, 0.3, 1, 0.01);
+R(g, "Endless: how long life must stay at that level before minds appear (1 = full time)", () => S.mindHold ?? 0.06, v => S.mindHold = v, 0.02, 1, 0.01);
 R(g, "Intelligence pace", () => S.intelRate, v => S.intelRate = v, 0, 3, 0.05);
 B(g, [["Uplift a species", () => { const W = Wd(); if (!W.civs.length) W.spawnCiv(S.age); }], ["Launch rocket", () => { const W = Wd(), l = W.civs.slice().sort((a, b) => b.tech - a.tech)[0]; if (l) W.launchRocket(l); }]]);
 B(g, [["Boost tech", () => Wd().civs.forEach(v => v.tech = Math.min(1, v.tech + 0.15))], ["Catastrophe", () => Wd().civs.forEach(v => { v.pop *= 0.2; v.tech *= 0.6; })]]);
@@ -4230,7 +4693,47 @@ B(g, [["Reset all to auto", () => { for (const k in OV) delete OV[k]; }], ["Rand
 }
 
 // ------------------------------------------------------------------ graphics settings window
-const GKEYS = ["natDay", "plank", "fire", "dust", "halo", "noct", "corona", "flare", "deepSky", "filter", "mega", "terraVis", "contactVis", "pollVis", "realSun", "taa", "hq", "cl3", "dynClim", "climTr", "climDay", "heatTint", "camEase", "rotK", "zoomK", "invX", "invY", "wheelZoom", "bloom", "fxaa", "vig", "grain", "ca", "nebula", "civOn", "cine", "lens", "pins", "intelRate", "impactRate", "climSpeed", "endless", "endlessSecs", "wxRate", "gfxPreset", "quality", "tFps", "maxDpr", "atmoQ", "aurQ", "oct", "shadow", "cShadow", "atmo", "clouds", "stars", "exposure", "sat", "fxAur", "fxThu", "fxCity", "showFps", "panelA", "civCalm", "civCalmK"];
+/* ---- friendlier controls: search, expand/collapse, remembered open sections, icons and counts, long labels wrap ---- */
+(function enhanceControls() {
+  const ICO = { "Simulation": "⏱", "Visual effects": "🎆", "Camera": "🎥", "Mouse & keys": "🖱", "Sun": "☀️", "Climate & planet": "🌡", "Chemistry & events": "⚗️", "Atmosphere": "🌫", "Clouds & weather": "⛈", "Night side": "🌙", "Weather & life": "🌿", "Time zones": "🕒", "Intelligent life": "🏛", "Impacts & formation": "☄️", "Terrain": "⛰", "Surface colours": "🎨", "Moon & rings": "🪐", "Look & quality": "✨", "World": "🌍" };
+  let saved = {}; try { saved = JSON.parse(localStorage.getItem("pfCtlOpen") || "{}"); } catch (e) {}
+  const body = $("sideBody"), ds = [...body.querySelectorAll(":scope > details")];
+  const bar = mk("div", "ctlbar", `<input type="search" id="ctlQ" placeholder="Search controls…  e.g. clouds, nations, moon" autocomplete="off"><div class="ctlbtns"><button id="ctlAll">Expand all</button><button id="ctlNone">Collapse all</button></div><div class="note" id="ctlN"></div>`);
+  body.parentNode.insertBefore(bar, body);
+  const items = d => [...d.children].filter(e => e.tagName !== "SUMMARY");
+  const txt = e => (e.textContent || "").toLowerCase() + " " + [...e.querySelectorAll("option")].map(o => o.textContent.toLowerCase()).join(" ");
+  for (const d of ds) {
+    const sm = d.firstChild, nm = sm.textContent; d.dataset.n = nm; if (nm in saved) d.open = !!saved[nm];
+    const n = items(d).filter(e => e.classList.contains("row") || e.classList.contains("tog") || e.classList.contains("btnrow")).length;
+    sm.innerHTML = `${ICO[nm] || "•"} ${nm} <span class="cnt">${n}</span>`;
+    d.addEventListener("toggle", () => { if (bar.classList.contains("searching")) return; saved[nm] = d.open; try { localStorage.setItem("pfCtlOpen", JSON.stringify(saved)); } catch (e) {} });
+    for (const e of items(d)) { const l = e.querySelector && e.querySelector("label"); if (l && l.textContent.length > 26) e.classList.add("long"); }
+  }
+  const q = $("ctlQ"), note = $("ctlN");
+  const run = () => {
+    const v = q.value.trim().toLowerCase(); bar.classList.toggle("searching", !!v); let hits = 0;
+    for (const d of ds) {
+      const all = !v || d.dataset.n.toLowerCase().includes(v); let any = 0;
+      for (const e of items(d)) { const ok = all || txt(e).includes(v); e.style.display = ok ? "" : "none"; if (ok && (e.classList.contains("row") || e.classList.contains("tog") || e.classList.contains("btnrow"))) any++; }
+      d.style.display = !v || any ? "" : "none"; if (v && any) { d.open = true; hits += any; } else if (!v) d.open = d.dataset.n in saved ? !!saved[d.dataset.n] : d.open;
+    }
+    note.textContent = v ? (hits ? hits + " matching control" + (hits > 1 ? "s" : "") : "Nothing matches — try a shorter word.") : "";
+  };
+  q.oninput = run; q.onkeydown = e => { e.stopPropagation(); if (e.key === "Escape") { q.value = ""; run(); q.blur(); } };
+  q.onkeyup = e => e.stopPropagation(); q.onkeypress = e => e.stopPropagation();
+  $("ctlAll").onclick = () => { q.value = ""; run(); for (const d of ds) { d.open = true; saved[d.dataset.n] = true; } try { localStorage.setItem("pfCtlOpen", JSON.stringify(saved)); } catch (e) {} };
+  $("ctlNone").onclick = () => { q.value = ""; run(); for (const d of ds) { d.open = false; saved[d.dataset.n] = false; } try { localStorage.setItem("pfCtlOpen", JSON.stringify(saved)); } catch (e) {} };
+  const st = document.createElement("style"); st.textContent = `#side .ctlbar { padding:8px 12px 4px; position:sticky; top:0; z-index:2; background:rgba(10,16,30,.92); backdrop-filter:blur(6px); }
+  #side .ctlbar input { width:100%; box-sizing:border-box; background:rgba(24,40,74,.7); color:#e8f0ff; border:1px solid rgba(160,190,255,.35); border-radius:9px; padding:7px 10px; font:inherit; }
+  #side .ctlbtns { display:flex; gap:6px; margin-top:6px; } #side .ctlbtns button { flex:1; padding:4px 6px; font-size:11.5px; }
+  #side .cnt { float:right; color:#7f93bb; font-weight:400; letter-spacing:0; background:rgba(120,160,255,.12); border-radius:999px; padding:0 7px; font-size:10.5px; }
+  #side.closed .ctlbar { display:none; }
+  #side .row.long { flex-wrap:wrap; row-gap:2px; } #side .row.long label { width:100%; line-height:1.3; }
+  #side button.tog { white-space:normal; line-height:1.3; padding:6px 9px; }
+  #side summary:hover { color:#cfe0ff; } #side details[open] > summary { margin-bottom:2px; }`;
+  document.head.appendChild(st);
+})();
+const GKEYS = ["tzLines", "tzCam", "tzCards", "tz12", "plants", "plantK", "deform", "deformFx", "relief", "natCards", "alienLights", "civLife", "natStats", "mindLife", "mindHold", "shaftK", "flareK", "focusOff", "natDay", "gLens", "rainbow", "lanes", "lpol", "shafts", "dof", "plank", "fire", "dust", "halo", "noct", "corona", "flare", "deepSky", "filter", "mega", "terraVis", "contactVis", "pollVis", "realSun", "taa", "hq", "cl3", "dynClim", "climTr", "climDay", "heatTint", "camEase", "rotK", "zoomK", "invX", "invY", "wheelZoom", "bloom", "fxaa", "vig", "grain", "ca", "nebula", "civOn", "cine", "lens", "pins", "intelRate", "impactRate", "climSpeed", "endless", "endlessSecs", "wxRate", "gfxPreset", "quality", "tFps", "maxDpr", "atmoQ", "aurQ", "oct", "shadow", "cShadow", "atmo", "clouds", "stars", "exposure", "sat", "fxAur", "fxThu", "fxCity", "showFps", "panelA", "civCalm", "civCalmK"];
 const PRESETS = {
   minimal:{ cl3: 0, taa: false, hq: false, cine: 0, lens: 0, crit: false, quality: 0.65, auto: true, atmoQ: 4, aurQ: 6, oct: -3, shadow: 0, cShadow: 0, maxDpr: 1, res4k: false, bloom: 0, fxaa: false, vig: 0, grain: 0, ca: 0, nebula: 0, stars: 0.7, fxAur: false, fxThu: false },
   low:    { cl3: 0, taa: false, hq: false, cine: 0.3, lens: 0, crit: false, quality: 0.6, auto: true, atmoQ: 8,  aurQ: 10, oct: -1.5, shadow: 0, cShadow: 0, maxDpr: 1,    res4k: false, bloom: 0,    fxaa: false, vig: 0,    grain: 0,     ca: 0,    nebula: 0 },
@@ -4432,7 +4935,7 @@ $("bLink").onclick = () => {
 $("bExport").onclick = () => {
   const W = S.world, p = S.p, css = [...document.querySelectorAll("style")].map(x => x.textContent).join("\n");
   const nations = W.civs.map(v => `<section class="expn"><h2>${v.name}${v.fell != null ? " (fallen)" : ""}</h2>${civStory(v, W)}</section>`).join("");
-  const html = `<!doctype html><meta charset="utf-8"><title>${p.name} · chronicle</title><style>${css}\nbody{position:static;overflow:auto;background:#0a0f1c;color:#cfdcf5;font-family:system-ui,sans-serif;max-width:860px;margin:24px auto;padding:0 16px} .expn{border-top:1px solid #243557;margin-top:22px;padding-top:6px} h1,h2{color:#fff}</style><h1>${p.name}</h1><p>Seed ${W.seed} · ${W.starName} sun · ${W.size.toFixed(2)}× Earth · ${Math.round(S.age * 2).toLocaleString()} Myr · ${p.liqN} seas · ${p.geo || ""}</p><h2>Recent events</h2><ul>${W.events.map(e => `<li>${Math.round(e.age * 2).toLocaleString()} Myr: ${e.text}</li>`).join("")}</ul>${nations || "<p>No nations have arisen yet.</p>"}`;
+  const html = `<!doctype html><meta charset="utf-8"><title>${W.worldName || p.name} · chronicle</title><style>${css}\nbody{position:static;overflow:auto;background:#0a0f1c;color:#cfdcf5;font-family:system-ui,sans-serif;max-width:860px;margin:24px auto;padding:0 16px} .expn{border-top:1px solid #243557;margin-top:22px;padding-top:6px} h1,h2{color:#fff}</style><h1>${W.worldName || p.name}</h1><p>${W.worldName ? p.name + " · " : ""}Seed ${W.seed} · ${W.starName} sun · ${W.size.toFixed(2)}× Earth · ${Math.round(S.age * 2).toLocaleString()} Myr · ${p.liqN} seas · ${p.geo || ""}</p><h2>Recent events</h2><ul>${W.events.map(e => `<li>${Math.round(e.age * 2).toLocaleString()} Myr: ${e.text}</li>`).join("")}</ul>${nations || "<p>No nations have arisen yet.</p>"}`;
   const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([html], { type: "text/html" })); a.download = `planet-${W.seed}-chronicle.html`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); flash("Story exported"); $("bExport").blur();
 };
 function buildHelp() {
@@ -4501,12 +5004,12 @@ canvas.addEventListener("pointerup", e => { ptrs.delete(e.pointerId); drag = nul
 canvas.addEventListener("pointercancel", e => { ptrs.delete(e.pointerId); drag = null; });
 canvas.addEventListener("pointermove", e => {
   if (ptrs.has(e.pointerId)) ptrs.set(e.pointerId, [e.clientX, e.clientY]);
-  if (ptrs.size === 2 && !S.camLock) { const [a, b] = [...ptrs.values()], d = Math.hypot(a[0] - b[0], a[1] - b[1]); if (pinch0 > 0 && d > 0) S.tDist = clamp(S.tDist * pinch0 / d, 1.04, 14); pinch0 = d; return; }          // two-finger pinch zoom
+  if (ptrs.size === 2 && !S.camLock) { const [a, b] = [...ptrs.values()], d = Math.hypot(a[0] - b[0], a[1] - b[1]); if (pinch0 > 0 && d > 0) S.tDist = clamp(1 + (S.tDist - 1) * pinch0 / d, 1.0006, 14); pinch0 = d; return; }          // two-finger pinch zoom
   if (!drag) return;
-  S.yaw -= (e.clientX - drag[0]) * 0.005 * S.rotK * (S.invX ? -1 : 1); S.pitch = clamp(S.pitch + (e.clientY - drag[1]) * 0.005 * S.rotK * (S.invY ? -1 : 1), -1.45, 1.45);
+  const zs = clamp((S.dist - 1) / 0.25, 0.004, 1); S.yaw -= (e.clientX - drag[0]) * 0.005 * zs * S.rotK * (S.invX ? -1 : 1); S.pitch = clamp(S.pitch + (e.clientY - drag[1]) * 0.005 * zs * S.rotK * (S.invY ? -1 : 1), -1.45, 1.45);
   drag = [e.clientX, e.clientY]; S.tYaw = S.yaw; S.tPitch = S.pitch;
 });
-canvas.addEventListener("wheel", e => { e.preventDefault(); if (S.camLock || !S.wheelZoom) return; if (S.moonCam) { S.moonD = clamp(S.moonD * Math.exp(e.deltaY * 0.0012 * S.zoomK), 1.3, 14); return; } S.tDist = clamp(S.tDist * Math.exp(e.deltaY * 0.0012 * S.zoomK), 1.04, 14); }, { passive: false });
+canvas.addEventListener("wheel", e => { e.preventDefault(); if (S.camLock || !S.wheelZoom) return; if (S.moonCam) { S.moonD = clamp(S.moonD * Math.exp(e.deltaY * 0.0012 * S.zoomK), 1.3, 14); return; } S.tDist = clamp(1 + (S.tDist - 1) * Math.exp(e.deltaY * 0.0012 * S.zoomK), 1.0006, 14); }, { passive: false });
 
 /* ---- bottom graphs: one card per series; each can be shown/hidden, and all at once ---- */
 const fmtT = v0 => { const v = S.world ? S.world.real(v0) : v0; return S.unit === "F" ? `${(v * 9 / 5 + 32).toFixed(0)} °F` : S.unit === "K" ? `${(v + 273.15).toFixed(0)} K` : `${v.toFixed(0)} °C`; };
@@ -4561,6 +5064,7 @@ $("bGraph").onclick = () => {                         // J: hide every graph, or
 const GMAX = 800;
 function sampleGraph(p) {
   const h = { age: S.age, Ts: p.Ts }; for (const sr of SERIES) h[sr.k] = sr.get(p);
+  { const W = S.world; h.lc = W.lifeChance(S.age); h.mc = W.mindChance(S.age); h.poll = W.poll || 0; h.pop = W.civs.reduce((a, v) => a + v.pop, 0); }
   S.hist.push(h); if (S.hist.length > GMAX) S.hist.shift();
 }
 function drawGraph() {
@@ -4825,22 +5329,55 @@ function peopleSVG(species, w = 64, mood) {                       // a bust port
   const gid = "p" + hashStr(key), svg = `<svg class="pic" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="${w}" height="${w}"><defs><radialGradient id="${gid}" cx="0.5" cy="0.35" r="0.8"><stop offset="0" stop-color="#46608c"/><stop offset="1" stop-color="#0d1426"/></radialGradient></defs><rect width="64" height="64" rx="8" fill="url(#${gid})"/>${g}</svg>`;
   PORTRAIT_CACHE.set(key, svg); return svg;
 }
+
+/* ------------------------------------------------------------------ HUD v3 helpers */
+function hudSpark(key, col, uid) {                                // slim glowing line graph of one recorded series (S.hist), scaled to its own range
+  const H = S.hist, n = Math.min(H.length, 60); if (n < 3) return `<svg class="sp" viewBox="0 0 100 20" preserveAspectRatio="none" style="color:${col}"><path class="l" d="M0 10 L100 10" stroke="${col}"/></svg>`;
+  const st = (H.length - 1) / (n - 1), v = []; for (let i = 0; i < n; i++) v.push(+H[Math.round(i * st)][key] || 0);
+  let mn = Math.min(...v), mx = Math.max(...v); if (mx - mn < 1e-9) { mn -= 0.5; mx += 0.5; }
+  const d = v.map((y, i) => (i ? "L" : "M") + (i / (n - 1) * 100).toFixed(1) + " " + (17 - (y - mn) / (mx - mn) * 14).toFixed(1)).join(" ");
+  return `<svg class="sp" viewBox="0 0 100 20" preserveAspectRatio="none" style="color:${col}"><defs><linearGradient id="hg${uid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col}"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs><path class="a" d="${d} L100 20 L0 20Z" fill="url(#hg${uid})"/><path class="l" d="${d}" stroke="${col}"/></svg>`;
+}
+function hudTrend(key) {                                          // recent change of a series: arrow + class
+  const H = S.hist; if (H.length < 10) return ["", ""]; const a = +H[Math.max(0, H.length - 40)][key] || 0, b = +H[H.length - 1][key] || 0, d = b - a, r = Math.max(Math.abs(a), Math.abs(b), 1e-6), t = key === "pop" ? 0.02 : 0.012;
+  return Math.abs(d) / (key === "pop" ? r : 1) < t ? ["▬", ""] : d > 0 ? ["▲", "up"] : ["▼", "dn"];
+}
+function hudRow(ico, v, lab, f, col, tip, key) {
+  const [arrow, cls] = key ? hudTrend(key) : ["", ""], warn = key === "poll" && cls === "up";
+  return `<div class="st sr${warn ? " warn" : ""}" style="--c:${col}" title="${tip}"><div class="sl"><span class="si">${ico}</span><span class="sn">${lab}${warn ? ` <span class="sw">RISING</span>` : ""}</span>${arrow ? `<span class="sd ${cls}">${arrow}</span>` : ""}<b>${v}</b></div>`
+    + (key ? hudSpark(key, col, "i" + key) : `<div class="bar"><i style="width:${Math.round(clamp(f, 0, 1) * 100)}%"></i></div>`) + `</div>`;
+}
+function updateHudR(p) {
+  const el = $("hudR"); if (!el || document.body.classList.contains("mobile") || document.body.classList.contains("hide")) return;
+  const W = S.world, nC = W.civs.length, pop = W.civs.reduce((a, v) => a + v.pop, 0), top = W.civs.slice().sort((a, b) => b.pop - a.pop).slice(0, 5), mx = Math.max(1, ...top.map(v => v.pop));
+  let h = "";
+  h += `<div class="hl" style="color:var(--cy)">PEOPLE</div>`;
+  if (nC) {
+    const [ar, cl] = hudTrend("pop");
+    h += `<div class="pp" style="--lm:#b6ff5c"><b>${fmtPop(pop)}</b>${ar ? `<span class="sr"><span class="sd ${cl}">${ar}</span></span>` : ""}</div>${hudSpark("pop", "#b6ff5c", "r3")}<div style="height:4px"></div>`;
+    h += top.map(v => `<div class="hn" data-i="${W.civs.indexOf(v)}" title="Read this nation's story"><span class="fl">${flagSVG(v.flag, 22)}</span><span class="nm">${v.name}</span><span class="pv">${fmtPop(v.pop)}</span></div><div class="hb"><i style="width:${Math.max(3, v.pop / mx * 100).toFixed(0)}%"></i></div>`).join("");
+  } else h += `<div style="color:#8d93ab;padding:2px 0 6px">No intelligent life yet.</div>`;
+  const evs = (W.events || []).map((e, i) => [e, i]).filter(([e]) => !e.era && e.cat !== "minor").slice(0, 3), EI = { life: "🌱", impact: "☄", planet: "🌍", civ: "🏛" };
+  h += `<div class="hr" style="margin-top:8px"></div><div class="hl" style="color:var(--cy)">HISTORY<button class="all" data-all="1">Show all ›</button></div>`
+    + (evs.length ? evs.map(([e, i]) => { const c = (TLC[e.cat] || TLC.planet)[0], ago = (S.age - e.age) * 2; return `<div class="he${e.loc ? " evl" : ""}" data-i="${i}" style="--c:${c}"><span class="ei">${EI[e.cat] || "•"}</span><div><div class="et">${e.text}</div><div class="ea">${ago < 1 ? "just now" : Math.round(ago).toLocaleString() + " Myr ago"}</div></div></div>`; }).join("") : `<div style="color:#8d93ab;padding:2px 0 6px">Nothing has happened yet.</div>`);
+  setHTML(el, h);
+}
 function updateInfo(p) {
   if ($("lt-data").classList.contains("on")) updateTables(p);
   const W = S.world, ageM = S.age * 2, ageT = ageM >= 1000 ? (ageM / 1000).toFixed(2) + " Gyr" : Math.round(ageM) + " Myr";
-  setHTML($("topbar"), `<b>${p.name}</b><span class="sep">·</span><span class="era">${p.era}</span><span class="sep g">·</span><span class="g">${p.geo}</span><span class="sep z">·</span><span class="z">${W.size.toFixed(2)}× Earth</span><span class="sep">·</span><span>${ageT}</span>${W.civs.length ? `<span class="sep z">·</span><span class="z">${fmtPop(W.civs.reduce((a, v) => a + v.pop, 0))}</span>` : ""}`);
+  setHTML($("topbar"), `<b>${W.worldName || p.name}</b>${W.worldName ? `<span class="sep g">·</span><span class="g">${p.name}</span>` : ""}<span class="sep">·</span><span class="era">${p.era}</span><span class="sep g">·</span><span class="g">${p.geo}</span><span class="sep z">·</span><span class="z">${W.size.toFixed(2)}× Earth</span><span class="sep">·</span><span>${ageT}</span>${W.civs.length ? `<span class="sep z">·</span><span class="z">${fmtPop(W.civs.reduce((a, v) => a + v.pop, 0))}</span>` : ""}`);
   { const nMoon = (W.moonR > 0 ? 1 : 0) + W.moons.filter(m => S.age >= m.born).length, tv = W.real(p.Ts), tT = S.unit === "F" ? `${(tv * 9 / 5 + 32).toFixed(0)}°F` : S.unit === "K" ? `${(tv + 273.15).toFixed(0)} K` : `${tv.toFixed(0)}°C`;
-    setHTML($("infoTxt"), `<h1>${p.name}</h1><div class="sub">seed ${W.seed} · ${W.starName} sun${W.ring ? " · ringed" : ""}${nMoon ? ` · ${nMoon} moon${nMoon > 1 ? "s" : ""}` : ""}</div><div class="stats">${(() => { const c0 = W.ch(S.age), oc = clamp(55 + 130 * p.sea, 0, 95) / 100 * p.fill * (1 - p.magma), tc = clamp((tv + 40) / 120, 0, 1), day = 24 / Math.max(Math.abs(W.spinK), 0.05), nC = W.civs.length, pop = W.civs.reduce((a, v) => a + v.pop, 0), tech = nC ? Math.max(...W.civs.map(v => v.tech)) : 0,
-        tile = (ico, v, lab, f, col, tip) => `<div class="st" style="--c:${col}" title="${tip}"><em>${ico}</em><b>${v}</b><span>${lab}</span><u><i style="width:${Math.round(clamp(f, 0, 1) * 100)}%"></i></u></div>`;
+    setHTML($("infoTxt"), `<h1>${W.worldName || p.name}</h1><div class="sub">${W.worldName ? p.name + " · " : ""}seed ${W.seed}${W.moonName ? " · moon " + W.moonName : ""} · ${W.starName} sun${W.ring ? " · ringed" : ""}${nMoon ? ` · ${nMoon} moon${nMoon > 1 ? "s" : ""}` : ""}</div><div class="stats">${(() => { const c0 = W.ch(S.age), oc = clamp(55 + 130 * p.sea, 0, 95) / 100 * p.fill * (1 - p.magma), tc = clamp((tv + 40) / 120, 0, 1), day = 24 / Math.max(Math.abs(W.spinK), 0.05), nC = W.civs.length, pop = W.civs.reduce((a, v) => a + v.pop, 0), tech = nC ? Math.max(...W.civs.map(v => v.tech)) : 0,
+        tile = (ico, v, lab, f, col, tip, key) => hudRow(ico, v, lab, f, col, tip, key);
       return tile("⏳", ageT, "age", S.age / 2268, "#b79bff", "How old this world is (the bar runs to the present day of an Earth-like planet)")
-        + tile("🌡", tT, "surface", tc, `hsl(${Math.round(215 - 215 * tc)} 85% 62%)`, "Average surface temperature")
-        + tile("🌱", Math.round(clamp(p.life, 0, 1) * 100) + "%", "life", p.life, "#6fe08a", "How much of the world life has taken hold of")
-        + tile("☁", (p.cover * 100).toFixed(0) + "%", "clouds", p.cover, "#bcd4ff", "Cloud cover")
-        + tile("🌊", Math.round(oc * 100) + "%", p.liq && p.liq !== "water" ? "seas" : "ocean", oc, "#4aa8ff", "Share of the surface covered by liquid")
-        + tile("🫁", Math.round(c0.o2 * 42) + "%", "oxygen", c0.o2, "#4de3d0", "Oxygen in the air")
+        + tile("🌡", tT, "surface", tc, `hsl(${Math.round(215 - 215 * tc)} 85% 62%)`, "Average surface temperature", "temp")
+        + tile("🌱", Math.round(clamp(p.life, 0, 1) * 100) + "%", "life", p.life, "#6fe08a", "How much of the world life has taken hold of", "life")
+        + tile("☁", (p.cover * 100).toFixed(0) + "%", "clouds", p.cover, "#bcd4ff", "Cloud cover", "cloud")
+        + tile("🌊", Math.round(oc * 100) + "%", p.liq && p.liq !== "water" ? "seas" : "ocean", oc, "#4aa8ff", "Share of the surface covered by liquid", "ocean")
+        + tile("🫁", Math.round(c0.o2 * 42) + "%", "oxygen", c0.o2, "#4de3d0", "Oxygen in the air", "o2")
         + tile("🕓", day.toFixed(day < 10 ? 1 : 0) + " h" + (W.spinK < 0 ? " ↺" : ""), "day", day / 48, "#ffb36b", "Length of a day" + (W.spinK < 0 ? " (this world spins backwards)" : ""))
-        + (nC && (W.poll || 0) > 0.005 ? tile("🏭", Math.round(W.poll * 100) + "%", "pollution", W.poll, `hsl(${Math.round(120 - 120 * clamp(W.poll * 1.4, 0, 1))} 70% 55%)`, "How badly industry has fouled the air; it chokes cities and browns the sky") : "")
-        + (nC ? tile("👥", fmtPop(pop), "people", tech, "#ffd278", "Everyone alive; the bar shows how advanced the leading nation is") : tile("🧠", "none", "minds", 0, "#ffd278", "No intelligent life yet")); })()}</div>${S.season ? `<div class="seas">${S.season.text}</div>` : ""}`);
+        + (nC && (W.poll || 0) > 0.005 ? tile("🏭", Math.round(W.poll * 100) + "%", "pollution", W.poll, `hsl(${Math.round(120 - 120 * clamp(W.poll * 1.4, 0, 1))} 70% 55%)`, "How badly industry has fouled the air; it chokes cities and browns the sky", "poll") : "")
+        + (nC ? tile("👥", fmtPop(pop), "people", tech, "#ffd278", "Everyone alive; the bar shows how advanced the leading nation is", "pop") : tile("🧠", "none", "minds", 0, "#ffd278", "No intelligent life yet")); })()}</div>${S.season ? `<div class="seas">${S.season.text}</div>` : ""}`);
     const r2 = (k, v) => `<tr><td>${k}</td><td>${v}</td></tr>`, closed = S.lsec || (S.lsec = { Surface: true, Climate: true }), sec = (n, rows, ico = "") => `<div class="sec${closed[n] ? " c" : ""}"><div class="sh" data-s="${n}">${ico} ${n}</div><table>${rows}</table></div>`,
       secD = (n, ico, html) => `<div class="sec${closed[n] ? " c" : ""}"><div class="sh" data-s="${n}">${ico} ${n}</div><div class="sb">${html}</div></div>`;
     const T = W.tree || [], live = T.filter(n => n.died == null), tvv = W.real(p.Ts), nCiv = W.civs.length, popAll = W.civs.reduce((a, v) => a + v.pop, 0), spSet = [...new Set(W.civs.map(v => v.species || W.species))];
@@ -4855,7 +5392,7 @@ function updateInfo(p) {
           + L.map(v => `<div class="nat" data-i="${W.civs.indexOf(v)}" title="Tap to read this nation's story">${flagSVG(v.flag, 24)}<div><b>${civTitle(v)}</b><small>${fmtPop(v.pop)} · ${civEra(v.tech)}${v.war ? " · ⚔ at war" : ""}</small></div></div>`).join(""); }).join("")
       + (W.sats >= 1 ? `<table>${r2("Satellites", Math.floor(W.sats))}</table>` : "") : `<div class="none">No intelligent life yet.</div>`;
     setHTML($("infoRows"),
-      `<div class="glance">${glance}</div>` + (() => { const lc = W.lifeChance(S.age), mc = nCiv ? 1 : clamp(0.28 * lc, 0, 1), bar = (v, c) => `<span class="ob"><i style="width:${Math.round(v * 100)}%;background:${c}"></i></span>`;
+      `<div class="glance">${glance}</div>` + (() => { const lc = W.lifeChance(S.age), mc = W.mindChance(S.age), bar = (v, c) => `<span class="ob"><i style="width:${Math.round(v * 100)}%;background:${c}"></i></span>`;
         return `<div class="odds" title="How kind this world's conditions are to life right now (temperature, water, air). Minds are rarer: they also need time and luck."><div><span>🌱 Chance of life</span>${bar(lc, "#6fe08a")}<b>${Math.round(lc * 100)}%</b></div><div><span>🧠 Chance of minds</span>${bar(mc, "#ffd278")}<b>${nCiv ? "here" : "~" + Math.round(mc * 100) + "%"}</b></div></div>`; })()
       + secD("Life", "🌱", lifeHTML)
       + secD("Intelligent life", "🧠", minds)
@@ -4927,7 +5464,12 @@ window.pfRecord = on => {
   } else if (!on && REC) { try { REC.stop(); } catch (e) {} REC = null; }
   recDot.style.display = REC ? "block" : "none"; if (window.pfApp && window.pfApp.recording) window.pfApp.recording(!!REC);
 };
-function frame(now) {
+let frameErrs = 0;
+function frame(now) {                                                   // a bug in one frame must never stop the game: log it, keep the loop alive
+  try { frame0(now); }
+  catch (e) { frameErrs++; window.PFFRAMEERR = String(e && e.stack || e).slice(0, 600); if (frameErrs <= 5) console.error("frame error", e); if (frameErrs === 1 || frameErrs === 50) { try { flash("⚠ A frame hit an error and was skipped: " + String(e && e.message || e).slice(0, 90)); } catch (x) {} } last = now; requestAnimationFrame(frame); }
+}
+function frame0(now) {
   if (TITLE.on && !$("gfx").classList.contains("open") && (window.PFFRAMES | 0) > 30) { last = now; requestAnimationFrame(frame); return; }          // title screen is up: the planet behind it sleeps
   if (WP.on && now - last < 1000 / WP.fps - 2) { requestAnimationFrame(frame); return; }               // wallpaper mode: gentle frame rate (default 30, ?fps=NN)
   if (S.tFps <= 45 && !WP.on && !SHOT.job && !REC && now - last < 880 / S.tFps) { requestAnimationFrame(frame); return; }      // a 30 fps target is honoured on 60-144 Hz screens, so a phone doesn't render (and heat up) twice as often as needed
@@ -4978,7 +5520,7 @@ function frame(now) {
     if (emaMs > bud * 1.55 && nowT - (S.qChg || 0) > 2500) { S.qChg = nowT;
       if (S.quality <= 0.45) {                                        // resolution is already at the floor: shed effects one at a time instead (restored by choosing a preset)
         S.trim = S.trim || 0; S.trim++;
-        if (S.trim === 1) S.cine = Math.min(S.cine, 0.3), S.hq = false, S.cl3 = Math.min(S.cl3 | 0, 1); else if (S.trim === 2) S.shadow = 0, S.cShadow = 0; else if (S.trim === 3) S.atmoQ = Math.min(S.atmoQ, 8), S.aurQ = Math.min(S.aurQ, 10); else if (S.trim === 4) S.lens = 0, S.crit = false, S.bloom = 0, S.taa = false, S.cl3 = 0;
+        if (S.trim === 1) S.cine = Math.min(S.cine, 0.3), S.hq = false, S.cl3 = Math.min(S.cl3 | 0, 1), S.dof = 0, S.shafts = false, S.lanes = false, S.lpol = 0, S.rainbow = false; else if (S.trim === 2) S.shadow = 0, S.cShadow = 0, S.mega = false, S.gLens = false; else if (S.trim === 3) S.atmoQ = Math.min(S.atmoQ, 8), S.aurQ = Math.min(S.aurQ, 10); else if (S.trim === 4) S.lens = 0, S.crit = false, S.bloom = 0, S.taa = false, S.cl3 = 0;
       } else S.quality = Math.max(0.4, Math.round((S.quality - 0.1) * 20) / 20);
     }
     else if ((emaMs < bud * 0.72 || (S.tFps <= 45 && emaMs < bud * 1.12)) && S.quality < Math.min(S.qMax || 1, S.gfxPreset === "minimal" ? 0.75 : 1) && nowT - (S.qChg || 0) > 12000) { S.qChg = nowT; S.quality = Math.min(1, Math.round((S.quality + 0.05) * 20) / 20); }       // climb back slowly: every resize reallocates the render buffers
@@ -5009,7 +5551,7 @@ function frame(now) {
   const post = postOn();
   SPK.mark(1); bakeSky(W); SPK.mark(3);
   /* idle skip: when everything is paused, nothing is being touched and the camera hasn't moved, the picture can't change, so the GPU is left alone (the canvas keeps its last image) */
-  const sig = [W.seed, S.age, S.yaw, S.pitch, S.dist, S.shift[0], S.shift[1], S.view, w, h, S.sunAz, S.sunEl, S.fov, S.lifeMap, S.crit, S.nations, S.natDay, S.plank, S.fire, S.dust, S.halo, S.noct, S.corona, S.flare, S.deepSky, S.filter, S.mega, S.terraVis, S.contactVis, S.pollVis, W.asc ? Math.round(W.asc.lvl * 40) : 0, W.contact ? 1 : 0, S.exposure, S.bloom, S.fxaa, S.cloudSz, S.relief, S.quality, S.moonCam ? 1 : 0].join("|");
+  const sig = [W.seed, S.age, S.yaw, S.pitch, S.dist, S.shift[0], S.shift[1], S.view, w, h, S.sunAz, S.sunEl, S.fov, S.lifeMap, S.crit, S.nations, S.natDay, S.deform, S.deformFx, S.relief, S.plants, S.plantK, S.tzLines, S.tzCam, S.tzCards, S.tz12, S.natCards, S.alienLights, S.gLens, S.rainbow, S.lanes, S.lpol, S.shafts, S.shaftK, S.flareK, S.focusOff, S.dof, S.plank, S.fire, S.dust, S.halo, S.noct, S.corona, S.flare, S.deepSky, S.filter, S.mega, S.terraVis, S.contactVis, S.pollVis, W.asc ? Math.round(W.asc.lvl * 40) : 0, W.contact ? 1 : 0, S.exposure, S.bloom, S.fxaa, S.cloudSz, S.relief, S.quality, S.moonCam ? 1 : 0].join("|");
   if (sig !== S.lastSig) { S.lastSig = sig; S.dirtyUntil = frames + 150; }
   const idle = S.frozen && frames > S.dirtyUntil && !S.shot && !drag && !S.res4k && frames > 60 && !document.body.classList.contains("mt-view");
   if (sj) shotStep(W, p, post, w, h); else if (idle) S.idleFrames = (S.idleFrames || 0) + 1; else {
@@ -5025,10 +5567,10 @@ function frame(now) {
   if (!sj && (S.thumbs || (!document.body.classList.contains("mobile") && document.body.classList.contains("mt-view"))) && !S.hidden) stepThumbs(W, p, dt);
   if (W.toasts.length > 4) W.toasts.splice(0, W.toasts.length - 4);
   if (W.toasts.length && performance.now() > (S.toastUntil || 0)) { const t = W.toasts.shift(), E = t.msg ? ["", "✦", "#ffb05a"] : ERAS[t.idx], el = $("toast"); el.style.setProperty("--ec", E[2]); el.innerHTML = t.msg ? `<span>✦ ${t.msg}</span>` : `${flagSVG(t.v.flag, 30)}<span>${E[1]} <b>${t.v.name}</b> enters the <b style="color:${E[2]}">${E[0]}</b></span>`; el.classList.add("on"); S.toastUntil = performance.now() + 5200; setTimeout(() => el.classList.remove("on"), 4800); }
-  SPK.mark(5); updatePins(W);
+  SPK.mark(5); updateTZ(W); updatePins(W);
   if (S.shot) { S.shot = false; canvas.toBlob(b => { if (!b) return; const a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = `planet_${W.seed}_${w}x${h}.png`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 20000); }); }
   frames++; window.PFFRAMES = frames;
-  if ((infoT += dt) > 0.25) { infoT = 0; S.fpsText = S.showFps ? `${(1000 / emaMs).toFixed(0)} fps · render ${w}×${h}${SPK.list().length ? " · spikes " + SPK.list().length + " (last " + SPK.list().slice(-1)[0].ms + "ms: " + SPK.list().slice(-1)[0].cause + ")" : ""}` : ""; saveGfx(); updateInfo(p); syncRows();
+  if ((infoT += dt) > 0.25) { infoT = 0; S.fpsText = S.showFps ? `${(1000 / emaMs).toFixed(0)} fps · render ${w}×${h}${SPK.list().length ? " · spikes " + SPK.list().length + " (last " + SPK.list().slice(-1)[0].ms + "ms: " + SPK.list().slice(-1)[0].cause + ")" : ""}` : ""; saveGfx(); updateInfo(p); updateHudR(p); syncRows();
     if (!S.frozen && !S.evoPaused) sampleGraph(p);
     drawGraph(); syncNames(); updateLegend(); renderStory(); updateCards();
     document.documentElement.style.setProperty("--bh", $("bottom").offsetHeight + "px"); layoutCenter(frames < 30);
@@ -5060,11 +5602,10 @@ function tlSet(a, span, now) {
   if (span >= now * 0.995) { TLV.full = true; return; }
   a = clamp(a, 0, now - span); TLV.full = false; TLV.span = span; TLV.a = a; TLV.b = a + span; TLV.pin = a + span >= now - span * 0.02; }
 const GEOEON = { Hadean: 12, Archean: 285, Proterozoic: 205, Phanerozoic: 135, "Deep time": 250 };
-function geoBands() {                                                      // the geologic eras (merged from the GEO table): name, eon, start/end in Myr, and the periods inside
-  if (geoBands.c) return geoBands.c; const out = [];
-  for (const r of GEO) { const nm = r[2] || r[1], l = out[out.length - 1]; if (l && l.eon === r[1] && l.name === nm) { if (r[3]) l.per.push(r[3]); continue; } out.push({ eon: r[1], name: nm, m0: r[0], per: r[3] ? [r[3]] : [] }); }
-  out.forEach((x, i) => { x.m1 = out[i + 1] ? out[i + 1].m0 : x.m0 + 2000; x.hue = GEOEON[x.eon] ?? 200; });
-  return geoBands.c = out;
+function geoBands(W = S.world) {                                           // this world's eras (endless, born of major events): name, eon, start/end in Myr
+  const L = W.eraList, key = W.seed + ":" + L.length; if (geoBands.c && geoBands.k === key && geoBands.w === W) return geoBands.c;
+  const out = L.map(r => ({ eon: r.eon, name: r.era || r.eon, m0: r.m0, per: [], hue: r.hue })); out.forEach((x, i) => { x.m1 = out[i + 1] ? out[i + 1].m0 : 1e12; });
+  geoBands.k = key; geoBands.w = W; return geoBands.c = out;
 }
 const eraAt = ageU => geoBands().find(x => ageU * 2 >= x.m0 && ageU * 2 < x.m1) || null;
 { const tr = $("dkR"), track = $("dkTrack"), tip = $("dkTip"); let drag = null;
@@ -5105,7 +5646,7 @@ function updateDock(force) {
     const d = new Date(), WD = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"], MO = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     setT("ckDate", `${WD[d.getDay()]} · ${MO[d.getMonth()]} ${d.getDate()} · ${d.getFullYear()}`); setT("ckTime", d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }));
     let era = ""; try { const g = W.geoEra(S.age); era = g.era || g.eon; } catch (e) {}
-    { const lc = W.lifeChance(S.age), nC = W.civs.length, mc = nC ? 1 : clamp(0.28 * lc, 0, 1); $("odLb").style.width = Math.round(lc * 100) + "%"; $("odMb").style.width = Math.round(mc * 100) + "%"; setT("odLv", Math.round(lc * 100) + "%"); setT("odMv", nC ? "here" : "~" + Math.round(mc * 100) + "%"); }
+    { const lc = W.lifeChance(S.age), nC = W.civs.length, mc = W.mindChance(S.age); $("odLb").style.width = Math.round(lc * 100) + "%"; $("odMb").style.width = Math.round(mc * 100) + "%"; setT("odLv", Math.round(lc * 100) + "%"); setT("odMv", nC ? "here" : "~" + Math.round(mc * 100) + "%"); }
     setT("ckSim", "⏳ " + Math.round(S.age * 2).toLocaleString() + " Myr"); setT("ckEra", era);
     const spd = S.frozen ? "paused" : S.tmode === "real" ? "real time" : S.tmode === "clim" ? "climate pace" : "×" + S.mult, calm = S.pk < 0.97 ? ` · calm ×${S.pk.toFixed(2)}` : ""; setT("ckSpd", spd + calm); $("ckSpd").classList.toggle("pz", S.frozen || S.evoPaused);
     const ev = W.events || [], last = ev.find(x => !x.era && x.cat !== "minor") || ev.find(x => !x.era), lastEl = $("dkLast");
@@ -5345,19 +5886,28 @@ function civStory(v, W) {
     storm5: ["A storm of corrosive vapour swept {N}, killing {PCT}% of its people and eating the roofs.", "Poison rain fell on {N} for days; {PCT}% of the {S} died of it."],
     aidG: ["{N} opened its granaries and sent grain to {FOE}, and was thanked for it, grudgingly.", "A long line of {N}'s carts carried grain across the border to hungry {FOE}.", "Remembering what hunger was, {N} shared its harvest with {FOE}."],
     aidR: ["Grain from {FOE} reached starving {N} just in time; the {S} have not forgotten it.", "{N} was saved from famine by shipments from {FOE}, and the old rivalry softened.", "Carts of {FOE} grain rolled into {N}'s hungry towns, and no one asked about the price that day."],
+    x_moon: ["{N} landed the first people on the moon, planted its flag in the grey dust, and named the moon {X}. Every nation that came after used the name.", "The first footprints on the moon were {N}'s. They left a flag, a plaque, and a name for the whole shining rock: {X}.", "On the moon's dust {N} raised its flag and called the place {X}, which no one has had the nerve to change."],
+    x_world: ["The {S} of {N} looked at the ground beneath them and the sky above, and called it all {X}. The name outlived every one of them, and in time the whole world used it.", "Nobody remembers who first said it, but the people of {N} began calling their world {X}, and the name stuck.", "{N} was the first people on this world, and so it was {N} that named it: {X}."],
+    x_res: ["After years of searching, surveyors of {N} struck {X} {XI}; the next age of its craft could begin.", "A rich seam of {X} {XI} was found within reach of {N}, and the smiths and builders of the {S} could finally go on.", "A herder's lucky stumble led the people of {N} to {X} {XI}; nothing was the same afterwards.", "{X} {XI}: the word went from camp to camp in {N}, and by winter every prospector had a map."],
+    x_resT: ["Caravans from {FOE} brought {X} {XI} to {N}, and with it the knowledge to use it.", "{N} could not find {X} {XI} on its own land, so it bought it from {FOE}, dearly, and learned to need it.", "Traders of {FOE} sold {X} {XI} to {N}, and a lasting alliance of convenience began."],
+    x_resC: ["The conquest of {FOE} gave {N} its mines of {X} {XI}.", "With the fall of {FOE}, the {X} {XI} of its hills belonged to {N}."],
+    x_resD: ["The {X} {XI} of {N} ran short; shafts were abandoned, prices soared, and the {S} had to dig deeper.", "Cold winters came to {N} when its {X} {XI} gave out; it took forty years to open new seams."],
+    x_task: ["{N} completed its {X} {XI}; people came from far to see it.", "After long labour, the {X} {XI} of {N} was finished, and the whole nation held its breath and then cheered.", "The {X} {XI} was opened in {N}; its builders were honoured, and some of them were even paid.", "The {S} of {N} finished the {X} {XI} ahead of schedule, which nobody had thought possible."],
+    x_hol: ["{N} instituted the {X} {XI}, to be kept ever after.", "A new holiday, the {X} {XI}, entered the calendar of {N}; no one remembers who first proposed it.", "The {X} {XI} began in {N} as a local custom and was soon the nation's favourite day."],
+    x_fest: ["The {X} {XI} was kept in {N} for the first time; the streets filled with song.", "The {Y}th {X} {XI} was the largest {N} had ever seen; the lamps burned until dawn.", "For the {Y}th time {N} kept the {X} {XI}; grandparents told the old stories again and children pretended not to listen."],
     mext: ["{EVT} struck the world, and {PCT}% of the {S} did not live to see the end of it.", "The old histories of {N} speak of {EVT}: {PCT}% of the people were gone within a generation.", "When {EVT} came, {N} was nearly unmade; {PCT}% died, and the rest remembered.", "{EVT} darkened every sky the {S} knew. {N} lost {PCT}% of its people and most of its certainties.", "No law of {N} could answer {EVT}. {PCT}% of the {S} perished, and the survivors rebuilt from rumours."],
     migrate: ["Whole villages of {N} migrated north, then south, then home again, following a rumour of better rain.", "A mass migration reshaped {N}; hundreds of thousands moved to the rich coastal land.", "Drought drove {N}'s herders into the cities, and the cities were never the same."]
   };
   ch.forEach((e, idx) => {
     if (e.type === "found") return;
     const m = mk(((e.n || 0.5) * 1e9 | 0) ^ idx), t = e.type, d = e.d || {}; let txt = "", cls = "";
-    const map = { ...base, L: makeName(m.r), E: m.pick(ST.epi), NUM: Math.floor(2 + m.r() * 48), POP: fmtPop(d.pop || 0), PCT: Math.round((d.loss != null ? d.loss : 0.1 + 0.3 * (e.n || 0.5)) * 100), CHILD: d.child, FOE: d.foe, WHO: d.who || d.what, T2: "the " + m.pick(ST.thing), WONDER: m.pick(ST.wonder), DISC: m.pick(ST.disc) };
+    const map = { ...base, L: makeName(m.r), E: m.pick(ST.epi), NUM: Math.floor(2 + m.r() * 48), POP: fmtPop(d.pop || 0), PCT: Math.round((d.loss != null ? d.loss : 0.1 + 0.3 * (e.n || 0.5)) * 100), CHILD: d.child, FOE: d.foe, WHO: d.who || d.what, T2: "the " + m.pick(ST.thing), WONDER: m.pick(ST.wonder), DISC: m.pick(ST.disc), X: d.x, XI: d.ic || "", Y: d.y };
     map.FAITH = `the ${m.pick(ST.epi).replace(/^the /, "")}-way`.replace(/(^|[ -])(\w)/g, (x, a, b) => a + b.toUpperCase());
     if (t === "reform") { map.OLD = m.pick(ST.gov); do map.NEW = m.pick(ST.gov); while (map.NEW === map.OLD); }
     map.EVT = d.what || "a great catastrophe"; map.CAUSE = ["water rights", "a stolen relic", "a disputed river", "trade tariffs", "an insult at a festival", "religious differences", "grazing land", "an unpaid debt", "a broken marriage alliance"][d.cause != null ? d.cause : 0];
     const pool = t === "aid" ? EV[d.give ? "aidG" : "aidR"] : t === "storm" ? EV["storm" + d.kind] : t === "era" ? E_[d.key] : t === "trait" ? (d.up ? TU : TD)[d.tk] : t === "war" ? EV[d.win ? "warW" : "warL"] : t === "warStart" ? EV[d.aggressor ? "warStartA" : "warStartD"] : EV[t];
     if (pool) txt = stFill(m.pick(pool), map);
-    if (["cat", "impact", "mext", "drought", "flood", "heatwave", "coldsnap", "storm", "fall", "plague", "famine", "ash", "civil", "warL", "warStart", "collapse", "dark", "nuke", "aiB", "annexed", "split", "end_self", "starwar", "smog", "depart", "end_fade"].includes(t)) cls = "fall";
+    if (["cat", "impact", "mext", "drought", "flood", "heatwave", "coldsnap", "storm", "fall", "plague", "famine", "ash", "civil", "warL", "warStart", "collapse", "dark", "nuke", "aiB", "annexed", "split", "end_self", "starwar", "smog", "depart", "end_fade", "x_resD"].includes(t)) cls = "fall";
     if (t === "era" && txt) { const ei = ERA_KEY[d.key]; rows.push(`<div class="tl eraRow" style="--ec:${ERAS[ei][2]}">${yr(e.age)}<b>${ERAS[ei][1]} Enters the ${ERAS[ei][0]}</b><br>${txt[0].toUpperCase() + txt.slice(1)}</div>`); return; }
     if (txt) rows.push(`<div class="tl ${cls}">${yr(e.age)}${txt[0].toUpperCase() + txt.slice(1)}</div>`);
   });
@@ -5385,7 +5935,7 @@ function civStory(v, W) {
   <h3>Eras</h3>${ladder}
   <h3>Origins</h3><p>${origin}</p><p>${stFill(n_.pick(["It entered recorded history in the {M} of the planet, {W}.", "Its first records date from {M}, on {W}.", "Its calendar begins at {M}, {W}."]), { M: myr(v.born), W: env.impacts > 3 ? `a world already pocked by ${env.impacts} impact craters` : env.impacts ? `a world with ${env.impacts} impact ${env.impacts > 1 ? "scars" : "scar"}` : "a world still unscarred by great impacts" })}</p>
   <h3>Culture</h3>${culture}
-  <h3>Heritage</h3>${her}
+  <h3>Heritage</h3>${her}${civxHTML(v)}
   <h3>Chronicle</h3>${rows.length ? rows.join("") : `<p>Nothing of note has been recorded yet. The ${sp} are young.</p>`}
   <h3>Now</h3>${today}`;
 }
@@ -5400,19 +5950,22 @@ function updateCards() {
     const ei = eraIdx(v.tech), E = ERAS[ei];
     return `<div class="cc ${v.war ? "war" : ""}" style="--ec:${E[2]}" data-i="${W.civs.indexOf(v)}"><div class="ct">${flagSVG(v.flag, 26)}<span class="cn">${civTitle(v)}</span><span class="ce era" style="--ec:${E[2]}">${E[1]} ${E[0]}</span></div>`
       + (v.tr && v.tr.some(t => t >= 0.62) ? `<div class="ctr" title="Inherited strengths">${v.tr.map((t, i) => t >= 0.62 ? TRN[i][1] : "").join("")}</div>` : "") + `<div class="cm"><span title="Treasury">💰 ${fmtBig(v.cash || 0)} ${v.cur || "crown"}s</span><span title="Wealth rank">#${v.rkW || 1} wealth</span><span title="Power rank">👑 #${v.rkP || 1} power</span></div>` + bar("Health", hp * 100, hpCol(hp), Math.round(hp * 100) + "%") + bar("Food", foodPct(v), foodCol(v), foodWord(v)) + bar("People", pcs, "#5ab0ff", fmtPop(v.pop)) + bar("Tech", v.tech * 100, "#c58bff", Math.round(v.tech * 100) + "%")
-      + (v.war ? `<div class="cw">⚔ At war with ${v.war.foe.name} · ${Math.min(99, Math.round((S.age - v.war.t) / v.war.dur * 100))}%</div>` : `<div class="cw ok">${(W.civs.length > 1 ? "At peace" : "Stands alone")} · tap for story</div>`) + `</div>`; }).join(""));
+      + (v.war ? `<div class="cw">⚔ At war with ${v.war.foe.name} · ${Math.min(99, Math.round((S.age - v.war.t) / v.war.dur * 100))}%</div>` : `<div class="cw ok">${(W.civs.length > 1 ? "At peace" : "Stands alone")} · tap for story${S.tz && S.tzCards !== false ? " · 🕒 " + tzNation(v).hhmm : ""}</div>`) + `</div>`; }).join(""));
 }
 let LFon = 0, CRon = 0; S.crit = true; const hsl2rgb = (h, s, l) => { const a = s * Math.min(l, 1 - l), f = n => { const k = (n + h * 12) % 12; return l - a * Math.max(-1, Math.min(k - 3, 9 - k, 1)); }; return [f(0), f(8), f(4)]; };
 const lfPins = new Map();
 function updateLifePins(W) {                                    // origin (🌱) and last-refuge (✖) markers for each line of life
-  const c = S.cam, th = Math.tan(0.5 * S.fov * Math.PI / 180), hh = innerHeight / 2, seen = new Set(), show = (S.lifeMap || S.time < (S.lifeFlash || 0)) && c && !S.view;
+  const c = S.cam, th = Math.tan(0.5 * S.fov * Math.PI / 180), hh = innerHeight / 2, seen = new Set(), show = S.lifeMap && c && !S.view;
   if (show) for (const q of W.lifeRanges(S.age)) for (const kind of ["o", "d"]) { const n = q.n, dir = kind === "o" ? n.o : (n.died != null ? n.dloc : null); if (!dir) continue; const key = n.name + kind; seen.add(key);
     let el = lfPins.get(key); if (!el) { el = mk("div", "pin lfp", `<div class="lbl"></div><div class="stem"></div><div class="dot"></div>`); $("pins").appendChild(el); lfPins.set(key, el); el.firstChild.onclick = () => openForm(el._n); } el._n = n;
     const Pw = mulMV(transpose(S.M), dir), vis = dot3(Pw, c.cp) > 1.0, d = [Pw[0] - c.cp[0], Pw[1] - c.cp[1], Pw[2] - c.cp[2]], z = dot3(d, c.fwd);
     if (!vis || z <= 0 || (kind === "d" && q.r > 0.05 && false)) { el.style.display = "none"; continue; } el.style.display = "block";
     const x = innerWidth / 2 + (dot3(d, c.right) / z / th + S.shift[0]) * hh, y = hh - (dot3(d, c.up) / z / th + S.shift[1]) * hh, col = "#" + hsl2rgb(n.hue, 0.85, 0.62).map(v => Math.round(v * 255).toString(16).padStart(2, "0")).join("");
-    el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) translate(-50%, -100%)`; el.firstChild.style.borderColor = col;
-    setHTML(el.firstChild, kind === "o" ? `🌱 ${n.name}<small>arose ${((S.age - n.born) * 2).toFixed(0)} Myr ago · spread ${(Math.min(n.maxR, n.rate * ((n.died ?? S.age) - n.born)) * 6371 * (S.world.size || 1)).toFixed(0)} km</small>` : `✖ ${n.name}<small>last refuge · died out ${((S.age - n.died) * 2).toFixed(0)} Myr ago</small>`);
+    const cmp = S.natCards === false, dead = kind === "d" || n.died != null, ago = a => ((S.age - a) * 2).toFixed(0), km = (Math.min(n.maxR, n.rate * ((n.died ?? S.age) - n.born)) * 6371 * (S.world.size || 1)).toFixed(0);
+    el.classList.toggle("cmp", cmp); el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) translate(-50%, ${cmp ? "-50%" : "-100%"})`; el.firstChild.style.borderColor = kind === "d" ? "rgba(255,140,120,.45)" : col;
+    const disc = `<span class="lf" style="background:${kind === "d" ? "#a8a2b8" : col}">${kind === "d" ? `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1a1620" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>` : `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#0a2a1a" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 19c0-8 5-13 14-14 0 9-5 14-14 14zM5 19l7-7"/></svg>`}</span>`;
+    setHTML(el.firstChild, cmp ? `${disc}<b>${n.name}</b><small>${kind === "o" ? "origin" : "last refuge"}</small>`
+      : `<div class="nh">${disc}<span class="nt"><b>${n.name}</b><small>${kind === "d" ? "Last refuge of an extinct line" : dead ? "Extinct line · where it began" : "Living line · where it began"}</small></span></div><div class="lr"><span>Arose</span><b>${ago(n.born)} Myr ago</b></div><div class="lr"><span>${kind === "d" ? "Peak range" : "Range"}</span><b>${km} km</b></div>${n.died != null ? `<div class="lr"><span>Died out</span><b>${ago(n.died)} Myr ago</b></div>` : ""}<div class="ln">Tap to open in the tree of life</div>`);
   }
   for (const [k, el] of lfPins) if (!seen.has(k)) { el.remove(); lfPins.delete(k); }
 }
@@ -5453,11 +6006,31 @@ $("bCrit").onclick = () => { S.crit = !S.crit; $("bCrit").classList.toggle("on",
 $("bLife").onclick = () => { S.lifeMap = !S.lifeMap; $("bLife").classList.toggle("on", S.lifeMap); $("bLife").blur(); };
 function flyTo(dir) { S.facingSun = false; S.camMode = "free"; S.follow = { dir, until: S.time + 9 }; S.tDist = Math.min(S.tDist, 1.9); }
 $("evts").addEventListener("click", e => { const a = e.target.closest(".evl"); if (a) { const ev = S.world.events[+a.dataset.i]; if (ev && ev.loc) flyTo(ev.loc); } });
+$("hudR").addEventListener("click", e => {
+  const n = e.target.closest(".hn"); if (n) { const v = S.world.civs[+n.dataset.i]; if (v) openStory(v); return; }
+  const ev = e.target.closest(".he.evl"); if (ev) { const x = S.world.events[+ev.dataset.i]; if (x && x.loc) flyTo(x.loc); return; }
+  if (e.target.closest("[data-all]")) { const b = document.querySelector('#ltabs [data-lt="time"]'); if (b) b.click(); const lc = $("leftcol"); if (lc) lc.classList.remove("min"); }
+});
+$("hudHide").onclick = () => { $("bHide").onclick(); $("hudHide").blur(); };
+
 $("civcards").addEventListener("click", e => { const c = e.target.closest(".cc"); if (c) { const v = S.world.civs[+c.dataset.i]; if (v) openStory(v); } });
 S.nations = true;
 function syncNatUI() { $("bottom").classList.toggle("noc", !S.nations); $("bNat").classList.toggle("on", S.nations); }
 $("bNat").onclick = () => { S.nations = !S.nations; syncNatUI(); $("bNat").blur(); };
+$("bTz").onclick = () => { S.tzLines = S.tzLines === false; updateButtons(); $("bTz").blur(); };
+$("bTzCam").onclick = () => { S.tzCam = S.tzCam === false; updateButtons(); $("bTzCam").blur(); };
+$("bNatCards").onclick = () => { S.natCards = S.natCards === false; $("bNatCards").classList.toggle("on", S.natCards !== false); $("bNatCards").blur(); };
 syncNatUI();
+const civxHTML = v => {                                        // a nation's values, resources, civic works and holidays
+  if (!v.vals) return "";
+  const have = RES.map((r, i) => (v.rs & (1 << i)) ? r[1] + " " + r[0] : "").filter(Boolean), seek = RES.map((r, i) => !(v.rs & (1 << i)) && v.tech >= r[2] - 0.06 ? r[1] + " " + r[0] : "").filter(Boolean);
+  const built = TASKS.map((t, i) => v.built && v.built[i] ? t[1] + " " + t[0] + (v.built[i] > 1 ? " ×" + v.built[i] : "") : "").filter(Boolean);
+  return `<h3>Customs &amp; resources</h3><p><b>Values:</b> ${v.vals.map(i => VAL[i][1] + " " + VAL[i][0]).join(" · ")}</p>`
+    + `<p><b>Resources found:</b> ${have.join(" · ") || "none yet"}${seek.length ? `<br><b>Seeking:</b> ${seek.join(" · ")} <small>(progress stalls until found)</small>` : ""}</p>`
+    + (built.length || v.task ? `<p><b>Civic works:</b> ${built.join(" · ") || "none yet"}${v.task ? `<br><b>Building now:</b> ${TASKS[v.task.id][1]} ${TASKS[v.task.id][0]} (${Math.round(100 * v.task.p / v.task.need)}%)` : ""}</p>` : "")
+    + (v.hol && v.hol.length ? `<p><b>Holidays:</b> ${v.hol.map(h => h.ic + " " + h.name + " <small>(day " + (holDay(h.kind) + 1) + " of " + HOLCYC + ")</small>").join(" · ")}</p>` : "")
+    + (S.tz && S.tzCards !== false ? (() => { const t = tzNation(v); return `<p><b>Clock:</b> ${t.hhmm} · ${t.name} · date ${t.day} <small>(${t.ahead})</small>${t.hol ? `<br>🎉 Celebrating today: ${t.hol.ic} ${t.hol.name}` : ""}</p>`; })() : "");
+};
 function openStory(v) { S.storyCiv = v; $("story").classList.add("open"); renderStory(); }
 function closeStory() { S.storyCiv = null; $("story").classList.remove("open"); }
 function renderStory() { const v = S.storyCiv; if (!v) return; $("stTitle").innerHTML = flagSVG(v.flag, 38) + " " + (S.world.civs.includes(v) ? civTitle(v) : v.name + " (fallen)"); setHTML($("stBody"), civStory(v, S.world)); }
@@ -5475,21 +6048,66 @@ function probeLand(dirs) {            // returns [{land, w}] per direction (land
     return dirs.map((_, i) => ({ land: (buf[i * 4] / 255 - 0.5) / 2, w: buf[i * 4 + 1] / 255 }));
   } catch (e) { try { u1("uProbe", 0); gl.bindFramebuffer(gl.FRAMEBUFFER, null); } catch (x) {} return null; }
 }
+/* ---- time zones: 25 zones (UTC-12..UTC+12) of 15 degrees; the date line sits on the far side of the prime meridian; every nation reads its clock and date from its zone ---- */
+const HOLCYC = 12;
+function holDay(kind) { let h = 7; for (const ch of kind) h = (h * 31 + ch.charCodeAt(0)) % 997; return h % HOLCYC; }
+function tzAt(P) {
+  const lonE = -Math.atan2(P[2], P[0]), z = clamp(Math.floor((lonE + Math.PI / 24) * 12 / Math.PI), -12, 12), t = S.tz.ut + z, dd = Math.floor(t / 24), hr = ((t % 24) + 24) % 24, h = Math.floor(hr), m = String(Math.floor((hr % 1) * 60)).padStart(2, "0");
+  return { z, dd, day: S.tz.day + dd, name: "UTC" + (z >= 0 ? "+" : "−") + Math.abs(z), hhmm: S.tz12 ? `${h % 12 || 12}:${m} ${h < 12 ? "AM" : "PM"}` : String(h).padStart(2, "0") + ":" + m };
+}
+function tzNation(v) {
+  const a = tzAt(S.world.civPos(v)), cyc = ((a.day % HOLCYC) + HOLCYC) % HOLCYC;
+  return { hhmm: a.hhmm, name: a.name, day: a.day, ahead: a.dd > 0 ? "one day ahead of the prime meridian" : a.dd < 0 ? "one day behind the prime meridian" : "same date as the prime meridian", hol: (v.hol || []).find(h => holDay(h.kind) === cyc) || null };
+}
+function tzTag(v) { if (!S.tz || S.tzCards === false) return ""; const t = tzNation(v); return ` · 🕒 ${t.hhmm} ${t.name} · day ${t.day}${t.hol ? " · 🎉 " + t.hol.name : ""}`; }
+const tzEls = [];
+function updateTZ(W) {
+  if (!S.M) return;
+  const sp = mulMV(S.M, S.sunDir), ls = -Math.atan2(sp[2], sp[0]), ut = (((12 - ls * 12 / Math.PI) % 24) + 24) % 24;
+  if (!S.tz) S.tz = { ut, day: 1 }; else { if (ut < S.tz.ut - 12) S.tz.day++; else if (ut > S.tz.ut + 12) S.tz.day--; S.tz.ut = ut; }
+  const c = S.cam, th = Math.tan(0.5 * S.fov * Math.PI / 180), hh = innerHeight / 2, on = S.tzLines !== false && c && !S.view && S.dist < 6 && S.pins;
+  if (!tzEls.length) { for (let i = 0; i < 26; i++) { const e = mk("div", "pin", `<div class="lbl" style="font-size:10px;padding:1px 5px;opacity:.8;border-color:rgba(160,200,255,.4);color:#cfe3ff"></div>`); e.style.display = "none"; $("pins").appendChild(e); tzEls.push(e); } }
+  const tn = performance.now();
+  if (!S.tzEl) { S.tzEl = mk("div", null, ""); S.tzEl.style.cssText = "position:absolute;top:10px;left:50%;transform:translateX(-50%);background:rgba(8,12,24,.78);border:1px solid rgba(160,200,255,.35);color:#dfe8ff;padding:4px 12px;border-radius:999px;font:600 12.5px system-ui,sans-serif;white-space:nowrap;display:none"; $("pins").appendChild(S.tzEl); }
+  if (S.tzCam !== false && c && !S.view) { if (tn - (S.tzEl.__t || 0) > 300) { S.tzEl.__t = tn; const cd = norm3(c.cp), a = tzAt(mulMV(S.M, cd)); S.tzEl.textContent = `🕒 ${a.hhmm} · ${a.name} · day ${a.day} — time under the camera`; } S.tzEl.style.display = "block"; } else S.tzEl.style.display = "none";
+  for (let i = 0; i < 26; i++) {
+    const el = tzEls[i]; if (!on) { el.style.display = "none"; continue; }
+    const z = i < 25 ? i - 12 : 99, lonE = i < 25 ? z * Math.PI / 12 : Math.PI, lat = i < 25 ? 0 : 0.5;
+    if (i < 25 && Math.abs(z) === 12 && z < 0) { el.style.display = "none"; continue; }
+    const q = [Math.cos(lat) * Math.cos(lonE), Math.sin(lat), -Math.cos(lat) * Math.sin(lonE)], Pw = mulMV(transpose(S.M), q);
+    if (dot3(Pw, c.cp) <= 1.0) { el.style.display = "none"; continue; }
+    const d = [Pw[0] - c.cp[0], Pw[1] - c.cp[1], Pw[2] - c.cp[2]], zz = dot3(d, c.fwd); if (zz <= 0) { el.style.display = "none"; continue; }
+    el.style.display = "block";
+    el.style.transform = `translate(${(innerWidth / 2 + (dot3(d, c.right) / zz / th + S.shift[0]) * hh).toFixed(1)}px, ${(hh - (dot3(d, c.up) / zz / th + S.shift[1]) * hh).toFixed(1)}px) translate(-50%, -50%)`;
+    if (tn - (el.__t || 0) > 500) { el.__t = tn; const t = S.tz.ut + z, hr = ((t % 24) + 24) % 24, hi = Math.floor(hr);
+      el.firstChild.textContent = i < 25 ? (z === 0 ? "prime · " : z === 12 ? "+12 · " : (z > 0 ? "+" : "−") + Math.abs(z) + " · ") + (S.tz12 ? (hi % 12 || 12) + (hi < 12 ? " AM" : " PM") : String(hi).padStart(2, "0") + ":00") : "🌐 international date line (the date changes here)"; }
+  }
+}
 const pinEls = new Map();
 function updatePins(W) {
   const seen = new Set(), c = S.cam, th = Math.tan(0.5 * S.fov * Math.PI / 180), hh = innerHeight / 2;
   if (S.pins && c && !S.view) for (const v of W.civs) {
     if (v.pop < 1000) continue;
+    if (v.cardUntil === undefined) v.cardUntil = S.time + 14;                // a new nation always gets its card for a short while
+    const dotOnly = S.natCards === false && S.time > v.cardUntil;           // cards hidden: just a point on the globe
     const Pw = mulMV(transpose(S.M), W.civPos(v)), vis = dot3(Pw, c.cp) > 1.0;
-    let el = pinEls.get(v); if (!el) { el = mk("div", "pin", `<div class="lbl"></div><div class="stem"></div><div class="dot"></div>`); el.firstChild.onclick = () => openStory(v); el.firstChild.title = "Click to read this nation's story"; $("pins").appendChild(el); pinEls.set(v, el); }
+    let el = pinEls.get(v); if (!el) { el = mk("div", "pin np", `<div class="lbl"></div><div class="stem"></div><div class="dot"></div>`); el.firstChild.onclick = () => openStory(v); el.firstChild.title = "Click to read this nation's story"; $("pins").appendChild(el); pinEls.set(v, el); }
     seen.add(v);
     const d = [Pw[0] - c.cp[0], Pw[1] - c.cp[1], Pw[2] - c.cp[2]], z = dot3(d, c.fwd);
     if (!vis || z <= 0) { el.style.display = "none"; continue; }
     el.style.display = "block";
     const x = innerWidth / 2 + (dot3(d, c.right) / z / th + S.shift[0]) * hh, y = hh - (dot3(d, c.up) / z / th + S.shift[1]) * hh;
-    el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) translate(-50%, -100%)`;
-    el.firstChild.style.borderColor = ERAS[eraIdx(v.tech)][2];
-    setHTML(el.firstChild, `${flagSVG(v.flag, 20)} ${civTitle(v)}<small>${fmtPop(v.pop)} · ${ERAS[eraIdx(v.tech)][1]} ${civEra(v.tech)}${v.base ? " · 🌙 moon base" : ""}${v.asc ? " · ✦ Ascendant" : ""}</small>${v.war ? `<span class="wr">⚔ at war with ${v.war.foe.name}</span>` : ""}`);
+    const E = ERAS[eraIdx(v.tech)], cmp = dotOnly; if (el.__cmp !== cmp) { el.__cmp = cmp; el.__mT = 0; el.firstChild.__h = null; } el.classList.toggle("cmp", cmp);
+    el.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px) translate(-50%, ${cmp ? "-50%" : "-100%"})`;
+    if (performance.now() - (el.__mT || 0) > 350) { el.__mT = performance.now();
+      const flag = `<span class="nf" style="border-color:${E[2]}">${flagSVG(v.flag, cmp ? 26 : 34)}</span>`;
+      if (cmp) setHTML(el.firstChild, `${flag}<b>${civTitle(v)}</b><small>${fmtPop(v.pop)}</small>${v.war ? `<span class="nw">at war</span>` : ""}`);
+      else { const tz = S.tz && S.tzCards !== false ? tzNation(v) : null, te = Math.round(clamp(v.tech, 0, 1) * 100), hp = Math.round(clamp(v.hp ?? 0.8, 0, 1) * 100);
+        setHTML(el.firstChild, `<div class="nh">${flag}<span class="nt"><b>${civTitle(v)}</b><small>${E[1]} ${civEra(v.tech)} · ${fmtPop(v.pop)}${v.base ? " · 🌙 moon base" : ""}${v.asc ? " · ✦ Ascendant" : ""}</small></span>${tz ? `<span class="nc">${tz.hhmm}<small>${tz.name} · day ${tz.day}</small></span>` : ""}</div>`
+          + `<div class="nm"><span>Tech<b>${te}%</b><i><u style="width:${te}%;background:${E[2]}"></u></i></span><span>Health<b>${hp}%</b><i><u style="width:${hp}%;background:#6ee7a0"></u></i></span></div>`
+          + (S.natStats !== false ? `<span class="st"></span><span class="st st2"></span>` : "")
+          + (tz && tz.hol ? `<div class="nb hol">🎉 Celebrating today: ${tz.hol.ic} ${tz.hol.name}</div>` : "") + (v.war ? `<div class="nb war">⚔ At war with ${v.war.foe.name}</div>` : "")); } }
+    { const st = el.firstChild.querySelector(".st"); if (st) { const tn = performance.now(); if (!st.firstChild || tn - (el.__sT || 0) > 400) { el.__sT = tn; const tx = `${CULT[v.cult] ? CULT[v.cult].ic + " " + CULT[v.cult].n + " · " : ""}Tech ${Math.round(v.tech * 100)}% · Health ${Math.round(clamp(v.hp ?? 0.8, 0, 1) * 100)}% · GDP ${fmtBig(v.gdp || 0)}/yr · Power ${fmtBig(W.str(v))}`; if (st.textContent !== tx) st.textContent = tx; const s2 = el.firstChild.querySelector(".st2"); if (s2) { const rs = RES.map((r, i) => v.rs & (1 << i) ? r[1] : "").join(""), nx = RES.findIndex((r, i) => !(v.rs & (1 << i)) && v.tech >= r[2] - 0.06), t2 = `${rs ? "⛏ " + rs : ""}${nx >= 0 ? " · 🔎 seeking " + RES[nx][1] + " " + RES[nx][0] : ""}${v.task ? " · " + TASKS[v.task.id][1] + " building " + TASKS[v.task.id][0] + " " + Math.round(100 * v.task.p / v.task.need) + "%" : ""}${v.fest && v.fest.until > S.age ? " · " + v.fest.ic + " " + v.fest.name : ""}`; if (s2.textContent !== t2) s2.textContent = t2; } } } }
   }
   for (const [v, el] of pinEls) if (!seen.has(v)) { el.remove(); pinEls.delete(v); }
   updateLifePins(W);
