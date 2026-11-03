@@ -415,6 +415,7 @@
   #hudR > * { flex:none; }
   #hudR svg.sp { display:block; width:100%; height:22px; margin-top:4px; overflow:visible; }
   body:not(.mobile) #rightcol { max-height:calc(100vh - var(--bh) - 76px); } body:not(.mobile) #hudR { max-height:calc(100vh - var(--bh) - 76px); }
+  #stall { position:fixed; left:50%; top:64px; transform:translateX(-50%); z-index:60; display:none; align-items:center; gap:10px; padding:8px 14px; border-radius:999px; background:rgba(40,10,30,.9); border:1px solid var(--mg,#ff5ad2); box-shadow:0 0 18px rgba(255,90,210,.5); color:#ffd6f3; font-size:12px; white-space:nowrap; } #stall.on { display:flex; } #stall b { color:#fff; } #stall button { border-color:var(--mg,#ff5ad2); }
   #hudHide { position:fixed; right:14px; bottom:calc(var(--bh) + 22px); z-index:9; display:flex; align-items:center; gap:8px; height:28px; padding:0 12px; border-radius:999px; font:600 11.5px system-ui,sans-serif; color:#c9cee4; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.16); -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px); cursor:pointer; }
   #hudHide svg { width:14px; height:14px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; } #hudHide kbd { font:9px ui-monospace,Menlo,monospace; color:#8d93ab; border:1px solid rgba(255,255,255,.2); border-radius:5px; padding:1px 5px; }
   #hudHide .sh, body.hide #hudHide .hh { display:none; } body.hide #hudHide .sh { display:inline; } body.hide #hudHide { bottom:14px; opacity:.6; } body.hide #hudHide:hover { opacity:1; }
@@ -1248,7 +1249,7 @@ class World {
     else if (t === "lpeace") { for (const c of this.civs) { c.hp = Math.min(1, c.hp + 0.1); if (c.war) { const f = c.war.foe; c.war = null; if (f) f.war = null; } } this.chronAdd(v, age, "lpeace"); this.log(age, `A long peace settles over the world, led by ${v.name}`); }
     else if (t === "ai") { if (this.rngK() < 0.55) { v.tech = Math.min(1, v.tech + 0.06); v.cash = (v.cash || 0) + 2 * (v.gdp || 0); this.chronAdd(v, age, "aiG"); this.log(age, `Thinking machines transform ${v.name}`); }
       else { v.pop *= 0.55; v.tech *= 0.8; v.hp = Math.max(0, v.hp - 0.4); this.chronAdd(v, age, "aiB", { loss: 0.45 }); this.log(age, `The machines of ${v.name} turn on their makers`); } }
-    else { v.tech = Math.min(1, v.tech + 0.03); this.sats += 0.8; this.nextRocket = Math.min(this.nextRocket, 2); this.chronAdd(v, age, "race"); this.log(age, `${v.name} launches a race to the stars`); }
+    else { v.tech = Math.min(1, v.tech + 0.03); this.sats = Math.min(24, this.sats + 0.8); this.nextRocket = Math.min(this.nextRocket, 2); this.chronAdd(v, age, "race"); this.log(age, `${v.name} launches a race to the stars`); }
   }
   figure(v, age) {                                                  // a single person can bend a nation's fate
     const C = CULT[v.cult] || CULT[1]; let tot = 0; for (const w of C.fig) tot += w; let x = this.rngK() * tot, k = 0; for (let i = 0; i < C.fig.length; i++) if ((x -= C.fig[i]) <= 0) { k = i; break; }
@@ -1283,7 +1284,7 @@ class World {
     if (lead && lead.tech > 0.6 && !lead.asc && this.contactN < 2 && R() < dt * 0.0012 * (this.canAsc ? 2 : 1)) {        // someone out there: a signal, a probe, or only the feeling of being watched
       const t = Math.floor(R() * 3); this.contactN++; this.startEra(age, "contact"); this.chronAdd(lead, age, "contact" + t); { const rq = mulberry32((this.seed + Math.floor(age * 1000)) | 0), z = rq() * 1.4 - 0.2, ph = rq() * TAU, rr = Math.sqrt(1 - z * z); this.contact = { t: age, ty: t, dir: [rr * Math.cos(ph), z, rr * Math.sin(ph)] }; }
       if (t === 0) { for (const v of this.civs) v.tech = Math.min(1, v.tech + 0.02); this.log(age, `A signal from the stars is heard by ${lead.name}`); }
-      else if (t === 1) { this.sats += 0.8; this.log(age, `A probe from another world visits the sky of ${lead.name}`); }
+      else if (t === 1) { this.sats = Math.min(24, this.sats + 0.8); this.log(age, `A probe from another world visits the sky of ${lead.name}`); }
       else this.log(age, `${lead.name} learns that it is being watched`);
     }
   }
@@ -4258,7 +4259,7 @@ function setUniforms(W, p, w, h) {
       const pw = toW(at(k)), pv = toW(at(Math.max(0, k - 0.05))), bw = norm3(pv.map((x, j) => x - pw[j]));
       rk.set([pw[0], pw[1], pw[2], k], i * 4); rkD.set(bw, i * 3); rkP[i * 4] = 0.03 + 0.25 * k;
     });
-    const nS = Math.floor(W.sats);
+    const nS = Math.min(24, Math.floor(W.sats));                                      // the sky shader and this buffer both hold 24 satellites; more than that used to overrun the buffer and kill every frame
     for (let i = 0; i < nS; i++) {
       const inc = ((i * 0.61803) % 1) * Math.PI * 0.9, node = (i * 2.3999) % TAU, alt = 1.07 + 0.012 * (i % 7), w = 0.32 * Math.pow(1.1 / alt, 1.5) * (i % 2 ? 1 : -1), ang = i * 1.7 + S.time * w;
       const A = [Math.cos(node), 0, Math.sin(node)], B = [-Math.sin(node) * Math.cos(inc), Math.sin(inc), Math.cos(node) * Math.cos(inc)];
@@ -6122,6 +6123,20 @@ const TITLE_IMG = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQ
 
 /* ------------------------------------------------------------------ title screen */
 const TITLE = { on: false, sel: 0, mode: "title", box: null };
+/* stall watchdog: if the game stops drawing (lost graphics context, a hung GPU, a stuck frame) say so on screen, with the reason, and offer a one-click reload of this same world */
+(() => {
+  const box = document.createElement("div"); box.id = "stall"; box.innerHTML = `<b>Graphics stopped</b><span id="stallWhy"></span><button id="stallGo">Reload this world</button>`; document.body.appendChild(box);
+  $("stallGo").onclick = () => { try { const W = S.world; location.href = location.pathname + `?notitle=1&seed=${W.seed}&age=${Math.round(S.age)}`; } catch (e) { location.reload(); } };
+  let lastF = -1, lastT = performance.now();
+  setInterval(() => {
+    const now = performance.now(), f = window.PFFRAMES | 0;
+    if (f !== lastF || document.hidden || TITLE.on || WP.on) { lastF = f; lastT = now; box.classList.remove("on"); return; }
+    const sec = (now - lastT) / 1000; if (sec < 4) return;
+    let lost = null; try { lost = gl.isContextLost(); } catch (e) {}
+    $("stallWhy").textContent = ` for ${Math.round(sec)} s · ` + (lost ? "the graphics driver dropped the GPU context" : window.PFFRAMEERR ? "a frame error: " + window.PFFRAMEERR.split("\n")[0].slice(0, 80) : "no frames are being drawn");
+    box.classList.add("on");
+  }, 1000);
+})();
 {
   const T = document.getElementById("title"), tbtns = [...T.querySelectorAll(".tmenu button")], box = $("tbox"), tbB = $("tbB"), SV = "pfSaved";
   const skip = WP.on || !!RESTORED || ["seed", "age", "notitle", "wallpaper", "ov"].some(k => Q.has(k));
