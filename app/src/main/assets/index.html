@@ -561,6 +561,7 @@ const fmtPop = n => n < 1e3 ? Math.round(n) + "" : n < 1e6 ? (n / 1e3).toFixed(n
 const civEra = t => t < 0.08 ? "Tribal" : t < 0.2 ? "Agrarian" : t < 0.35 ? "Industrial" : t < 0.6 ? "Electric age" : t < 0.8 ? "Orbital age" : "Spacefaring";
 const civTitle = v => v.name + " " + (v.tech < 0.08 ? "Tribes" : v.tech < 0.2 ? v.titleA : v.tech < 0.5 ? v.titleB : v.titleC);
 
+const SPACE_T = 0.6;                                              // tech level where a nation reaches orbit (the "Orbital age")
 const ERAS = [["Tribal", "🔥", "#c98b4a"], ["Agrarian", "🌾", "#8bc34a"], ["Industrial", "⚙️", "#9aa7b5"], ["Electric age", "⚡", "#ffd54a"], ["Orbital age", "🛰️", "#5ab0ff"], ["Spacefaring", "🚀", "#c58bff"]];
 const ERA_KEY = { a: 1, i: 2, e: 3, r: 4, s: 5 };
 const eraIdx = t => t < 0.08 ? 0 : t < 0.2 ? 1 : t < 0.35 ? 2 : t < 0.6 ? 3 : t < 0.8 ? 4 : 5;
@@ -1261,6 +1262,7 @@ class World {
       if (v.tech >= t && !this.f2[v.name + key]) { this.f2[v.name + key] = 1; if (key === "i") this.startEra(age, "industry"); this.log(age, `${v.name} ${txt}`); this.chronAdd(v, age, "era", { key }); if (!this.silent) this.toasts.push({ v, idx: ERA_KEY[key] }); }
   }
   agesLog(v, age) {
+    for (const [key, t, txt] of [["fl_sail", 0.04, "set sail in the first ocean-going boats"], ["fl_war", 0.12, "build the first ocean warships"], ["fl_steam", 0.2, "launch steamships and cargo freighters"], ["fl_air", 0.3, "take to the air in the first aeroplanes"], ["fl_cruise", 0.42, "sail the first great cruise liners"], ["fl_jet", 0.5, "fly jets and bombers across the sky"]]) if (v.tech >= t && !this.f2[v.name + key]) { this.f2[v.name + key] = 1; if (!this.silent) this.log(age, `${v.name} ${txt}`); }
     for (const [key, t, txt] of AGES) { const th = t + ((v.tj ||= {})[key] ??= (this.rngK() - 0.5) * 0.03);
       if (v.tech >= th && !this.f2[v.name + key]) { this.f2[v.name + key] = 1; this.chronAdd(v, age, key); if (t >= 0.1) this.log(age, `${v.name} ${txt}`); } }
   }
@@ -1319,7 +1321,7 @@ class World {
     { const pw = v => 0.45 * Math.log10(1 + this.str(v)) + 0.3 * Math.log10(1 + (v.gdp || 0)) + 2.5 * v.tech;
       this.civs.slice().sort((a, b) => ((b.gdp || 0) + 0.1 * (b.cash || 0)) - ((a.gdp || 0) + 0.1 * (a.cash || 0))).forEach((v, i) => v.rkW = i + 1);
       this.civs.slice().sort((a, b) => pw(b) - pw(a)).forEach((v, i) => v.rkP = i + 1); }
-    for (const v of this.civs.filter(v => v.pop < 200)) { v.fell = age; v.war = null;
+    for (const v of this.civs.filter(v => v.pop < 200)) { v.fell = age; v.war = null; (this.fallen ||= []).push({ v, pos: this.capPos(v).slice(), name: v.name, tech: v.tech }); if (this.fallen.length > 30) this.fallen.shift();
       if (v.annexed) { this.chronAdd(v, age, "annexed", { foe: v.annexed }); this.log(age, `${v.name} is absorbed by ${v.annexed}`); }
       else if (v.departed) { this.chronAdd(v, age, "depart"); this.log(age, `${v.name} departs the world for the stars`); }
       else if (v.merged) { this.chronAdd(v, age, "merge", { foe: v.merged }); this.log(age, `${v.name} merges into the mind of ${v.merged}`); }
@@ -1413,11 +1415,12 @@ class World {
   }
   stepK(dt, age, top, lead) {                                       // the late-game systems: pollution, great figures, ruins, empires, dangerous centuries, contact
     const R = () => this.rngK();
-    let out = 0; for (const v of this.civs) if (v.tech > 0.2 && !v.asc) out += v.pop / 1e9 * v.tech * v.tech * (1 - 0.85 * sstep(0.6, 0.95, v.tech));        // advanced nations clean up: fusion, recycling and clean industry cut their pollution
+    let out = 0; for (const v of this.civs) if (v.tech > 0.2 && !v.asc) out += v.pop / 1e9 / Math.pow(this.size, 1.6) * v.tech * v.tech * (1 - 0.92 * sstep(0.6, 0.95, v.tech));        // advanced nations clean up: fusion, recycling and clean industry cut their pollution
     this.poll = clamp(this.poll + (out * 0.02 - 0.01 * this.poll) * dt * (this.asc && this.asc.lvl > 0.5 ? 0.3 : 1), 0, 1);
     for (const v of this.civs.slice()) {
       if (!v.tr) continue;
       if (this.poll > 0.15 && !v.asc) { v.hp = Math.max(0, (v.hp ?? 0.8) - dt * 0.012 * (this.poll - 0.15) * (1 - 0.6 * v.tr[4])); v.crop = Math.min(v.crop ?? 1, 1 - 0.35 * this.poll); }
+      if (v.tech > 0.05 && !v.asc && typeof probeLand === "function" && age >= (v.nextWet ??= age + 6)) this.checkCapital(v, age);       // the land can sink: a capital that ends up in the sea must move to dry land
       if (v.tech > 0.1 && v.pop > 2e4 && !v.asc && age >= (v.nextCap ??= age + 60 + 160 * this.rngM())) {                  // a capital can move: to the coast for trade, inland for safety, or to a younger city
         v.nextCap = age + 120 + 260 * this.rngM(); const rm = this.rngM, why = ["to the coast, for the sake of trade", "far inland, away from raiders", "to a younger, growing city", "to the old holy city", "to a fresh site on the plains"][Math.floor(rm() * 5)], ang = rm() * TAU, rad = 0.05 + 0.18 * rm();
         const L = norm3(v.local), a = norm3(cross3(L, Math.abs(L[1]) > 0.9 ? [1, 0, 0] : [0, 1, 0])), b = cross3(L, a);
@@ -1438,10 +1441,21 @@ class World {
     }
   }
   hasMoon(age) { return this.moonR > 0 || this.moons.some(m => age >= m.born + 25); }
+  checkCapital(v, age) {
+    v.nextWet = age + 6; const L0 = this.capLocal ? (v.capB ? this.capLocal(v) : v.local) : v.local, pl = this.plates[v.k], R = rotAxis(pl.axis, pl.rate * S.driftT * 0.01), here = probeLand([mulMV(R, norm3(L0))]);
+    if (!here) return; if (here[0].land >= 0) { v.wetT = null; return; }
+    const L = norm3(L0), a = norm3(cross3(L, Math.abs(L[1]) > 0.9 ? [1, 0, 0] : [0, 1, 0])), b = cross3(L, a), cand = [];
+    for (const rad of [0.04, 0.09, 0.16, 0.26]) for (let k = 0; k < 6; k++) { const an = k / 6 * TAU + rad * 11; cand.push({ rad, l: norm3(L.map((x, j) => x * Math.cos(rad) + (a[j] * Math.cos(an) + b[j] * Math.sin(an)) * Math.sin(rad))) }); }
+    const res = probeLand(cand.map(c => mulMV(R, c.l))), best = res ? cand.find((c, i) => res[i].land > 0.03) : null;
+    if (best) { v.capA = L0; v.capB = best.l; v.capT = age; v.wetT = null; this.chronAdd(v, age, "capital", { what: "to dry land, after the sea swallowed the old capital" }); this.log(age, `The sea swallows the capital of ${v.name}; it rebuilds on dry land`, this.civPos(v)); return; }
+    if (v.wetT == null) { v.wetT = age; this.log(age, `The capital of ${v.name} is under water and there is no dry ground near it`, this.civPos(v)); }
+    if (age - v.wetT > 20) { v.hp = Math.max(0, (v.hp ?? 0.8) - 0.06); v.pop *= 0.96; }                    // no land to rebuild on: the nation slowly dies off
+  }
+  moonSees(v) { const M = S.moonMainW; if (!M || !S.M || typeof transpose !== "function") return true; const c = mulMV(transpose(S.M), this.capPos(v)); return dot3(c, [M[0] - c[0], M[1] - c[1], M[2] - c[2]]) > 0; }      // is the moon above this capital's horizon right now?
   stepBases(dt, age, top) {                                         // advanced nations fly a real mission to the moon; if it lands, a small base is founded
     this.moonBases = (this.moonBases || []).filter(b => this.civs.includes(b.civ));
     if (this.hasMoon(age) && this.rkts.length < 2 && !this.rkts.some(o => o.moon) && this.moonBases.length < 3 && (this.nextMoon ??= 0) <= age) for (const v of this.civs) {
-      if (v.tech < 0.82 || v.base || v.pop < 5e5 || this.rngC() > dt * 0.02) continue;
+      if (v.tech < 0.82 || v.base || v.pop < 5e5 || this.rngC() > dt * 0.02) continue; if (!this.moonSees(v)) continue;           // a mission can only leave while the moon is in sight of the capital
       this.rkts.push({ civ: v, t: 0, dur: 32, moon: true, fail: this.rngC() < 0.12, pl: this.civPos(v) }); v.rk = (v.rk || 0) + 1;
       this.log(age, `${v.name} launches a mission to the moon`); break;
     }
@@ -4242,6 +4256,7 @@ function* rivJob(W, p, opts) {                                   // runs in smal
   const buf = new Uint8Array(N * 4); gl.bindBuffer(gl.PIXEL_PACK_BUFFER, pbo); try { gl.getBufferSubData(gl.PIXEL_PACK_BUFFER, 0, buf); } finally { gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null); }
   const h = new Float32Array(N), land = new Uint8Array(N);                    // north-up rows
   for (let y = 0; y < Hd; y++) { if (!(y & 31)) yield; for (let x = 0; x < Wd; x++) { const i = (Hd - 1 - y) * Wd + x, j = (y * Wd + x) * 4, v = (buf[j] * 256 + buf[j + 1]) / 65535; h[i] = (v - 0.5) / 2; land[i] = h[i] > 0.002 ? 1 : 0; } }
+  RIV.mask = land; RIV.mW = Wd; RIV.mH = Hd; RIV.maskW = W;                       // the sea map is shared with the ships
   const src = new Float32Array(N), wet = p.wet, kW = clamp(0.5 + 0.9 * (wet + 0.2), 0.08, 1.5);
   for (let y = 0; y < Hd; y++) { if (!(y & 63)) yield; const lat = (0.5 - (y + 0.5) / Hd) * Math.PI, T = W.sstAt(p, lat) - 9 * Math.abs(Math.sin(lat)), rain = clamp(0.55 + 0.4 * Math.cos(7.2 * lat), 0.12, 1) * kW, ice = 0.25 + 0.75 * sstep(-14, 0, T);
     for (let x = 0; x < Wd; x++) { const i = y * Wd + x; if (land[i]) src[i] = Math.max(0.04, rain * ice * (0.8 + 0.4 * Math.sin(x * 12.9898 + y * 78.233))); } }
@@ -4689,6 +4704,7 @@ R(g, "Plant density", () => S.plantK ?? 1, v => { S.plantK = v; }, 0.2, 1.5, 0.0
 T(g, "Impact fallout changes air, land and seas (and raises an antipodal volcano)", () => S.deformFx !== false, v => S.deformFx = v);
 T(g, "Terrain extremes: deep canyons and tall massifs, differing per planet", () => S.relief !== false, v => S.relief = v);
 T(g, "Alien city-light colours (each world and nation lights its cities its own colour)", () => S.alienLights !== false, v => S.alienLights = v);
+T(g, "Aeroplanes, contrails and ships (sea and air traffic)", () => S.traffic !== false, v => S.traffic = v);
 T(g, "Resources, civic projects, festivals & values (nations must find resources to progress)", () => S.civLife !== false, v => S.civLife = v);
 T(g, "Megastructures: habitats, swarm, ringworld, star shell, engine, lifting", () => S.mega, v => S.mega = v);
 T(g, "Terraforming: greener land, deeper seas", () => S.terraVis, v => S.terraVis = v);
@@ -4970,7 +4986,7 @@ B(g, [["Reset all to auto", () => { for (const k in OV) delete OV[k]; }], ["Rand
     addEventListener("pointerdown", e => { if (side.classList.contains("closed") || document.body.classList.contains("mobile")) return; if (e.target.closest("#side, #dxCtl")) return; side.classList.add("closed"); }, true);
   }
 })();
-const GKEYS = ["tzLines", "hoverTip", "tzCards", "tz12", "plants", "plantK", "deform", "deformFx", "relief", "natCards", "alienLights", "civLife", "natStats", "mindLife", "mindHold", "shaftK", "flareK", "focusOff", "natDay", "gLens", "rainbow", "lanes", "lpol", "shafts", "dof", "plank", "fire", "dust", "halo", "noct", "corona", "flare", "deepSky", "filter", "mega", "terraVis", "contactVis", "pollVis", "realSun", "taa", "hq", "cl3", "dynClim", "climTr", "climDay", "heatTint", "camEase", "rotK", "zoomK", "invX", "invY", "wheelZoom", "bloom", "fxaa", "vig", "grain", "ca", "nebula", "civOn", "cine", "lens", "pins", "intelRate", "impactRate", "climSpeed", "endless", "endlessSecs", "wxRate", "gfxPreset", "quality", "tFps", "maxDpr", "atmoQ", "aurQ", "oct", "shadow", "cShadow", "atmo", "clouds", "stars", "exposure", "sat", "fxAur", "fxThu", "fxCity", "showFps", "panelA", "civCalm", "civCalmK"];
+const GKEYS = ["traffic", "tzLines", "hoverTip", "tzCards", "tz12", "plants", "plantK", "deform", "deformFx", "relief", "natCards", "alienLights", "civLife", "natStats", "mindLife", "mindHold", "shaftK", "flareK", "focusOff", "natDay", "gLens", "rainbow", "lanes", "lpol", "shafts", "dof", "plank", "fire", "dust", "halo", "noct", "corona", "flare", "deepSky", "filter", "mega", "terraVis", "contactVis", "pollVis", "realSun", "taa", "hq", "cl3", "dynClim", "climTr", "climDay", "heatTint", "camEase", "rotK", "zoomK", "invX", "invY", "wheelZoom", "bloom", "fxaa", "vig", "grain", "ca", "nebula", "civOn", "cine", "lens", "pins", "intelRate", "impactRate", "climSpeed", "endless", "endlessSecs", "wxRate", "gfxPreset", "quality", "tFps", "maxDpr", "atmoQ", "aurQ", "oct", "shadow", "cShadow", "atmo", "clouds", "stars", "exposure", "sat", "fxAur", "fxThu", "fxCity", "showFps", "panelA", "civCalm", "civCalmK"];
 const PRESETS = {
   minimal:{ cl3: 0, taa: false, hq: false, cine: 0, lens: 0, crit: false, quality: 0.65, auto: true, atmoQ: 4, aurQ: 6, oct: -3, shadow: 0, cShadow: 0, maxDpr: 1, res4k: false, bloom: 0, fxaa: false, vig: 0, grain: 0, ca: 0, nebula: 0, stars: 0.7, fxAur: false, fxThu: false },
   low:    { cl3: 0, taa: false, hq: false, cine: 0.3, lens: 0, crit: false, quality: 0.6, auto: true, atmoQ: 8,  aurQ: 10, oct: -1.5, shadow: 0, cShadow: 0, maxDpr: 1,    res4k: false, bloom: 0,    fxaa: false, vig: 0,    grain: 0,     ca: 0,    nebula: 0 },
@@ -5881,7 +5897,7 @@ function frame0(now) {
   if (!sj && (S.thumbs || (!document.body.classList.contains("mobile") && document.body.classList.contains("mt-view"))) && !S.hidden) stepThumbs(W, p, dt);
   if (W.toasts.length > 4) W.toasts.splice(0, W.toasts.length - 4);
   if (W.toasts.length && performance.now() > (S.toastUntil || 0)) { const t = W.toasts.shift(), E = t.msg ? ["", "✦", "#ffb05a"] : ERAS[t.idx], el = $("toast"); el.style.setProperty("--ec", E[2]); el.innerHTML = t.msg ? `<span>✦ ${t.msg}</span>` : `${flagSVG(t.v.flag, 30)}<span>${E[1]} <b>${t.v.name}</b> enters the <b style="color:${E[2]}">${E[0]}</b></span>`; el.classList.add("on"); S.toastUntil = performance.now() + 5200; setTimeout(() => el.classList.remove("on"), 4800); }
-  SPK.mark(5); updateTZ(W); updatePins(W); try { updateHover(W); } catch (e) { window.PFHOVERR = String(e); } try { warFx(W); } catch (e) { window.PFWARERR = String(e); }
+  SPK.mark(5); updateTZ(W); updatePins(W); try { updateHover(W); } catch (e) { window.PFHOVERR = String(e); }
   if (S.shot) { S.shot = false; canvas.toBlob(b => { if (!b) return; const a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = `planet_${W.seed}_${w}x${h}.png`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 20000); }); }
   frames++; window.PFFRAMES = frames;
   if ((infoT += dt) > 0.25) { infoT = 0; S.fpsText = S.showFps ? `${(1000 / emaMs).toFixed(0)} fps · render ${w}×${h}${SPK.list().length ? " · spikes " + SPK.list().length + " (last " + SPK.list().slice(-1)[0].ms + "ms: " + SPK.list().slice(-1)[0].cause + ")" : ""}` : ""; saveGfx(); updateInfo(p); updateHudR(p); syncRows();
@@ -6404,13 +6420,12 @@ function updateTZ(W) {
    Wars are drawn on a 2D layer above the globe. How a war looks depends on who is fighting and how far apart they are:
    close neighbours march armies at each other; industrial nations add missile barrages; once a side has reached orbit it can
    strike anyone from space, and when both have, fleets fight in the sky above them. */
-const SPACE_T = 0.6;                                              // tech level where a nation reaches orbit (the "Orbital age")
 function warInfo(a, b, W) {                                       // what kind of war is this? (also used by the HUD)
   const ang = Math.acos(clamp(dot3(W.civPos(a), W.civPos(b)), -1, 1)), mt = Math.max(a.tech, b.tech), close = ang < 0.5 + 0.9 * mt, sa = a.tech >= SPACE_T, sb = b.tech >= SPACE_T;
   const kind = sa && sb ? "space" : sa || sb ? "orbit" : mt >= 0.35 ? "missile" : "land";
   return { ang, close, kind, sa, sb, label: { space: "space war", orbit: "orbital strikes", missile: "missile war", land: close ? "land war" : "land war" }[kind] };
 }
-const WF = { cv: null, cx: null, st: new WeakMap(), scorch: [], last: 0 };
+const WF = { cv: null, cx: null, st: new WeakMap(), scorch: [], last: 0, W: null, air: [], old: [], sea: [], sh: [], ex: [], blasts: [], graves: [], fin: [], live: new Map(), known: new Map(), nxA: 0, nxS: 0, clk: 0 };
 const wfCol = (v, i = 0, fb = "#ffb454") => (v.flag && v.flag.cols && v.flag.cols[i]) || fb;
 function wfSlerp(a, b, t) { const d = clamp(dot3(a, b), -1, 1), o = Math.acos(d); if (o < 1e-4 || Math.sin(o) < 1e-4) return a.slice(); const s = Math.sin(o), k1 = Math.sin((1 - t) * o) / s, k2 = Math.sin(t * o) / s; return [a[0] * k1 + b[0] * k2, a[1] * k1 + b[1] * k2, a[2] * k1 + b[2] * k2]; }
 function wfSees(d1, r1, d2, r2) {                                  // is there a clear line between two points (directions at a radius) that does not cut through the planet?
@@ -6418,6 +6433,251 @@ function wfSees(d1, r1, d2, r2) {                                  // is there a
   return Math.hypot(a[0] + ab[0] * t, a[1] + ab[1] * t, a[2] + ab[2] * t) > Math.min(r1, r2, 1.01) - 0.004;
 }
 function wfJit(d, amt) { return norm3([d[0] + (Math.random() - 0.5) * amt, d[1] + (Math.random() - 0.5) * amt, d[2] + (Math.random() - 0.5) * amt]); }
+/* ===== air and sea traffic, nation deaths and graves (drawn on the war canvas; every clock here is the effect clock: it follows the time speed and the real-time slow-down) ===== */
+function wfLL(d) { return [Math.asin(clamp(d[1], -1, 1)), ((Math.atan2(d[2], d[0]) % TAU) + TAU) % TAU]; }
+function wfSea(d) {                                                // is there open water at this direction? true / false, or null while no map exists yet
+  if (RIV.mask && RIV.maskW === S.world) { const x = Math.floor((((Math.atan2(d[2], d[0]) / TAU) % 1) + 1) % 1 * RIV.mW), y = clamp(Math.floor((0.5 - Math.asin(clamp(d[1], -1, 1)) / Math.PI) * RIV.mH), 0, RIV.mH - 1); return !RIV.mask[y * RIV.mW + clamp(x, 0, RIV.mW - 1)]; }
+  if (CL.maskOK) { const [la, lo] = wfLL(d); return CL.landF[clamp(Math.floor((0.5 - la / Math.PI) * CL.Ny), 0, CL.Ny - 1) * CL.Nx + Math.min(CL.Nx - 1, Math.floor(lo / TAU * CL.Nx))] < 0.4; }
+  return null;
+}
+function wfWind(d) { if (!CL.maskOK) return [0, 0]; const [la, lo] = wfLL(d), fy = (0.5 - la / Math.PI) * CL.Ny - 0.5, fx = lo / TAU * CL.Nx - 0.5; return [clSamp(CL.U, fx, fy), clSamp(CL.V, fx, fy)]; }
+function wfStormV(o) { return [Math.cos(o.lat) * Math.cos(o.lon), Math.sin(o.lat), Math.cos(o.lat) * Math.sin(o.lon)]; }
+function wfHum(W, d) {                                             // how moist the high air is here: decides whether a contrail vanishes at once or lingers and spreads into cirrus (above ~1 the plane is flying inside cloud)
+  let h = 0.42 + 0.18 * clamp(W.wet(S.age), -1, 1);
+  if (CL.maskOK) { const [la, lo] = wfLL(d); h += clamp(-clSamp(CL.P, lo / TAU * CL.Nx - 0.5, (0.5 - la / Math.PI) * CL.Ny - 0.5) / 20, -0.2, 0.3); }
+  for (const o of W.wx || []) { const s = o.str || 0; if (s < 0.1) continue; const q = Math.acos(clamp(dot3(d, wfStormV(o)), -1, 1)), R = o.rad * 1.35; if (q < R) h += 0.75 * s * (1 - q / R); }
+  return h;
+}
+function wfCloudMap() {                                            // a small, slow copy of the rendered planet: cloud is bright and grey, open sea is dark and blue, so boats can sit under it
+  const now = performance.now(); if (WF.cm && now - WF.cmT < 250) return; WF.cmT = now;
+  try { const w = 192, h = Math.max(1, Math.round(192 * canvas.height / canvas.width)), c2 = WF.cm2 || (WF.cm2 = document.createElement("canvas"));
+    if (c2.width !== w || c2.height !== h) { c2.width = w; c2.height = h; WF.cm2x = c2.getContext("2d", { willReadFrequently: true }); }
+    const g = WF.cm2x; g.clearRect(0, 0, w, h); g.drawImage(canvas, 0, 0, w, h); const d = g.getImageData(0, 0, w, h).data; let on = 0; for (let i = 3; i < d.length; i += 64) if (d[i] > 200) on++;
+    if (on > d.length / 64 * 0.5) WF.cm = { w, h, d }; } catch (e) { }
+}
+function wfCover(x, y) {                                           // 0 = clear, 1 = thick cloud at this screen position
+  const m = WF.cm; if (!m) return 0; const ix = clamp(Math.floor(x / innerWidth * m.w), 0, m.w - 1), iy = clamp(Math.floor(y / innerHeight * m.h), 0, m.h - 1), i = (iy * m.w + ix) * 4, r = m.d[i], g = m.d[i + 1], b = m.d[i + 2], mx = Math.max(r, g, b), mn = Math.min(r, g, b);
+  return clamp(1 - (mx - mn) / (mx + 14), 0, 1) * clamp((mx / 255 - 0.12) / 0.38, 0, 1);
+}
+function wfAround(d, ang, rad) { const a = norm3(cross3(d, Math.abs(d[1]) > 0.9 ? [1, 0, 0] : [0, 1, 0])), b = cross3(d, a); return norm3(d.map((x, i) => x * Math.cos(rad) + (a[i] * Math.cos(ang) + b[i] * Math.sin(ang)) * Math.sin(rad))); }
+function wfPick(list, wt) { let t = 0; for (const x of list) t += wt(x); let r = Math.random() * t; for (const x of list) { r -= wt(x); if (r <= 0) return x; } return list[list.length - 1]; }
+function wfPlanePos(p, u) { const q = u > 1 ? 2 - u : u; return wfSlerp(wfSlerp(p.a, p.c, q), wfSlerp(p.c, p.b, q), q); }
+function wfRoute(W, a, b) {                                        // great-circle route; if a storm sits across the middle the control point is pushed sideways so the flight bends round it
+  const m = wfSlerp(a, b, 0.5), n = norm3(cross3(a, b)); let c = m;
+  if (Math.abs(n[0]) + Math.abs(n[1]) + Math.abs(n[2]) > 0.01) for (const o of W.wx || []) { if ((o.str || 0) < 0.25) continue; const E = wfStormV(o); if (Math.acos(clamp(dot3(m, E), -1, 1)) < o.rad * 1.1 + 0.05) { const side = dot3(E, n) > 0 ? -1 : 1; c = norm3(m.map((x, i) => x + n[i] * side * (o.rad * 1.1 + 0.08) * 1.8)); break; } }
+  if (c === m) { const ang = Math.acos(clamp(dot3(a, b), -1, 1)); if (Math.abs(n[0]) + Math.abs(n[1]) + Math.abs(n[2]) > 0.01) c = norm3(m.map((x, i) => x + n[i] * (Math.random() < 0.5 ? -1 : 1) * (0.01 + 0.07 * Math.random()) * Math.min(1.2, ang * 1.5))); }      // no two flights take quite the same line
+  return c;
+}
+const WF_LV = [0.011, 0.0145, 0.018, 0.0215, 0.025, 0.028];       // flight levels, inside the cloud deck (base 1.006, tops 1.022) and up to the cirrus (1.030)
+function wfLevel(kind) {
+  const lo = kind === "jet" ? 3 : kind === "bomber" ? 1 : 0, hi = kind === "jet" ? 5 : kind === "bomber" ? 3 : 4, cnt = WF_LV.map((_, i) => WF.air.filter(q => q.lvl === i).length); let best = lo;
+  for (let i = lo; i <= hi; i++) if (cnt[i] < cnt[best] || (cnt[i] === cnt[best] && Math.random() < 0.4)) best = i;      // the emptiest level: crossing flights are stacked, not on the same height
+  return best;
+}
+function wfMakePlane(W, X, from, to, o = {}) {
+  const ang = Math.acos(clamp(dot3(from, to), -1, 1)), kind = o.kind || (X.tech >= 0.5 && Math.random() < 0.18 ? "jet" : "liner"), sp = kind === "jet" || kind === "bomber" ? 1.5 : 1, lvl = wfLevel(kind);
+  return { a: o.st ? from : wfJit(from, 0.02), b: o.st ? to : wfJit(to, 0.02), c: wfRoute(W, from, to), lvl, u: 0, max: o.st ? 2 : 1, dur: (2.5 + ang * 7) / sp * (X.tech >= 0.5 ? 0.8 : 1) * (0.9 + 0.2 * Math.random()), kind, col: wfCol(X, 0), alt: WF_LV[lvl] + (Math.random() - 0.5) * 0.0008, tr: [], tt: 0, st: o.st || null, dropped: false, id: Math.random() * 99 };
+}
+function wfSpawnPlane(W) {
+  const civs = W.civs.filter(v => v.tech >= 0.3 && v.pop > 2e5 && !v.asc); if (!civs.length) return;
+  const X = wfPick(civs, v => Math.log10(v.pop) * v.tech), from = W.capPos(X), others = civs.filter(v => v !== X && !(X.war && X.war.foe === v));
+  if (!others.length) return;                                      // a flight always goes from one nation's capital to another's
+  const to = W.capPos(wfPick(others, v => Math.log10(v.pop)));
+  if (dot3(from, to) > 0.9995) return; WF.air.push(wfMakePlane(W, X, from, to));
+}
+function wfPlaneShape(cx, x, y, ang, z, kind, col) {
+  cx.save(); cx.translate(x, y); cx.rotate(ang);
+  if (kind === "jet" || kind === "bomber") { cx.fillStyle = kind === "bomber" ? "#3a3f48" : "#cfd6e4"; cx.beginPath(); cx.moveTo(z * 1.7, 0); cx.lineTo(-z, z * 1.0); cx.lineTo(-z * 0.5, 0); cx.lineTo(-z, -z * 1.0); cx.closePath(); cx.fill(); }
+  else { cx.fillStyle = "#f4f7ff"; cx.beginPath(); cx.ellipse(0, 0, z * 1.5, z * 0.28, 0, 0, TAU); cx.fill(); cx.beginPath(); cx.moveTo(z * 0.2, 0); cx.lineTo(-z * 0.5, z * 1.25); cx.lineTo(-z * 0.8, z * 1.25); cx.lineTo(-z * 0.5, 0); cx.lineTo(-z * 0.8, -z * 1.25); cx.lineTo(-z * 0.5, -z * 1.25); cx.closePath(); cx.fill(); cx.fillStyle = col; cx.fillRect(-z * 1.2, -z * 0.22, z * 0.5, z * 0.44); }
+  cx.restore();
+}
+function wfDraw(K, tr, hs) {                                       // contrails: a ribbon that widens and fades, faster in dry air and slower in humid air; lit pink at twilight, dim at night
+  const { cx, P, scr } = K; let prev = null;
+  for (let k = 0; k < tr.length; k++) { const q = tr[k], life = 2 + 16 * clamp(q.h - 0.3, 0, 0.8), f = q.t / life; if (f >= 1) { prev = null; continue; }
+    const pw = P(q.d, q.r), s = scr(pw); if (!s) { prev = null; continue; }
+    if (prev && Math.abs(prev.s[0] - s[0]) + Math.abs(prev.s[1] - s[1]) < 90) {
+      const se = dot3(norm3(pw), S.sunDir || [1, 0, 0]), lit = clamp(0.3 + 1.3 * (se + 0.12), 0.1, 1), tw = clamp(1 - Math.abs(se) / 0.14, 0, 1), spread = 1 + 5 * f * (0.5 + q.h), w = Math.max(0.7, s[2] * 0.0011) * spread, a = Math.pow(1 - f, 1.3) * 0.62 * lit * Math.min(1, 1.2 - 0.5 * f);
+      cx.strokeStyle = `rgba(${255},${Math.round(255 - 70 * tw)},${Math.round(255 - 95 * tw)},${a})`; cx.lineWidth = w; cx.beginPath(); cx.moveTo(prev.s[0], prev.s[1]); cx.lineTo(s[0], s[1]); cx.stroke(); }
+    prev = { s }; }
+}
+function wfAir(K) {
+  const { W, dt, cx, P, scr, glow, lite } = K, A = WF.air;
+  if (dt > 0 && S.traffic !== false) { WF.nxA -= dt; if (WF.nxA <= 0) { WF.nxA = 0.5 + Math.random() * 1.4; if (A.filter(p => !p.st).length < (lite ? 5 : 13)) wfSpawnPlane(W); } }
+  const advect = (tr) => { for (let k = tr.length - 1; k >= 0; k--) { const q = tr[k]; q.t += dt; if (q.t > 20) { tr.splice(k, 1); continue; } if (dt > 0) { const wd = wfWind(q.d), c = Math.max(0.2, Math.sqrt(1 - q.d[1] * q.d[1])); const [la, lo] = wfLL(q.d), la2 = clamp(la + wd[1] * dt * 0.012, -1.5, 1.5), lo2 = lo + wd[0] * dt * 0.012 / c; q.d = [Math.cos(la2) * Math.cos(lo2), Math.sin(la2), Math.cos(la2) * Math.sin(lo2)]; } } };
+  cx.globalCompositeOperation = "source-over"; cx.lineCap = "round";
+  for (const o of WF.old) { advect(o.tr); wfDraw(K, o.tr); } WF.old = WF.old.filter(o => o.tr.length);
+  for (let i = A.length - 1; i >= 0; i--) {
+    const p = A[i]; p.u += dt / p.dur; if (p.u >= p.max) { if (p.tr.length) WF.old.push({ tr: p.tr }); A.splice(i, 1); continue; }
+    const q = p.u > 1 ? 2 - p.u : p.u, d = wfPlanePos(p, p.u), cruise = Math.sin(Math.PI * q) > 0.35, r = 1.003 + (p.alt - 0.003) * Math.min(1, Math.sin(Math.PI * q) * 3);
+    if (dt > 0) { p.tt -= dt; if (p.tt <= 0 && cruise) { p.tt = 0.07; const h = wfHum(W, d); if (h < 1.1) p.tr.push({ d, r, t: 0, h }); }
+      if (p.st && !p.dropped && p.u >= 0.93 && p.u < 1.2) { p.dropped = true; for (let k = 0; k < 3; k++) p.st.mis.push({ k: "bomb", from: d, to: wfJit(p.b, 0.04), t: -k * 0.12, dur: 0.5, h: 0.003, col: p.col, trail: [], r0: r }); } }
+    advect(p.tr); wfDraw(K, p.tr);
+    const s = scr(P(d, r)); if (!s) continue; const d2 = wfPlanePos(p, Math.min(p.max, p.u + 0.01 * (p.u > 1 ? -1 : 1))), s2 = scr(P(d2, r)), ang = s2 ? Math.atan2(s2[1] - s[1], s2[0] - s[0]) : 0, z = Math.max(2, s[2] * 0.0042);
+    const cv = wfCover(s[0], s[1]); p.cv = (p.cv ?? cv) + (cv - (p.cv ?? cv)) * Math.min(1, dt * 6 + 0.05); cx.globalAlpha = (1 - 0.55 * p.cv * (p.alt < 0.022 ? 1 : 0.5)) * (p.st ? 1 : Math.min(1, (1 - p.u) * 25, p.u * 25 + 0.2));
+    wfPlaneShape(cx, s[0], s[1], ang, z, p.kind, p.col); cx.globalAlpha = 1;
+    const se = dot3(norm3(P(d, 1)), S.sunDir || [1, 0, 0]);
+    if (se < 0.05) { const ph = performance.now() * 0.0013 + p.id, cs = Math.cos(ang), sn = Math.sin(ang); glow(s[0] - sn * z * 0.9, s[1] + cs * z * 0.9, z * 1.4, "255,60,60", 0.9 * (0.5 + 0.5 * Math.sin(ph * 6))); glow(s[0] + sn * z * 0.9, s[1] - cs * z * 0.9, z * 1.4, "60,255,120", 0.9 * (0.5 + 0.5 * Math.sin(ph * 6 + 1))); if (Math.sin(ph * 9) > 0.85) glow(s[0] - cs * z * 1.3, s[1] - sn * z * 1.3, z * 2.6, "255,255,255", 0.95); }
+  }
+}
+/* ---- ships: sailing boats, cargo ships, cruise liners and warships on the open sea (they steer round the coast using the world's land map) ---- */
+function wfPort(W, v) {
+  if (v.__port && WF.clk - v.__port.at < 45) return v.__port.d;
+  const cap = W.capPos(v); let found = null;
+  for (const rad of [0.012, 0.025, 0.04, 0.06, 0.09, 0.13, 0.18, 0.25]) { for (let k = 0; k < 14 && !found; k++) { const q = wfAround(cap, k / 14 * TAU + rad * 7, rad); if (wfSea(q) === true) found = q; } if (found) break; }
+  v.__port = { d: found, at: WF.clk }; return found;
+}
+function wfBoatType(X, atWar) {
+  const t = X.tech; if (t < 0.04) return null; const r = Math.random();
+  if (atWar && t >= 0.12 && r < 0.45) return "war";
+  if (t >= 0.42 && !atWar && r < 0.3) return "cruise";
+  if (t >= 0.2 && r < 0.6) return "cargo";
+  if (t >= 0.12 && r < 0.2) return "war";
+  return "sail";
+}
+function wfGrid() {                                                // the sea on a coarse grid, rebuilt whenever the world's land map is
+  if (WF.grid && WF.grid.m === RIV.mask) return WF.grid; if (!RIV.mask || RIV.maskW !== S.world) return null;
+  const Gw = 128, Gh = 64, sea = new Uint8Array(Gw * Gh), bx = RIV.mW / Gw, by = RIV.mH / Gh;
+  for (let y = 0; y < Gh; y++) for (let x = 0; x < Gw; x++) { let n = 0, c = 0; for (let j = 0; j < by; j++) for (let i = 0; i < bx; i++) { n += RIV.mask[(Math.floor(y * by) + j) * RIV.mW + Math.floor(x * bx) + i] ? 0 : 1; c++; } sea[y * Gw + x] = n / c >= 0.8 ? 1 : 0; }
+  return WF.grid = { m: RIV.mask, Gw, Gh, sea };
+}
+function wfCellOf(g, d) { const [la, lo] = wfLL(d); return clamp(Math.floor((0.5 - la / Math.PI) * g.Gh), 0, g.Gh - 1) * g.Gw + Math.min(g.Gw - 1, Math.floor(lo / TAU * g.Gw)); }
+function wfCellDir(g, c) { const y = Math.floor(c / g.Gw), x = c % g.Gw, la = (0.5 - (y + 0.5) / g.Gh) * Math.PI, lo = (x + 0.5) / g.Gw * TAU; return [Math.cos(la) * Math.cos(lo), Math.sin(la), Math.cos(la) * Math.sin(lo)]; }
+function wfSeaPath(a, b) {                                         // a sailable route between two ports (breadth-first over the coarse sea grid), or null if the sea does not connect them
+  const g = wfGrid(); if (!g) return null; const s0 = wfCellOf(g, a), s1 = wfCellOf(g, b), N = g.Gw * g.Gh, prev = new Int32Array(N).fill(-1), q = [s0]; prev[s0] = s0;
+  const ok = c => g.sea[c] || c === s1 || c === s0;
+  for (let h = 0; h < q.length; h++) { const c = q[h]; if (c === s1) break; const y = Math.floor(c / g.Gw), x = c % g.Gw;
+    for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) { if (!dx && !dy) continue; const yy = y + dy; if (yy < 0 || yy >= g.Gh) continue; const n = yy * g.Gw + (x + dx + g.Gw) % g.Gw; if (prev[n] >= 0 || !ok(n)) continue; if (dx && dy && !(g.sea[y * g.Gw + (x + dx + g.Gw) % g.Gw] && g.sea[yy * g.Gw + x])) continue; prev[n] = c; q.push(n); } }
+  if (prev[s1] < 0) return null; const cells = []; for (let c = s1; c !== s0; c = prev[c]) cells.push(c); cells.reverse();
+  const wp = []; cells.forEach((c, i) => { if (i % 2 === 1 && i < cells.length - 1) wp.push(wfCellDir(g, c)); }); wp.push(b.slice()); return wp;
+}
+function wfSpawnBoat(W) {
+  const civs = W.civs.filter(v => v.tech >= 0.04 && v.pop > 2e3 && !v.asc && wfPort(W, v)); if (!civs.length) return;
+  const X = wfPick(civs, v => Math.log10(v.pop + 10)), port = wfPort(W, X), type = wfBoatType(X, !!X.war); if (!type) return;
+  let dest = null, wp = null, ty = type; const others = civs.filter(v => v !== X && !(X.war && X.war.foe === v));
+  if (ty === "cargo" || ty === "cruise") {                         // shipping and cruises only run between two nations' ports, along a route the sea really allows
+    for (const Y of others.slice().sort(() => Math.random() - 0.5)) { const pt = wfPort(W, Y), path = pt && wfSeaPath(port, pt); if (path) { dest = pt; wp = path; break; } }
+    if (!dest) ty = "sail";                                        // no partner by sea: it stays a local boat
+  }
+  if (!dest) for (let k = 0; k < 8 && !dest; k++) { const q = wfAround(port, Math.random() * TAU, 0.05 + Math.random() * 0.22); if (wfSea(q) === true) dest = q; }
+  if (!dest) return; const a = norm3(cross3(port, Math.abs(port[1]) > 0.9 ? [1, 0, 0] : [0, 1, 0]));
+  WF.sea.push({ type: ty, wp, wi: 0, civ: X, d: port.slice(), hd: a, dest, dur: 0, hp: 1, tr: [], tt: 0, sink: 0, fire: 1 + Math.random() * 2, id: Math.random() * 99, tech: X.tech, stuck: 0, life: 70 + Math.random() * 60 + (wp ? 220 : 0), fade: 0, ar: false });
+}
+const WF_BSP = { sail: 0.011, cargo: 0.017, cruise: 0.014, war: 0.022 };
+function wfBoats(K) {
+  const { W, dt, cx, P, scr, glow, lite } = K, B = WF.sea;
+  if (dt > 0 && S.traffic !== false) { WF.nxS -= dt; if (WF.nxS <= 0) { WF.nxS = 0.8 + Math.random() * 1.6; if (B.length < (lite ? 8 : 20)) wfSpawnBoat(W); } }
+  for (let i = B.length - 1; i >= 0; i--) {
+    const b = B[i]; if (b.civ && !W.civs.includes(b.civ)) b.ar = true;
+    if (dt > 0) {
+      b.dur += dt; if (b.dur > b.life || (b.stuck > 8 && !b.wp)) b.ar = true;
+      if (b.hp <= 0) { b.sink += dt; if (b.sink > 3) { B.splice(i, 1); continue; } }
+      else if (b.ar) { b.fade += dt * 0.6; if (b.fade >= 1) { B.splice(i, 1); continue; } }
+      else {
+        const step = WF_BSP[b.type] * dt * (0.8 + 0.4 * b.tech), last = !b.wp || b.wi >= b.wp.length - 1, goal = b.wp ? b.wp[Math.min(b.wi, b.wp.length - 1)] : b.dest, dd = dot3(b.d, goal);
+        if (b.wp && !last && (dd > 0.9993 || b.stuck > 3)) { b.wi++; b.stuck = 0; }                // on to the next waypoint of the route
+        else if (dd > 0.9998) { if (b.type === "cargo" || b.type === "cruise") b.ar = true; else { for (let k = 0; k < 8; k++) { const q = wfAround(wfPort(W, b.civ) || b.d, Math.random() * TAU, 0.04 + Math.random() * 0.2); if (wfSea(q) === true) { b.dest = q; break; } } } }
+        const tg = norm3(goal.map((x, j) => x - b.d[j] * dd)); b.hd = norm3(b.hd.map((x, j) => x + (tg[j] - x) * Math.min(1, dt * 1.4)));
+        const rot = (h, an) => { const c = cross3(b.d, h); return norm3(h.map((x, j) => x * Math.cos(an) + c[j] * Math.sin(an))); };
+        const ahead = h => norm3(b.d.map((x, j) => x + h[j] * Math.max(step * 4, 0.012)));
+        if (wfSea(ahead(b.hd)) === false) { let ok = false; for (const an of [0.5, -0.5, 1.0, -1.0, 1.6, -1.6]) { const h2 = rot(b.hd, an); if (wfSea(ahead(h2)) !== false) { b.hd = h2; ok = true; break; } } if (!ok) { b.hd = b.hd.map(x => -x); b.stuck++; } }
+        const nd = norm3(b.d.map((x, j) => x + b.hd[j] * step)); if (wfSea(nd) !== false) b.d = nd; else b.stuck++; b.hd = norm3(b.hd.map((x, j) => x - b.d[j] * dot3(b.hd, b.d)));
+        b.tt -= dt; if (b.tt <= 0) { b.tt = 0.2; b.tr.push({ d: b.d.slice(), t: 0 }); if (b.tr.length > 26) b.tr.shift(); }
+        // warships fight: the nearest enemy ship, or a coastal capital inside gun range
+        b.fire -= dt; if (b.type === "war" && b.fire <= 0 && b.civ.war) { b.fire = 0.9 + Math.random() * 1.6; const foe = b.civ.war.foe; let tgt = null, td = 0.1;
+          for (const o of B) if (o.civ === foe && o.hp > 0 && !o.ar) { const q = Math.acos(clamp(dot3(b.d, o.d), -1, 1)); if (q < td) { td = q; tgt = o; } }
+          if (tgt) { WF.sh.push({ from: b.d, to: tgt.d, r0: 1.002, t: 0, dur: 0.35, col: wfCol(b.civ, 0), hit: tgt, h: 0.004 }); }
+          else if (W.civs.includes(foe) && Math.acos(clamp(dot3(b.d, W.capPos(foe)), -1, 1)) < 0.13) WF.sh.push({ from: b.d, to: wfJit(W.capPos(foe), 0.05), r0: 1.002, t: 0, dur: 0.55, col: wfCol(b.civ, 0), hit: null, h: 0.012 }); }
+      }
+    }
+    for (const q of b.tr) q.t += dt;
+    cx.globalCompositeOperation = "source-over"; cx.lineCap = "round"; let prev = null;
+    for (const q of b.tr) { const s = scr(P(q.d, 1.0008)); if (s && prev && q.t < 5) { cx.strokeStyle = `rgba(235,245,255,${0.5 * (1 - q.t / 5) * (1 - b.fade) * (1 - 0.9 * (b.cv || 0))})`; cx.lineWidth = Math.max(0.6, s[2] * 0.0009) * (1 + q.t * 0.4); cx.beginPath(); cx.moveTo(prev[0], prev[1]); cx.lineTo(s[0], s[1]); cx.stroke(); } prev = s; }
+    const s = scr(P(b.d, 1.0012)); if (!s) continue;
+    const cv = wfCover(s[0], s[1]); b.cv = (b.cv ?? cv) + (cv - (b.cv ?? cv)) * Math.min(1, dt * 6 + 0.05); const cvk = 1 - 0.93 * b.cv;                  // clouds hang above the sea: the thicker the cloud over a boat, the less of it shows
+    const s2 = scr(P(norm3(b.d.map((x, j) => x + b.hd[j] * 0.01)), 1.0012)), ang = s2 ? Math.atan2(s2[1] - s[1], s2[0] - s[0]) : 0, z = clamp(s[2] * (b.type === "cruise" ? 0.0058 : b.type === "cargo" ? 0.0052 : b.type === "war" ? 0.0044 : 0.003), 1.8, 14), al = (1 - b.fade) * cvk * (b.hp > 0 ? 1 : Math.max(0, 1 - b.sink / 3));
+    cx.save(); cx.globalAlpha = al; cx.translate(s[0], s[1] + (b.hp > 0 ? 0 : b.sink * 1.5)); cx.rotate(ang);
+    if (b.type === "sail") { cx.fillStyle = "#6b4a2a"; cx.beginPath(); cx.moveTo(z * 1.3, 0); cx.lineTo(-z, z * 0.5); cx.lineTo(-z, -z * 0.5); cx.closePath(); cx.fill(); cx.fillStyle = "#f2ead4"; cx.beginPath(); cx.moveTo(z * 0.2, 0); cx.lineTo(-z * 0.5, z * 1.1); cx.lineTo(-z * 0.5, -z * 1.1); cx.closePath(); cx.fill(); }
+    else if (b.type === "cargo") { cx.fillStyle = "#3b4a5c"; cx.fillRect(-z * 1.8, -z * 0.4, z * 3.4, z * 0.8); cx.beginPath(); cx.moveTo(z * 1.6, -z * 0.4); cx.lineTo(z * 2.2, 0); cx.lineTo(z * 1.6, z * 0.4); cx.fill(); const cs = ["#c0503a", "#3a82c0", "#d6a032", "#58a860"]; for (let k = 0; k < 4; k++) { cx.fillStyle = cs[(k + Math.floor(b.id)) % 4]; cx.fillRect(-z * 1.5 + k * z * 0.65, -z * 0.28, z * 0.55, z * 0.56); } }
+    else if (b.type === "cruise") { cx.fillStyle = "#f5f7fb"; cx.beginPath(); cx.moveTo(z * 2.2, 0); cx.lineTo(z * 1.4, z * 0.55); cx.lineTo(-z * 1.9, z * 0.55); cx.lineTo(-z * 1.9, -z * 0.55); cx.lineTo(z * 1.4, -z * 0.55); cx.closePath(); cx.fill(); cx.fillStyle = "#3a7fd0"; cx.fillRect(-z * 1.8, -z * 0.08, z * 3.5, z * 0.16); cx.fillStyle = "#e8edf6"; cx.fillRect(-z * 1.0, -z * 0.35, z * 1.7, z * 0.7); cx.fillStyle = "#e0553c"; cx.fillRect(-z * 0.3, -z * 0.18, z * 0.4, z * 0.36); }
+    else { cx.fillStyle = "#59636f"; cx.beginPath(); cx.moveTo(z * 2.0, 0); cx.lineTo(z * 1.0, z * 0.45); cx.lineTo(-z * 1.7, z * 0.45); cx.lineTo(-z * 1.7, -z * 0.45); cx.lineTo(z * 1.0, -z * 0.45); cx.closePath(); cx.fill(); cx.fillStyle = "#7a8594"; cx.fillRect(-z * 0.4, -z * 0.22, z * 0.9, z * 0.44); cx.fillStyle = "#2b323b"; cx.fillRect(z * 0.5, -z * 0.1, z * 0.7, z * 0.2); cx.fillRect(-z * 1.2, -z * 0.1, z * 0.6, z * 0.2); if (b.tech >= 0.6) { cx.fillStyle = "#6c7684"; cx.fillRect(-z * 1.6, -z * 0.42, z * 2.4, z * 0.1); } }
+    cx.restore();
+    if (b.hp <= 0) { cx.globalCompositeOperation = "source-over"; const g = cx.createRadialGradient(s[0], s[1] - b.sink * 4, 0, s[0], s[1] - b.sink * 4, z * 3); g.addColorStop(0, `rgba(30,26,24,${0.5 * al})`); g.addColorStop(1, "rgba(30,26,24,0)"); cx.fillStyle = g; cx.beginPath(); cx.arc(s[0], s[1] - b.sink * 4, z * 3, 0, TAU); cx.fill(); }
+    if (b.hp > 0 && dot3(norm3(P(b.d, 1)), S.sunDir || [1, 0, 0]) < 0.05 && b.type !== "sail") glow(s[0], s[1], z * 1.8, "255,225,150", 0.55 * al);
+  }
+  for (let i = WF.sh.length - 1; i >= 0; i--) {                    // naval shells
+    const m = WF.sh[i]; m.t += dt / m.dur; const u = clamp(m.t, 0, 1);
+    if (m.t >= 1) { if (m.hit && m.hit.hp > 0) { m.hit.hp -= 0.34; WF.ex.push({ dir: m.hit.d, r: 1.002, t: 0, size: 0.7, kind: "naval" }); if (m.hit.hp <= 0) { WF.ex.push({ dir: m.hit.d, r: 1.002, t: 0, size: 1.3, kind: "ground" }); m.hit.sink = 0; } } else if (!m.hit) WF.ex.push({ dir: m.to, r: 1.004, t: 0, size: 0.6, kind: "ground" }); else WF.ex.push({ dir: m.to, r: 1.001, t: 0, size: 0.4, kind: "naval" }); WF.sh.splice(i, 1); continue; }
+    const d = wfSlerp(m.from, m.to, u), r = m.r0 + m.h * Math.sin(Math.PI * u), sc = scr(P(d, r)), s0 = u > 0.05 ? scr(P(wfSlerp(m.from, m.to, u - 0.05), m.r0 + m.h * Math.sin(Math.PI * (u - 0.05)))) : null;
+    cx.globalCompositeOperation = "lighter"; if (sc) { if (s0) { cx.strokeStyle = "rgba(255,200,120,.7)"; cx.lineWidth = 1.4; cx.beginPath(); cx.moveTo(s0[0], s0[1]); cx.lineTo(sc[0], sc[1]); cx.stroke(); } glow(sc[0], sc[1], Math.max(5, sc[2] * 0.01), "255,220,160", 0.9); }
+    if (u < 0.1) { const f = scr(P(m.from, 1.002)); if (f) glow(f[0], f[1], Math.max(8, f[2] * 0.016), "255,230,170", 0.9 * (1 - u * 10)); }
+  }
+}
+/* ---- one place to draw the shared explosions (naval, bombs, capital blasts) ---- */
+function wfExDraw(K, list) {
+  const { cx, P, scr, glow, dt } = K;
+  for (let i = list.length - 1; i >= 0; i--) {
+    const e = list[i]; if (e.t < 0) { e.t += dt; continue; } e.t += dt; const dur = e.kind === "air" ? 0.5 : e.kind === "naval" ? 1.1 : 1.3, u = e.t / dur; if (u >= 1) { list.splice(i, 1); continue; }
+    const s = scr(P(e.dir, e.r)); if (!s) continue; const R = Math.max(40, s[2]) * e.size;
+    if (e.kind === "naval") { glow(s[0], s[1], R * (0.01 + 0.03 * Math.sqrt(u)), "200,235,255", 0.8 * (1 - u)); cx.strokeStyle = `rgba(220,240,255,${0.7 * (1 - u)})`; cx.lineWidth = 1.2; cx.beginPath(); cx.ellipse(s[0], s[1], R * (0.003 + 0.03 * u), R * (0.002 + 0.016 * u), 0, 0, TAU); cx.stroke(); continue; }
+    glow(s[0], s[1], R * (0.02 + 0.085 * Math.sqrt(u)), e.kind === "space" ? "170,220,255" : "255,150,60", 0.95 * (1 - u));
+    if (u < 0.25) glow(s[0], s[1], R * (0.035 + 0.04 * u), "255,250,220", 1 - u * 3.5);
+    if (e.kind !== "air") { cx.strokeStyle = `rgba(255,200,140,${0.6 * (1 - u)})`; cx.lineWidth = 1.3; cx.beginPath(); cx.ellipse(s[0], s[1], R * (0.004 + 0.07 * u), R * (0.003 + 0.04 * u), 0, 0, TAU); cx.stroke(); }
+  }
+}
+/* ---- nations that die: the capital blows up, then a skull and crossbones hangs over the ruins for a while ---- */
+function wfSkull(cx, x, y, sz, a, pulse) {
+  cx.save(); cx.translate(x, y); cx.globalAlpha = a;
+  const g = cx.createRadialGradient(0, 0, 0, 0, 0, sz * 1.9); g.addColorStop(0, `rgba(255,40,40,${0.35 * pulse})`); g.addColorStop(1, "rgba(255,40,40,0)"); cx.fillStyle = g; cx.beginPath(); cx.arc(0, 0, sz * 1.9, 0, TAU); cx.fill();
+  cx.lineCap = "round"; for (const pass of [0, 1]) for (const sg of [-1, 1]) { cx.strokeStyle = pass ? "#ece6d2" : "#15110c"; cx.lineWidth = sz * (pass ? 0.16 : 0.3); cx.beginPath(); cx.moveTo(-sz * 0.8, sg * sz * 0.62); cx.lineTo(sz * 0.8, -sg * sz * 0.62); cx.stroke();
+    if (pass) { cx.fillStyle = "#ece6d2"; for (const e of [-1, 1]) { cx.beginPath(); cx.arc(e * sz * 0.8, -e * sg * sz * 0.62 - 0, sz * 0.15, 0, TAU); cx.fill(); } } }
+  cx.fillStyle = "#f4efe0"; cx.strokeStyle = "#15110c"; cx.lineWidth = sz * 0.08;
+  cx.beginPath(); cx.ellipse(0, -sz * 0.12, sz * 0.52, sz * 0.48, 0, 0, TAU); cx.fill(); cx.stroke();
+  cx.beginPath(); cx.moveTo(-sz * 0.3, sz * 0.2); cx.lineTo(-sz * 0.26, sz * 0.55); cx.lineTo(sz * 0.26, sz * 0.55); cx.lineTo(sz * 0.3, sz * 0.2); cx.closePath(); cx.fill(); cx.stroke();
+  cx.fillStyle = "#15110c"; for (const e of [-1, 1]) { cx.beginPath(); cx.ellipse(e * sz * 0.2, -sz * 0.08, sz * 0.14, sz * 0.17, 0, 0, TAU); cx.fill(); }
+  cx.beginPath(); cx.moveTo(0, sz * 0.08); cx.lineTo(-sz * 0.07, sz * 0.22); cx.lineTo(sz * 0.07, sz * 0.22); cx.closePath(); cx.fill();
+  cx.lineWidth = sz * 0.05; cx.beginPath(); for (let k = -1; k <= 1; k++) { cx.moveTo(k * sz * 0.13, sz * 0.34); cx.lineTo(k * sz * 0.13, sz * 0.55); } cx.stroke();
+  cx.restore();
+}
+function wfWatch(W) {                                              // runs every frame whatever is on screen: spots wars that ended and nations that died
+  if (WF.W !== W) { WF.W = W; WF.air = []; WF.old = []; WF.sea = []; WF.sh = []; WF.ex = []; WF.blasts = []; WF.graves = []; WF.fin = []; WF.live = new Map(); WF.known = new Map(); WF.scorch.length = 0; WF.st = new WeakMap(); }
+  const now = new Map(); for (let i = 0; i < W.civs.length; i++) { const v = W.civs[i], f = v.war && v.war.foe; if (f && W.civs.indexOf(f) > i) now.set(v.war, { A: v, B: f }); }
+  for (const [w, e] of WF.live) if (!now.has(w) && WF.st.get(w)) WF.fin.push({ A: e.A, B: e.B, w, t: 0 });
+  WF.live = now;
+  const live = new Set(W.civs);
+  for (const v of W.civs) if (v.pop >= 200) WF.known.set(v, { pos: W.capPos(v).slice(), name: v.name, tech: v.tech, col: wfCol(v, 0, "#ffb454") });
+  const dead = new Map(); for (const [v, k] of WF.known) if (!live.has(v) || v.pop < 200) dead.set(v, k);
+  for (const f of W.fallen || []) if (!dead.has(f.v)) dead.set(f.v, { pos: f.pos, name: f.name, tech: f.tech, col: wfCol(f.v, 0, "#ffb454") });
+  W.fallen = [];
+  for (const [v, k] of dead) {
+    WF.known.delete(v);
+    if (v.departed || v.merged || (v.asc && !v.fell)) continue;                    // ascended, departed and merged minds do not blow up
+    const sack = !!v.annexed; if (WF.blasts.length < 8) WF.blasts.push({ pos: k.pos, t: 0, nb: 0, big: (k.tech >= 0.3 ? 1 : 0.6) * (sack ? 0.7 : 1), name: k.name, grave: true, col: k.col });
+  }
+}
+function wfLife(K) {
+  const { W, dt, cx, P, scr, glow } = K;
+  for (let i = WF.blasts.length - 1; i >= 0; i--) {
+    const b = WF.blasts[i]; b.t += dt; const dur = 4.2;
+    if (b.t >= b.nb && b.t < 2.8) { WF.ex.push({ dir: wfJit(b.pos, 0.02 + 0.05 * b.big * Math.random()), r: 1.004, t: 0, size: (0.8 + 1.6 * Math.random()) * b.big, kind: "ground" }); if (WF.scorch.length < 70) WF.scorch.push({ dir: wfJit(b.pos, 0.03), t: 0, size: 2 * b.big }); b.nb = b.t + 0.07 + 0.12 * Math.random(); }
+    if (!b.g && b.grave) { b.g = true; WF.graves.push({ pos: b.pos, born: S.age, rt: performance.now(), name: b.name, id: Math.random() * 9 }); }
+    const s = scr(P(b.pos, 1.004)), u = b.t / dur;
+    if (s) { cx.globalCompositeOperation = "lighter"; const R = Math.max(60, s[2]) * b.big;
+      glow(s[0], s[1], R * (0.03 + 0.13 * Math.sqrt(Math.min(1, u * 1.4))), "255,140,50", 0.9 * (1 - u));
+      if (b.t < 0.5) glow(s[0], s[1], R * (0.06 + 0.12 * b.t), "255,252,230", 1 - b.t * 2);
+      for (const dl of [0, 0.5]) { const q = (b.t - dl) / (dur - 0.5); if (q > 0 && q < 1) { cx.strokeStyle = `rgba(255,220,170,${0.7 * (1 - q)})`; cx.lineWidth = 2 * (1 - q) + 0.5; cx.beginPath(); cx.ellipse(s[0], s[1], R * (0.01 + 0.16 * q), R * (0.007 + 0.1 * q), 0, 0, TAU); cx.stroke(); } }
+      cx.globalCompositeOperation = "source-over";                                  // the pillar of smoke
+      for (let k = 0; k < 7; k++) { const q = clamp((b.t - k * 0.18) / 3.2, 0, 1); if (q <= 0 || q >= 1) continue; const px = s[0] + Math.sin(k * 2.3 + q * 2) * R * 0.012 * q, py = s[1] - q * R * 0.11 * (0.6 + 0.4 * (k % 3)), rr = R * (0.012 + 0.03 * q), g = cx.createRadialGradient(px, py, 0, px, py, rr); g.addColorStop(0, `rgba(30,26,24,${0.6 * (1 - q)})`); g.addColorStop(1, "rgba(30,26,24,0)"); cx.fillStyle = g; cx.beginPath(); cx.arc(px, py, rr, 0, TAU); cx.fill(); } }
+    if (b.t >= dur) WF.blasts.splice(i, 1);
+  }
+  wfExDraw(K, WF.ex);
+  cx.globalCompositeOperation = "source-over";
+  for (let i = WF.graves.length - 1; i >= 0; i--) {
+    const g = WF.graves[i], prog = (performance.now() - g.rt) / 150000; if (prog >= 1) { WF.graves.splice(i, 1); continue; }       // it hangs there for two and a half minutes of real time, however fast the world runs
+    const a = prog < 0.02 ? prog / 0.02 : prog > 0.9 ? (1 - prog) / 0.1 : 1, s = scr(P(g.pos, 1.004)); if (!s) continue; const sz = clamp(s[2] * 0.03, 13, 30), bob = Math.sin(performance.now() * 0.0022 + g.id) * 2;
+    wfSkull(cx, s[0], s[1] - sz * 1.25 + bob, sz, a, 0.6 + 0.4 * Math.sin(performance.now() * 0.004 + g.id));
+    if (sz >= 15) { cx.globalAlpha = 0.85 * a; cx.font = "600 11px system-ui,sans-serif"; cx.textAlign = "center"; cx.fillStyle = "#ffd6d0"; cx.strokeStyle = "rgba(0,0,0,.8)"; cx.lineWidth = 3; cx.strokeText(g.name + " (fallen)", s[0], s[1] + 12); cx.fillText(g.name + " (fallen)", s[0], s[1] + 12); cx.globalAlpha = 1; }
+  }
+}
 function warFx(W) {
   if (!WF.cv) { WF.cv = $("warfx"); if (WF.cv) WF.cx = WF.cv.getContext("2d"); }
   const cv = WF.cv, cx = WF.cx; if (!cv) return;
@@ -6425,7 +6685,8 @@ function warFx(W) {
   const wars = []; if (!S.view && S.cam && !S.hidden && S.civOn !== false) for (let i = 0; i < W.civs.length; i++) { const v = W.civs[i], f = v.war && v.war.foe, j = f ? W.civs.indexOf(f) : -1; if (j > i && v.pop > 200 && f.pop > 200) wars.push([v, f]); }
   const dpr = Math.min(2, window.devicePixelRatio || 1), pw = Math.round(innerWidth * dpr), ph = Math.round(innerHeight * dpr);
   const mBases = !S.view && S.cam && !S.hidden && S.moonMainW && S.moonRw > 0.01 ? (W.moonBases || []).filter(b => b.civ && b.civ.base && W.civs.includes(b.civ) && (b.moon ?? -1) === -1) : [];
-  if (!wars.length && !WF.scorch.length && !mBases.length) { if (WF.on) { cx.clearRect(0, 0, cv.width, cv.height); WF.on = false; } return; }
+  wfWatch(W); const busy = WF.air.length || WF.old.length || WF.sea.length || WF.sh.length || WF.ex.length || WF.blasts.length || WF.graves.length || WF.fin.length || (S.traffic !== false && !S.view && S.cam && !S.hidden && S.civOn !== false && W.civs.some(v => v.tech >= 0.04 && v.pop > 2e3));
+  if (!wars.length && !WF.scorch.length && !mBases.length && !busy) { if (WF.on) { cx.clearRect(0, 0, cv.width, cv.height); WF.on = false; } return; }
   if (cv.width !== pw || cv.height !== ph) { cv.width = pw; cv.height = ph; }
   WF.on = true; cx.setTransform(dpr, 0, 0, dpr, 0, 0); cx.clearRect(0, 0, innerWidth, innerHeight); cx.globalCompositeOperation = "lighter";
   const wk = S.tmode === "real" ? (S.warRealK ?? 0.08) : S.tmode === "clim" ? 0.3 : 1, dt = rdt * clamp(S.timeScale || 0, 0, 2.5) * wk, c = S.cam, th = Math.tan(0.5 * S.fov * Math.PI / 180), hh = innerHeight / 2, Mt = transpose(S.M), lite = WP.on && WP.fps < 30;
@@ -6443,84 +6704,109 @@ function warFx(W) {
     glow(p0[0], p0[1], 16 * w, rgb, 0.7 * a); glow(p1[0], p1[1], 22 * w, rgb, 0.8 * a);
   };
   const boom = (st, dir, r, size, kind) => { st.ex.push({ dir, r, t: 0, size, kind }); if (kind !== "air" && kind !== "space" && WF.scorch.length < 70) WF.scorch.push({ dir, t: 0, size }); };
-  for (const [A, B] of wars) {
-    const w = A.war, info = warInfo(A, B, W); let st = WF.st.get(w); if (!st) { st = { mis: [], ex: [], sp: [], sm: [], ships: null, adv: [0, 0], tm: { m0: 0, m1: 0, s: 0, f: 0, l: 0, o: 0 }, t: 0 }; WF.st.set(w, st); }
-    st.t += dt; const tm = st.tm, a = W.civPos(A), b = W.civPos(B), sA = W.str(A), sB = W.str(B), share = sA / (sA + sB + 1e-9);
+  const showFx = !S.view && S.cam && !S.hidden && S.civOn !== false; if (!showFx) WF.fin.length = 0;
+  WF.clk += dt; const K = { W, dt, cx, P, scr, glow, lite };
+  const items = wars.map(([A, B]) => ({ A, B, w: A.war, fin: null })); for (const f of WF.fin) items.push({ A: f.A, B: f.B, w: f.w, fin: f });
+  for (const it of items) {
+    const { A, B, w, fin } = it, info = warInfo(A, B, W); let st = WF.st.get(w); if (!st) { if (fin) { fin.t = 1e9; continue; } st = { mis: [], ex: [], sp: [], sm: [], ships: null, adv: [0, 0], tm: { m0: 0, m1: 0, s: 0, f: 0, l: 0, o: 0 }, t: 0 }; WF.st.set(w, st); }
+    st.t += dt; if (fin) fin.t += dt; const armyK = fin ? Math.max(0, 1 - fin.t / 5) : 1, tm = st.tm, a = W.civPos(A), b = W.civPos(B), sA = W.str(A), sB = W.str(B), share = sA / (sA + sB + 1e-9);
     const front = wfSlerp(a, b, 0.32 + 0.36 * share), sides = [[A, a, B, b, "m0"], [B, b, A, a, "m1"]];
-    // --- launches: spawn new missiles, strikes and sparks
-    if (dt > 0) {
-      if (info.close && info.kind !== "orbit" && info.kind !== "space") { tm.f -= dt; if (tm.f <= 0) { tm.f = 0.04 + Math.random() * 0.14; st.sp.push({ dir: wfJit(front, 0.07), t: 0, big: Math.random() < 0.2 }); if (Math.random() < 0.5) st.sm.push({ dir: wfJit(front, 0.05), t: 0 }); } }
+    // --- launches: a finished war launches nothing; what is already in the air plays out and the fleets sail home
+    if (dt > 0 && !fin) {
+      const near = info.close && info.kind !== "orbit" && info.kind !== "space";
+      if (near) { tm.f -= dt; if (tm.f <= 0) { tm.f = 0.04 + Math.random() * 0.14; st.sp.push({ dir: wfJit(front, 0.07), t: 0, big: Math.random() < 0.2 }); if (Math.random() < 0.5) st.sm.push({ dir: wfJit(front, 0.05), t: 0 }); } }
+      if (near && Math.max(A.tech, B.tech) >= 0.1) { tm.a = (tm.a ?? 0) - dt; if (tm.a <= 0) { tm.a = 0.12 + Math.random() * 0.3; const [X, xd, , yd] = sides[Math.random() < 0.5 ? 0 : 1];       // artillery: shells arc from one front line onto the other
+          if (X.tech >= 0.1 && !(lite && st.mis.length > 10)) st.mis.push({ k: "shell", from: wfJit(wfSlerp(xd, front, 0.55 + 0.3 * Math.random()), 0.03), to: wfJit(wfSlerp(front, yd, 0.2 + 0.4 * Math.random()), 0.04), t: 0, dur: 0.45 + Math.random() * 0.3, h: 0.012 + Math.random() * 0.012, col: wfCol(X, 0), trail: [] }); } }
       for (const [X, xd, Y, yd, key] of sides) {
         if (X.tech < 0.35 || lite && st.mis.length > 10) continue;
         if (!(info.close || X.tech >= SPACE_T)) continue;           // missiles only reach what they can: a neighbour, or anywhere for a space-faring nation
-        tm[key] -= dt; if (tm[key] <= 0) { tm[key] = (0.5 + 1.2 * Math.random()) / (0.6 + 1.6 * X.tech); const from = wfJit(xd, 0.1), to = wfJit(yd, 0.16), an = Math.acos(clamp(dot3(from, to), -1, 1));
-          st.mis.push({ from, to, t: 0, dur: 0.9 + an * 1.5, h: 0.03 + 0.2 * an / Math.PI * 1.6, col: wfCol(X, 0), icpt: Y.tech > 0.45 && Math.random() < 0.22, trail: [] }); }
+        tm[key] -= dt; if (tm[key] <= 0) { tm[key] = (0.5 + 1.2 * Math.random()) / (0.6 + 1.6 * X.tech); const from = wfJit(xd, 0.1), to = wfJit(yd, 0.16), an = Math.acos(clamp(dot3(from, to), -1, 1)), cr = X.tech >= 0.5 && Math.random() < 0.3;
+          const m = { from, to, t: 0, dur: (0.9 + an * 1.5) * (cr ? 1.25 : 1), h: cr ? 0.007 : 0.03 + 0.2 * an / Math.PI * 1.6, k: cr ? "cruise" : null, col: wfCol(X, 0), icpt: Y.tech > 0.45 && Math.random() < 0.22, trail: [] }; st.mis.push(m);
+          if (m.icpt) st.mis.push({ k: "sam", from: wfJit(yd, 0.07), to: wfSlerp(from, to, 0.6), t: 0, dur: m.dur * 0.6, h: 0, r1: 1.004 + m.h * Math.sin(Math.PI * 0.6), silent: true, col: wfCol(Y, 0), trail: [] }); }       // an interceptor rises to meet it
       }
+      sides.forEach(([X, xd, Y, yd], i) => { if (X.tech < 0.3 || !(info.close || X.tech >= 0.55)) return; const key = "b" + i; tm[key] = (tm[key] ?? Math.random() * 3) - dt;      // bomber sorties: fly out, drop their bombs, fly home
+        if (tm[key] <= 0) { tm[key] = 4 + Math.random() * 5; if (WF.air.filter(q => q.st === st).length < (lite ? 1 : 3)) WF.air.push(wfMakePlane(W, X, wfJit(xd, 0.04), wfJit(yd, 0.1), { st, kind: "bomber" })); } });
       if (info.kind === "orbit" || info.kind === "space") {          // orbital lasers need a clear line: a fleet that cannot see its target over the planet's curve flies closer until it can
         tm.o -= dt; if (tm.o <= 0) { tm.o = 0.3 + Math.random() * 0.45; const shooters = sides.filter(s => s[0].tech >= SPACE_T), s = shooters[Math.floor(Math.random() * shooters.length)], k = s[4] === "m0" ? 0 : 1, r0 = 1.2 + Math.random() * 0.1,
             src = wfJit(wfSlerp(s[1], s[3], st.adv[k]), 0.12), tgt = wfJit(s[3], 0.16);
-          if (wfSees(src, r0, tgt, 1.003)) st.mis.push({ beam: true, from: src, to: tgt, t: 0, dur: 0.28, col: wfCol(s[0], 0), r0 });
+          if (wfSees(src, r0, tgt, 1.003)) st.mis.push(Math.random() < 0.12 ? { k: "rod", from: src, to: tgt, t: 0, dur: 0.8, col: wfCol(s[0], 0), r0 } : { beam: true, from: src, to: tgt, t: 0, dur: 0.28, col: wfCol(s[0], 0), r0 });       // now and then a kinetic rod drops instead of a beam
           else { st.adv[k] = Math.min(0.97, st.adv[k] + 0.05); tm.o = 0.12; } }
       }
       if (info.kind === "space") { tm.s -= dt;                         // fleets
         if (!st.ships) st.ships = [A, B].map((X, i) => Array.from({ length: lite ? 3 : 6 }, (_, k) => ({ off: Math.random() * 6.283, rad: 0.04 + Math.random() * 0.08, r: 1.17 + Math.random() * 0.1, sp: 0.4 + Math.random() * 0.5, hp: 1, side: i })));
-        if (tm.s <= 0) { tm.s = 0.15 + Math.random() * 0.25; st.lz = st.lz || []; const s0 = st.ships[0][Math.floor(Math.random() * st.ships[0].length)], s1 = st.ships[1][Math.floor(Math.random() * st.ships[1].length)], from = Math.random() < 0.5 ? s0 : s1; if (s0.dir && s1.dir && wfSees(s0.dir, s0.r, s1.dir, s1.r)) st.lz.push({ s0, s1, from, t: 0, dur: 0.18 });
-          if (Math.random() < 0.18) { const v = Math.random() < 0.5 ? s0 : s1; st.dbs = st.dbs || []; st.dbs.push({ ship: v, t: 0, dir: null }); v.hp = 0; setTimeout(() => { v.hp = 1; }, 3500); } }
+        if (tm.s <= 0) { tm.s = 0.15 + Math.random() * 0.25; st.lz = st.lz || []; const s0 = st.ships[0][Math.floor(Math.random() * st.ships[0].length)], s1 = st.ships[1][Math.floor(Math.random() * st.ships[1].length)], from = Math.random() < 0.5 ? s0 : s1;
+          if (s0.dir && s1.dir && !s0.gone && !s1.gone && s0.hp > 0 && s1.hp > 0 && wfSees(s0.dir, s0.r, s1.dir, s1.r)) { st.lz.push({ s0, s1, from, t: 0, dur: 0.18 }); if (Math.random() < 0.25) (st.tp ||= []).push({ a: from, b: from === s0 ? s1 : s0, t: 0, dur: 1 + Math.random() * 0.6, flak: Math.random() < 0.4 }); }       // and sometimes a homing torpedo, which point defence may shoot down
+          if (Math.random() < 0.18) { const v = Math.random() < 0.5 ? s0 : s1; if (v.hp > 0) { st.dbs = st.dbs || []; st.dbs.push({ ship: v, t: 0, dir: null }); v.hp = 0; v.rez = 3.5; } } }
       }
     }
-    // --- advance & draw missiles / beams
+    // --- advance & draw missiles, shells, bombs, rods and beams
     for (let i = st.mis.length - 1; i >= 0; i--) {
-      const m = st.mis[i]; m.t += dt / m.dur; const u = clamp(m.t, 0, 1);
+      const m = st.mis[i]; m.t += dt / m.dur; if (m.t < 0) continue; const u = clamp(m.t, 0, 1);
       if (m.beam) { const g = P(m.to, 1.003), o = P(m.from, m.r0), s1 = scr(g), s0 = scr(o);
         if (s1 && s0 && u < 1) { laser(s0, s1, "150,230,255", 1 - u, 1.1); glow(s1[0], s1[1], 14 * s1[2] * 0.02 + 10, "180,240,255", 0.8 * (1 - u)); }
         if (m.t >= 1) { if (!m.done) { m.done = 1; boom(st, m.to, 1.003, 1, "ground"); } st.mis.splice(i, 1); } continue; }
-      const dir = wfSlerp(m.from, m.to, u), r = 1.004 + m.h * Math.sin(Math.PI * u); m.trail.push([dir, r]); if (m.trail.length > 16) m.trail.shift();
+      if (m.k === "rod") { const top = 1.003 + 0.26 * (1 - u * u), s1 = scr(P(m.to, top)), s0 = scr(P(m.to, top + 0.07 + 0.05 * (1 - u)));
+        if (s1 && s0 && u < 1) { laser(s0, s1, "255,200,130", 0.95, 1.0); glow(s1[0], s1[1], 12 + s1[2] * 0.012, "255,240,200", 0.9); }
+        if (m.t >= 1) { boom(st, m.to, 1.003, 2.6, "ground"); for (let k = 0; k < 4; k++) boom(st, wfJit(m.to, 0.05), 1.003, 1.1, "ground"); st.mis.splice(i, 1); } continue; }
+      const dir = wfSlerp(m.from, m.to, u), r = m.r0 ? m.r0 + (1.004 - m.r0) * u : m.r1 ? 1.004 + (m.r1 - 1.004) * Math.pow(u, 1.5) : 1.004 + m.h * Math.sin(Math.PI * u), tl = m.k === "shell" ? 6 : m.k === "bomb" ? 0 : 16; if (tl) { m.trail.push([dir, r]); if (m.trail.length > tl) m.trail.shift(); }
       if (m.icpt && u > 0.6 && !m.done) { m.done = 1; boom(st, dir, r, 0.6, "air"); st.mis.splice(i, 1); continue; }
-      const sc = scr(P(dir, r));
-      if (sc) { cx.lineCap = "round"; let prev = null; for (let k = 0; k < m.trail.length; k++) { const q = scr(P(m.trail[k][0], m.trail[k][1])); if (q && prev) { const f = k / m.trail.length; cx.strokeStyle = `rgba(255,${150 + 90 * f | 0},${80 + 60 * f | 0},${0.65 * f})`; cx.lineWidth = 0.6 + 2 * f; cx.beginPath(); cx.moveTo(prev[0], prev[1]); cx.lineTo(q[0], q[1]); cx.stroke(); } prev = q; }
-        glow(sc[0], sc[1], Math.max(8, sc[2] * 0.02), "255,220,160", 0.95); }
-      if (m.t >= 1) { boom(st, m.to, 1.004, 1, "ground"); st.mis.splice(i, 1); }
+      const sc = scr(P(dir, r)), cool = m.k === "sam" ? [150, 230, 255] : m.k === "cruise" ? [225, 235, 255] : null;
+      if (sc) { cx.lineCap = "round"; let prev = null; for (let k = 0; k < m.trail.length; k++) { const q = scr(P(m.trail[k][0], m.trail[k][1])); if (q && prev) { const f = k / m.trail.length; cx.strokeStyle = cool ? `rgba(${cool[0]},${cool[1]},${cool[2]},${0.65 * f})` : `rgba(255,${150 + 90 * f | 0},${80 + 60 * f | 0},${0.65 * f})`; cx.lineWidth = (m.k === "cruise" ? 0.5 : 0.6) + 2 * f * (m.k === "shell" ? 0.6 : 1); cx.beginPath(); cx.moveTo(prev[0], prev[1]); cx.lineTo(q[0], q[1]); cx.stroke(); } prev = q; }
+        glow(sc[0], sc[1], Math.max(m.k === "shell" || m.k === "bomb" ? 4 : 8, sc[2] * (m.k === "shell" ? 0.008 : 0.02)), cool ? "170,235,255" : "255,220,160", 0.95); }
+      if (m.t >= 1) { if (!m.silent) boom(st, m.to, 1.004, m.k === "shell" ? 0.5 : m.k === "bomb" ? 0.7 : 1, "ground"); st.mis.splice(i, 1); }
     }
     // --- explosions: flash, fireball, shock ring
-    for (let i = st.ex.length - 1; i >= 0; i--) {
-      const e = st.ex[i]; e.t += dt; const dur = e.kind === "air" ? 0.5 : 1.3, u = e.t / dur; if (u >= 1) { st.ex.splice(i, 1); continue; }
-      const s = scr(P(e.dir, e.r)); if (!s) continue; const R = Math.max(40, s[2]) * e.size;       // R: roughly how many pixels a fraction of the planet is on screen
-      glow(s[0], s[1], R * (0.02 + 0.085 * Math.sqrt(u)), e.kind === "space" ? "170,220,255" : "255,150,60", 0.95 * (1 - u));
-      if (u < 0.25) glow(s[0], s[1], R * (0.035 + 0.04 * u), "255,250,220", 1 - u * 3.5);
-      if (e.kind !== "air") { cx.strokeStyle = `rgba(255,200,140,${0.6 * (1 - u)})`; cx.lineWidth = 1.3; cx.beginPath(); cx.ellipse(s[0], s[1], R * (0.004 + 0.07 * u), R * (0.003 + 0.04 * u), 0, 0, 6.2832); cx.stroke(); }
-    }
+    wfExDraw(K, st.ex);
     // --- armies marching to the front, sparks, smoke
-    if (info.close && (info.kind === "land" || info.kind === "missile")) {
+    if (info.close && (info.kind === "land" || info.kind === "missile") && armyK > 0) {
       for (const [X, xd] of sides) { const col = wfCol(X, 0), n = lite ? 4 : 8, speed = 0.1 + 0.05 * X.tech;
         for (let k = 0; k < n; k++) { const ph = (((st.t * speed * (1 + 0.15 * Math.sin(k * 3.1)) + k / n) % 1) + 1) % 1, dir = wfSlerp(xd, front, 0.12 + 0.85 * ph), off = norm3([dir[0] + 0.012 * Math.sin(k * 5.7), dir[1] + 0.012 * Math.cos(k * 4.3), dir[2] + 0.012 * Math.sin(k * 2.9)]), s = scr(P(off, 1.004));
-          if (s) { const al = Math.sin(Math.PI * ph) ** 0.5; cx.fillStyle = col; cx.globalAlpha = 0.9 * al; const z = Math.max(1.1, s[2] * 0.0028); cx.fillRect(s[0] - z, s[1] - z * 0.7, z * 2, z * 1.4); cx.globalAlpha = 0.5 * al; glow(s[0], s[1], z * 3.5, "255,235,180", 0.45); cx.globalAlpha = 1; } } }
-      const fs = scr(P(front, 1.004)); if (fs) glow(fs[0], fs[1], Math.max(14, fs[2] * 0.085), "255,100,30", 0.4 + 0.15 * Math.sin(st.t * 9)); glow(fs[0], fs[1], Math.max(6, fs[2] * 0.03), "255,220,150", 0.35 + 0.2 * Math.sin(st.t * 13));
+          if (s) { const al = Math.sin(Math.PI * ph) ** 0.5; cx.fillStyle = col; cx.globalAlpha = 0.9 * al * armyK; const z = Math.max(1.1, s[2] * 0.0028); cx.fillRect(s[0] - z, s[1] - z * 0.7, z * 2, z * 1.4); cx.globalAlpha = 0.5 * al * armyK; glow(s[0], s[1], z * 3.5, "255,235,180", 0.45); cx.globalAlpha = 1; } } }
+      const fs = scr(P(front, 1.004)); if (fs) { glow(fs[0], fs[1], Math.max(14, fs[2] * 0.085), "255,100,30", (0.4 + 0.15 * Math.sin(st.t * 9)) * armyK); glow(fs[0], fs[1], Math.max(6, fs[2] * 0.03), "255,220,150", (0.35 + 0.2 * Math.sin(st.t * 13)) * armyK); }
     }
     for (let i = st.sp.length - 1; i >= 0; i--) { const e = st.sp[i]; e.t += dt; if (e.t > 0.5) { st.sp.splice(i, 1); continue; } const s = scr(P(e.dir, 1.004)); if (s) glow(s[0], s[1], Math.max(e.big ? 14 : 7, s[2] * (e.big ? 0.035 : 0.018)) * (1 - e.t * 1.2), "255,200,110", 0.9 * (1 - e.t * 2)); }
     cx.globalCompositeOperation = "source-over";
     for (let i = st.sm.length - 1; i >= 0; i--) { const e = st.sm[i]; e.t += dt; if (e.t > 3.2) { st.sm.splice(i, 1); continue; } const s = scr(P(e.dir, 1.004 + e.t * 0.012)); if (s) { const u = e.t / 3.2, r = (5 + 22 * u) * Math.max(0.5, s[2] * 0.012); const g = cx.createRadialGradient(s[0], s[1] - e.t * 6, 0, s[0], s[1] - e.t * 6, r); g.addColorStop(0, `rgba(40,36,34,${0.4 * (1 - u)})`); g.addColorStop(1, "rgba(40,36,34,0)"); cx.fillStyle = g; cx.beginPath(); cx.arc(s[0], s[1] - e.t * 6, r, 0, 6.2832); cx.fill(); } }
     cx.globalCompositeOperation = "lighter";
-    // --- fleets, lasers, ship wrecks
+    // --- fleets, lasers, torpedoes, wrecks: when the war ends the fleets sail home and dock; the ships of a nation that died blow up
     if (st.ships) {
-      for (const [side, X, xd, Yd] of [[0, A, a, b], [1, B, b, a]]) { const col = wfCol(X, 0), cd = wfSlerp(xd, Yd, st.adv[side]), oc = wfSlerp(Yd, xd, st.adv[1 - side]); if (dt > 0 && !wfSees(cd, 1.2, oc, 1.2)) st.adv[side] = Math.min(0.97, st.adv[side] + dt * 0.07);      // fleets close the distance until they can see each other round the planet
-        for (const sh of st.ships[side]) { sh.off += dt * sh.sp; if (sh.hp <= 0) continue; const o = norm3([cd[0] + sh.rad * Math.cos(sh.off), cd[1] + sh.rad * Math.sin(sh.off * 1.3), cd[2] + sh.rad * Math.sin(sh.off)]); sh.dir = o; const s = scr(P(o, sh.r)); sh.s = s; if (!s) continue;
-        const to = scr(P(wfSlerp(cd, Yd, 0.1), sh.r)), ang = to ? Math.atan2(to[1] - s[1], to[0] - s[0]) : 0, z = Math.max(4, s[2] * 0.016);
-        cx.save(); cx.translate(s[0], s[1]); cx.rotate(ang); cx.fillStyle = "rgba(235,240,255,.95)"; cx.beginPath(); cx.moveTo(z * 1.6, 0); cx.lineTo(-z, z * 0.8); cx.lineTo(-z * 0.5, 0); cx.lineTo(-z, -z * 0.8); cx.closePath(); cx.fill(); cx.restore(); glow(s[0], s[1], z * 3.2, col.startsWith("#") ? "150,200,255" : "150,200,255", 0.5); glow(s[0] - Math.cos(ang) * z, s[1] - Math.sin(ang) * z, z * 2, "255,170,90", 0.55); } }
+      for (const [side, X, xd, Yd] of [[0, A, a, b], [1, B, b, a]]) { const dead = !!fin && !W.civs.includes(X), col = wfCol(X, 0), cd = wfSlerp(xd, Yd, st.adv[side]), oc = wfSlerp(Yd, xd, st.adv[1 - side]);
+        if (fin) { if (!dead) st.adv[side] = Math.max(0, st.adv[side] - dt * 0.09); } else if (dt > 0 && !wfSees(cd, 1.2, oc, 1.2)) st.adv[side] = Math.min(0.97, st.adv[side] + dt * 0.07);      // fleets close the distance until they can see each other round the planet
+        const home = !!fin && !dead && st.adv[side] < 0.03;
+        for (const sh of st.ships[side]) { sh.off += dt * sh.sp; if (sh.gone) continue;
+          if (sh.hp <= 0) { if (fin) { sh.gone = true; continue; } sh.rez = (sh.rez ?? 3.5) - dt; if (sh.rez > 0) continue; sh.hp = 1; }
+          if (dead) { sh.bt = (sh.bt ?? Math.random() * 2.4) - dt; if (sh.bt <= 0) { (st.dbs ||= []).push({ ship: sh, t: 0, dir: null }); sh.hp = 0; sh.gone = true; continue; } }
+          if (home) { sh.dock = (sh.dock || 0) + dt * 0.7; if (sh.dock >= 1) { sh.gone = true; continue; } }
+          const o = norm3([cd[0] + sh.rad * Math.cos(sh.off), cd[1] + sh.rad * Math.sin(sh.off * 1.3), cd[2] + sh.rad * Math.sin(sh.off)]); sh.dir = o; const s = scr(P(o, sh.r)); sh.s = s; if (!s) continue;
+          const to = scr(P(wfSlerp(cd, Yd, 0.1), sh.r)), ang = to ? Math.atan2(to[1] - s[1], to[0] - s[0]) : 0, al = 1 - (sh.dock || 0), z = Math.max(4, s[2] * 0.016) * (1 - 0.5 * (sh.dock || 0));
+          cx.save(); cx.globalAlpha = al; cx.translate(s[0], s[1]); cx.rotate(ang); cx.fillStyle = "rgba(235,240,255,.95)"; cx.beginPath(); cx.moveTo(z * 1.6, 0); cx.lineTo(-z, z * 0.8); cx.lineTo(-z * 0.5, 0); cx.lineTo(-z, -z * 0.8); cx.closePath(); cx.fill(); cx.restore(); glow(s[0], s[1], z * 3.2, "150,200,255", 0.5 * al); glow(s[0] - Math.cos(ang) * z, s[1] - Math.sin(ang) * z, z * 2, "255,170,90", 0.55 * al); } }
       st.lz = (st.lz || []).filter(l => (l.t += dt) < l.dur); for (const l of st.lz) { const to_ = l.from === l.s0 ? l.s1 : l.s0, p0 = l.from.s, p1 = to_.s; if (!p0 || !p1 || l.from.hp <= 0 || !l.from.dir || !to_.dir || !wfSees(l.from.dir, l.from.r, to_.dir, to_.r)) continue; const u = l.t / l.dur; laser(p0, p1, "255,90,110", 1 - u, 0.9); if (u > 0.5) glow(p1[0], p1[1], 14, "255,160,160", 0.8); }
-      st.dbs = (st.dbs || []).filter(d => { if (d.t === 0 && d.ship.dir) boom(st, d.ship.dir, d.ship.r, 1.3, "space"); return (d.t += dt) < 0.1; });
+      st.tp = (st.tp || []).filter(tp => { tp.t += dt; const u = clamp(tp.t / tp.dur, 0, 1), da = tp.a.dir, db = tp.b.dir; if (!da || !db || tp.a.gone || tp.b.gone) return false;
+        const d = wfSlerp(da, db, u), r = tp.a.r + (tp.b.r - tp.a.r) * u, s = scr(P(d, r)); (tp.tr ||= []).push([d, r]); if (tp.tr.length > 10) tp.tr.shift(); let prev = null;
+        for (const q of tp.tr) { const sq = scr(P(q[0], q[1])); if (sq && prev) { cx.strokeStyle = "rgba(255,190,110,.6)"; cx.lineWidth = 1.2; cx.beginPath(); cx.moveTo(prev[0], prev[1]); cx.lineTo(sq[0], sq[1]); cx.stroke(); } prev = sq; }
+        if (s) glow(s[0], s[1], 7, "255,210,150", 0.9);
+        if (tp.flak && u > 0.55) { boom(st, d, r, 0.5, "space"); return false; }
+        if (tp.t >= tp.dur) { if (tp.b.hp > 0) { tp.b.hp = 0; tp.b.rez = 3.5; (st.dbs ||= []).push({ ship: tp.b, t: 0, dir: null }); } return false; }
+        return true; });
+      st.dbs = (st.dbs || []).filter(d => { if (!d.done) { d.done = 1; if (d.ship.dir) boom(st, d.ship.dir, d.ship.r, 1.3, "space"); } return (d.t += dt) < 0.1; });
     }
+    if (fin) { const idle = !st.mis.length && !st.ex.length && !st.sp.length && !st.sm.length && !(st.lz && st.lz.length) && !(st.dbs && st.dbs.length) && !(st.tp && st.tp.length) && !(st.ships && st.ships.some(ar => ar.some(sh => !sh.gone))) && armyK <= 0 && !WF.air.some(q => q.st === st);
+      if (idle || fin.t > 70) fin.t = 1e9; }
   }
+  WF.fin = WF.fin.filter(f => f.t < 1e8);
+  if (WF.air.length || WF.sea.length) wfCloudMap();
+  wfAir(K); wfBoats(K); wfLife(K);
   // moon traffic: shuttles shuttle between each moon settlement's home nation and the moon
   if (mBases.length) { cx.globalCompositeOperation = "lighter"; const M = S.moonMainW, md = Math.hypot(...M), pdm = M.map(q => -q / md), Pm = M.map((q, i) => q + pdm[i] * S.moonRw * 1.02);
     for (const b of mBases) { let ts = WF.tr ||= new WeakMap(), t = ts.get(b.civ); if (!t) { t = { sh: [], nx: 0 }; ts.set(b.civ, t); }
-      const Pc = P(W.civPos(b.civ), 1.004), pop = b.civ.base.pop;
-      if (dt > 0) { t.nx -= dt; if (t.nx <= 0 && t.sh.length < (lite ? 3 : 7)) { t.nx = 1 / (0.15 + 0.12 * Math.log10(pop + 10)) * (0.6 + Math.random() * 0.8); t.sh.push({ u: 0, dur: 4.5 + Math.random() * 2.5, back: Math.random() < 0.4, tr: [] }); } }
+      const Pc = P(W.capPos(b.civ), 1.004), pop = b.civ.base.pop, vis = dot3(Pc, [Pm[0] - Pc[0], Pm[1] - Pc[1], Pm[2] - Pc[2]]) > 0;           // shuttles only fly while the moon is above the capital's horizon
+      if (dt > 0 && vis) { t.nx -= dt; if (t.nx <= 0 && t.sh.length < (lite ? 3 : 7)) { t.nx = 1 / (0.15 + 0.12 * Math.log10(pop + 10)) * (0.6 + Math.random() * 0.8); t.sh.push({ u: 0, dur: 4.5 + Math.random() * 2.5, back: Math.random() < 0.4, tr: [] }); } }
       const mid = [(Pc[0] + Pm[0]) / 2, (Pc[1] + Pm[1]) / 2, (Pc[2] + Pm[2]) / 2], ml = Math.hypot(...mid) || 1, ctl = mid.map(q => q / ml * Math.max(1.7, ml + 0.55));
-      for (let i = t.sh.length - 1; i >= 0; i--) { const sh = t.sh[i]; sh.u += dt / sh.dur; if (sh.u >= 1) { t.sh.splice(i, 1); const sm = scr(Pm); if (sm) glow(sm[0], sm[1], Math.max(10, sm[2] * 0.03), "255,225,160", 0.8); continue; }
+      for (let i = t.sh.length - 1; i >= 0; i--) { const sh = t.sh[i]; sh.u += dt / sh.dur; if (!vis) sh.fade = (sh.fade || 0) + dt * 1.2; if (sh.fade >= 1) { t.sh.splice(i, 1); continue; } const fk = 1 - (sh.fade || 0); if (sh.u >= 1) { t.sh.splice(i, 1); const sm = scr(Pm); if (sm) glow(sm[0], sm[1], Math.max(10, sm[2] * 0.03), "255,225,160", 0.8); continue; }
         const u = sh.back ? 1 - sh.u : sh.u, a = (1 - u) * (1 - u), b2 = 2 * u * (1 - u), c2 = u * u, pt = [a * Pc[0] + b2 * ctl[0] + c2 * Pm[0], a * Pc[1] + b2 * ctl[1] + c2 * Pm[1], a * Pc[2] + b2 * ctl[2] + c2 * Pm[2]];
         sh.tr.push(pt); if (sh.tr.length > 12) sh.tr.shift(); let prev = null;
-        for (let k = 0; k < sh.tr.length; k++) { const q = scr(sh.tr[k]); if (q && prev) { const fr = k / sh.tr.length; cx.strokeStyle = `rgba(190,225,255,${0.5 * fr})`; cx.lineWidth = 0.5 + 1.4 * fr; cx.beginPath(); cx.moveTo(prev[0], prev[1]); cx.lineTo(q[0], q[1]); cx.stroke(); } prev = q; }
-        const hs = scr(pt); if (hs) glow(hs[0], hs[1], Math.max(4, hs[2] * 0.012), "220,240,255", 0.9); } } }
+        for (let k = 0; k < sh.tr.length; k++) { const q = scr(sh.tr[k]); if (q && prev) { const fr = k / sh.tr.length; cx.strokeStyle = `rgba(190,225,255,${0.5 * fr * fk})`; cx.lineWidth = 0.5 + 1.4 * fr; cx.beginPath(); cx.moveTo(prev[0], prev[1]); cx.lineTo(q[0], q[1]); cx.stroke(); } prev = q; }
+        const hs = scr(pt); if (hs) glow(hs[0], hs[1], Math.max(4, hs[2] * 0.012), "220,240,255", 0.9 * fk); } } }
   // scorch marks: charred ground that fades slowly
   cx.globalCompositeOperation = "source-over";
   for (let i = WF.scorch.length - 1; i >= 0; i--) { const sc = WF.scorch[i]; sc.t += dt; if (sc.t > 45) { WF.scorch.splice(i, 1); continue; } const s = scr(P(sc.dir, 1.002)); if (!s) continue; const r = Math.max(3, s[2] * 0.014) * sc.size, g = cx.createRadialGradient(s[0], s[1], 0, s[0], s[1], r); g.addColorStop(0, `rgba(30,18,10,${0.5 * (1 - sc.t / 45)})`); g.addColorStop(1, "rgba(30,18,10,0)"); cx.fillStyle = g; cx.beginPath(); cx.arc(s[0], s[1], r, 0, 6.2832); cx.fill(); }
@@ -6689,6 +6975,7 @@ function updatePins(W) {
 }
 updateButtons();
 if (prog && gl.getProgramParameter(prog, gl.LINK_STATUS)) requestAnimationFrame(frame);
+(function fxLoop() { requestAnimationFrame(fxLoop); const W = S.world; if (W && S.cam && !SHOT.job) try { warFx(W); } catch (e) { window.PFWARERR = String(e); } })();      // war, air and sea effects run at the display's full frame rate, whatever the planet's own frame rate is
 if (Q.get("ui") === "0") document.body.classList.add("hide");
 $("bWall").onclick = () => { if (window.pfApp) window.pfApp.wallpaper(true); else setWallpaper(true); $("bWall").blur(); };      // in the desktop app this swaps to the real wallpaper window (Ctrl+Alt+W or the tray icon brings the window back)
 canvas.addEventListener("pointerdown", () => { if (WP.on) setWallpaper(false); });
