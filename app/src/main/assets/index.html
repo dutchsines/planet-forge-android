@@ -1915,7 +1915,7 @@ class World {
     const lf = life > 0.65 ? "Lush" : life > 0.35 ? "Living" : life > 0.1 ? "Sparse" : "Barren";
     const name = hot > 0.5 ? (magma > 0.5 ? "Molten Magma World" : "Cooling Crust World") : fill < 0.9 ? "Steaming Young World"
       : `${lf} ${k > 0.5 ? (exo === "lava" ? "Magma" : "Acid") : wet < -0.55 ? "Dry" : Lq.sea} World`;
-    const city = ov("city", this.civs.reduce((m, v) => Math.max(m, sstep(0.28, 0.6, v.tech)), 0) * clamp((55 - Ts) / 25, 0, 1) * clamp((Ts + 30) / 25, 0, 1) * (k < 0.3 ? 1 : 0));
+    const city = ov("city", this.civs.reduce((m, v) => Math.max(m, sstep(0.2, 0.5, v.tech)), 0) * clamp((80 - Ts) / 25, 0, 1) * clamp((Ts + 60) / 25, 0, 1) * (k < 0.3 ? 1 : 0));
     const aur = ov("aur", Math.min(1, this.aurora * clamp(density / 0.9, 0, 1) + (this.aurora > 0 ? this.geo * 0.8 : 0)));
     const thu = ov("thu", Math.max(this.thunder * clamp(cover * 2.2, 0, 1) * (Ts > -30 ? 1 : 0), 0.8 * hot, 0.7 * sup));
     return { city, aur, thu, heat, wet, life, pole, sea, k, atmo, beta, density, cover, tint, wind: ov("wind", 0.02 + 0.012 * Math.abs(heat) + 0.03 * hot), exo,
@@ -3212,15 +3212,15 @@ vec3 shadePlanet(vec3 p, vec3 rd, float t, vec3 sun, float pixAng, vec3 moonP) {
     float haze = pop * pop * 0.10 + pop * 0.02;
     vec3 lc = mix(lA, lB, hash13(floor(p * f)));
     float rLit = smoothstep(0.55, 0.95, rtL), bead = smoothstep(0.30, 0.70, gnoise(p * f * 0.55) * 0.5 + 0.5);
-    col += lc * rLit * (0.25 + 1.1 * bead) * uCity * nightF * 1.7 * (1.0 + 1.0 * uCine);                    // street lights strung along the roads
-    col += lc * (spots * pop * 1.5 + haze) * uCity * smoothstep(0.0, 0.6, cm) * nightF * 1.8 * (1.0 + 1.0 * uCine) * (0.9 + 0.1 * sin(uTime * 3.0 + cell * 40.0));
+    col += lc * rLit * (0.25 + 1.1 * bead) * uCity * nightF * 1.0 * (1.0 + 0.8 * uCine);                    // street lights strung along the roads
+    col += lc * (spots * pop * 1.1 + haze * 0.5) * uCity * smoothstep(0.0, 0.6, cm) * nightF * 1.2 * (1.0 + 0.8 * uCine) * (0.9 + 0.1 * sin(uTime * 3.0 + cell * 40.0));
   }
   { float nf = nightF;
     col += vec3(1.0, 0.38, 0.07) * fireG * (0.5 + 3.0 * nf) * (0.8 + 0.2 * sin(uTime * 9.0 + p.x * 900.0));                         // wildfire fronts glow, fiercest at night
     col += vec3(1.0, 0.45, 0.1) * warG * (0.5 + 2.5 * nf) * (0.6 + 0.4 * sin(uTime * 6.0 + gnoise(p * 80.0) * 8.0));               // flashes and fires along a war front
     if (uLPol > 0.01 && nf > 0.01) {                                                                                              // light pollution: a wide orange glow of scattered light over the cities and their surroundings
       float hz = 0.0; for (int i = 0; i < 8; i++) { float rw = uCiv[i].w; if (rw > 0.0 && uCivP[i].x > 0.02) { float d2 = 2.0 * (1.0 - clamp(dot(p, uCiv[i].xyz), -1.0, 1.0)); hz += uCivP[i].x * uCivP[i].y * exp(-d2 / (rw * rw * 0.5)); } }
-      col += uLitW * hz * nf * 0.10 * uLPol * (1.0 - 0.5 * s.ocean); }
+      col += uLitW * hz * nf * 0.04 * uLPol * (1.0 - 0.5 * s.ocean); }
     if (uLanes > 0.01 && s.ocean > 0.5 && s.ice < 0.5 && nf > 0.01) {                                                              // night-side shipping lanes: strings of lights on the sea between the great ports
       float ln = 0.0;
       for (int k = 0; k < 12; k++) { if (k >= uLnC) break;                                                          // pairs and their great-circle normals are worked out once on the CPU
@@ -4472,7 +4472,7 @@ function setUniforms(W, p, w, h) {
   { const civ = new Float32Array(32), civP = new Float32Array(32), civL = new Float32Array(24), civC = new Float32Array(24), civS = new Float32Array(24), civK = new Float32Array(24), rk = new Float32Array(8), rkP = new Float32Array(8), rkD = new Float32Array(6), sat = new Float32Array(72), toW = v => mulMV(transpose(S.M), v);
     W.civs.slice(0, 8).forEach((v, i) => {
       const P = W.civPos(v), pn = clamp(Math.log10(Math.max(v.pop, 1)) / 10, 0, 1);
-      civ.set([P[0], P[1], P[2], 0.07 + 0.38 * pn], i * 4); civP.set([sstep(0.28, 0.6, v.tech) * (0.5 + 0.5 * pn), 0.25 + 0.75 * pn, sstep(0.05, 0.18, v.tech), v.war ? 1 : 0], i * 4); civC.set(flagRGB(v.flag && v.flag.cols ? v.flag.cols[0] : ""), i * 3); civS.set(speciesRGB(v.species || W.species), i * 3); civL.set(S.alienLights !== false && v.lit ? v.lit : [1.0, 0.55, 0.2], i * 3); civK.set(W.capPos(v), i * 3);
+      civ.set([P[0], P[1], P[2], 0.07 + 0.38 * pn], i * 4); civP.set([sstep(0.2, 0.5, v.tech) * (0.5 + 0.5 * pn), 0.25 + 0.75 * pn, sstep(0.05, 0.18, v.tech), v.war ? 1 : 0], i * 4); civC.set(flagRGB(v.flag && v.flag.cols ? v.flag.cols[0] : ""), i * 3); civS.set(speciesRGB(v.species || W.species), i * 3); civL.set(S.alienLights !== false && v.lit ? v.lit : [1.0, 0.55, 0.2], i * 3); civK.set(W.capPos(v), i * 3);
     });
     for (let i = 0; i < 2; i++) rk[i * 4 + 3] = -1;
     W.rkts.slice(0, 2).forEach((o, i) => {
@@ -6461,11 +6461,24 @@ function wfCover(x, y) {                                           // 0 = clear,
 }
 function wfAround(d, ang, rad) { const a = norm3(cross3(d, Math.abs(d[1]) > 0.9 ? [1, 0, 0] : [0, 1, 0])), b = cross3(d, a); return norm3(d.map((x, i) => x * Math.cos(rad) + (a[i] * Math.cos(ang) + b[i] * Math.sin(ang)) * Math.sin(rad))); }
 function wfPick(list, wt) { let t = 0; for (const x of list) t += wt(x); let r = Math.random() * t; for (const x of list) { r -= wt(x); if (r <= 0) return x; } return list[list.length - 1]; }
-function wfPlanePos(p, u) { const q = u > 1 ? 2 - u : u; return wfSlerp(wfSlerp(p.a, p.c, q), wfSlerp(p.c, p.b, q), q); }
-function wfRoute(W, a, b) {                                        // great-circle route; if a storm sits across the middle the control point is pushed sideways so the flight bends round it
+function wfPlanePos(p, u) { const q = u > 1 ? 2 - u : u, g = p.seg; if (g) { const t = clamp((q - g.u0) / Math.max(1e-6, 1 - g.u0), 0, 1); return wfSlerp(wfSlerp(g.a, g.c, t), wfSlerp(g.c, p.b, t), t); } return wfSlerp(wfSlerp(p.a, p.c, q), wfSlerp(p.c, p.b, q), q); }
+function wfZones(W) {                                              // war zones: the two capitals of every war and the front line between close neighbours
+  const now = performance.now(); if (WF.zn && WF.znW === W && now - WF.znT < 400) return WF.zn; const z = [];
+  for (let i = 0; i < W.civs.length; i++) { const v = W.civs[i], f = v.war && v.war.foe; if (!f || W.civs.indexOf(f) < i) continue; const a = W.civPos(v), b = W.civPos(f), info = warInfo(v, f, W);
+    z.push({ d: a, R: 0.17 }, { d: b, R: 0.17 }); if (info.close && info.kind !== "orbit" && info.kind !== "space") z.push({ d: wfSlerp(a, b, 0.5), R: 0.2 }); }
+  WF.zn = z; WF.znW = W; WF.znT = now; return z;
+}
+function wfClear(a, c, b, zones, pad) {                            // does the flight a -> c -> b stay out of every war zone?
+  if (!zones.length) return true;
+  for (let k = 0; k <= 14; k++) { const t = k / 14, d = wfSlerp(wfSlerp(a, c, t), wfSlerp(c, b, t), t); for (const z of zones) if (Math.acos(clamp(dot3(d, z.d), -1, 1)) < z.R + pad) return false; }
+  return true;
+}
+function wfRoute(W, a, b, free) {                                        // great-circle route; if a storm sits across the middle the control point is pushed sideways so the flight bends round it
   const m = wfSlerp(a, b, 0.5), n = norm3(cross3(a, b)); let c = m;
   if (Math.abs(n[0]) + Math.abs(n[1]) + Math.abs(n[2]) > 0.01) for (const o of W.wx || []) { if ((o.str || 0) < 0.25) continue; const E = wfStormV(o); if (Math.acos(clamp(dot3(m, E), -1, 1)) < o.rad * 1.1 + 0.05) { const side = dot3(E, n) > 0 ? -1 : 1; c = norm3(m.map((x, i) => x + n[i] * side * (o.rad * 1.1 + 0.08) * 1.8)); break; } }
   if (c === m) { const ang = Math.acos(clamp(dot3(a, b), -1, 1)); if (Math.abs(n[0]) + Math.abs(n[1]) + Math.abs(n[2]) > 0.01) c = norm3(m.map((x, i) => x + n[i] * (Math.random() < 0.5 ? -1 : 1) * (0.01 + 0.07 * Math.random()) * Math.min(1.2, ang * 1.5))); }      // no two flights take quite the same line
+  if (!free) { const zones = wfZones(W); if (!wfClear(a, c, b, zones, 0.02)) {                  // a route through a war zone is bent round it, or not flown at all
+      c = null; for (const amp of [0.12, 0.2, 0.3, 0.45, 0.65, 0.9]) { for (const side of Math.random() < 0.5 ? [1, -1] : [-1, 1]) { const q = norm3(m.map((x, i) => x + n[i] * side * amp)); if (wfClear(a, q, b, zones, 0.02)) { c = q; break; } } if (c) break; } } }
   return c;
 }
 const WF_LV = [0.011, 0.0145, 0.018, 0.0215, 0.025, 0.028];       // flight levels, inside the cloud deck (base 1.006, tops 1.022) and up to the cirrus (1.030)
@@ -6476,14 +6489,15 @@ function wfLevel(kind) {
 }
 function wfMakePlane(W, X, from, to, o = {}) {
   const ang = Math.acos(clamp(dot3(from, to), -1, 1)), kind = o.kind || (X.tech >= 0.5 && Math.random() < 0.18 ? "jet" : "liner"), sp = kind === "jet" || kind === "bomber" ? 1.5 : 1, lvl = wfLevel(kind);
-  return { a: o.st ? from : wfJit(from, 0.02), b: o.st ? to : wfJit(to, 0.02), c: wfRoute(W, from, to), lvl, u: 0, max: o.st ? 2 : 1, dur: (2.5 + ang * 7) / sp * (X.tech >= 0.5 ? 0.8 : 1) * (0.9 + 0.2 * Math.random()), kind, col: wfCol(X, 0), alt: WF_LV[lvl] + (Math.random() - 0.5) * 0.0008, tr: [], tt: 0, st: o.st || null, dropped: false, id: Math.random() * 99 };
+  const rc = wfRoute(W, from, to, !!o.st); if (!rc) return null;
+  return { a: o.st ? from : wfJit(from, 0.02), b: o.st ? to : wfJit(to, 0.02), c: rc, lvl, u: 0, max: o.st ? 2 : 1, dur: (2.5 + ang * 7) / sp * (X.tech >= 0.5 ? 0.8 : 1) * (0.9 + 0.2 * Math.random()), kind, col: wfCol(X, 0), alt: WF_LV[lvl] + (Math.random() - 0.5) * 0.0008, tr: [], tt: 0, st: o.st || null, dropped: false, id: Math.random() * 99 };
 }
 function wfSpawnPlane(W) {
-  const civs = W.civs.filter(v => v.tech >= 0.3 && v.pop > 2e5 && !v.asc); if (!civs.length) return;
-  const X = wfPick(civs, v => Math.log10(v.pop) * v.tech), from = W.capPos(X), others = civs.filter(v => v !== X && !(X.war && X.war.foe === v));
+  const civs = W.civs.filter(v => v.tech >= 0.3 && v.pop > 2e5 && !v.asc && !v.war); if (civs.length < 2) return;           // a nation at war closes its airspace: no commercial flights to or from it
+  const X = wfPick(civs, v => Math.log10(v.pop) * v.tech), from = W.capPos(X), others = civs.filter(v => v !== X);
   if (!others.length) return;                                      // a flight always goes from one nation's capital to another's
   const to = W.capPos(wfPick(others, v => Math.log10(v.pop)));
-  if (dot3(from, to) > 0.9995) return; WF.air.push(wfMakePlane(W, X, from, to));
+  if (dot3(from, to) > 0.9995) return; const pl = wfMakePlane(W, X, from, to); if (pl) WF.air.push(pl);
 }
 function wfPlaneShape(cx, x, y, ang, z, kind, col) {
   cx.save(); cx.translate(x, y); cx.rotate(ang);
@@ -6502,12 +6516,16 @@ function wfDraw(K, tr, hs) {                                       // contrails:
 }
 function wfAir(K) {
   const { W, dt, cx, P, scr, glow, lite } = K, A = WF.air;
-  if (dt > 0 && S.traffic !== false) { WF.nxA -= dt; if (WF.nxA <= 0) { WF.nxA = 0.5 + Math.random() * 1.4; if (A.filter(p => !p.st).length < (lite ? 5 : 13)) wfSpawnPlane(W); } }
+  if (dt > 0 && S.traffic !== false) { WF.nxA -= dt; if (WF.nxA <= 0) { WF.nxA = 3 + Math.random() * 4; if (A.filter(p => !p.st).length < (lite ? 3 : 5)) wfSpawnPlane(W); } }
   const advect = (tr) => { for (let k = tr.length - 1; k >= 0; k--) { const q = tr[k]; q.t += dt; if (q.t > 20) { tr.splice(k, 1); continue; } if (dt > 0) { const wd = wfWind(q.d), c = Math.max(0.2, Math.sqrt(1 - q.d[1] * q.d[1])); const [la, lo] = wfLL(q.d), la2 = clamp(la + wd[1] * dt * 0.012, -1.5, 1.5), lo2 = lo + wd[0] * dt * 0.012 / c; q.d = [Math.cos(la2) * Math.cos(lo2), Math.sin(la2), Math.cos(la2) * Math.sin(lo2)]; } } };
   cx.globalCompositeOperation = "source-over"; cx.lineCap = "round";
   for (const o of WF.old) { advect(o.tr); wfDraw(K, o.tr); } WF.old = WF.old.filter(o => o.tr.length);
   for (let i = A.length - 1; i >= 0; i--) {
     const p = A[i]; p.u += dt / p.dur; if (p.u >= p.max) { if (p.tr.length) WF.old.push({ tr: p.tr }); A.splice(i, 1); continue; }
+    if (dt > 0 && !p.st && p.u < 0.85 && (p.rt = (p.rt ?? Math.random()) - dt) <= 0) { p.rt = 0.6; const zones = wfZones(W);                    // a war zone opens ahead: bend the rest of the flight round it
+      if (zones.length) { const g = p.seg || { a: p.a, c: p.c, u0: 0 }, t0 = clamp((p.u - g.u0) / Math.max(1e-6, 1 - g.u0), 0, 1), d0 = wfPlanePos(p, p.u);
+        let hit = false; for (let k = 0; k <= 10 && !hit; k++) { const t = t0 + (1 - t0) * k / 10, dd = wfSlerp(wfSlerp(g.a, g.c, t), wfSlerp(g.c, p.b, t), t); for (const z of zones) if (Math.acos(clamp(dot3(dd, z.d), -1, 1)) < z.R) hit = true; }
+        if (hit) { const nc = wfRoute(W, d0, p.b); if (nc) p.seg = { a: d0, c: nc, u0: p.u }; else { p.seg = { a: d0, c: wfSlerp(d0, p.a, 0.5), u0: p.u }; p.b = p.a; } } } }      // no way round: turn back to where it came from
     const q = p.u > 1 ? 2 - p.u : p.u, d = wfPlanePos(p, p.u), cruise = Math.sin(Math.PI * q) > 0.35, r = 1.003 + (p.alt - 0.003) * Math.min(1, Math.sin(Math.PI * q) * 3);
     if (dt > 0) { p.tt -= dt; if (p.tt <= 0 && cruise) { p.tt = 0.07; const h = wfHum(W, d); if (h < 1.1) p.tr.push({ d, r, t: 0, h }); }
       if (p.st && !p.dropped && p.u >= 0.93 && p.u < 1.2) { p.dropped = true; for (let k = 0; k < 3; k++) p.st.mis.push({ k: "bomb", from: d, to: wfJit(p.b, 0.04), t: -k * 0.12, dur: 0.5, h: 0.003, col: p.col, trail: [], r0: r }); } }
@@ -6725,17 +6743,19 @@ function warFx(W) {
           if (m.icpt) st.mis.push({ k: "sam", from: wfJit(yd, 0.07), to: wfSlerp(from, to, 0.6), t: 0, dur: m.dur * 0.6, h: 0, r1: 1.004 + m.h * Math.sin(Math.PI * 0.6), silent: true, col: wfCol(Y, 0), trail: [] }); }       // an interceptor rises to meet it
       }
       sides.forEach(([X, xd, Y, yd], i) => { if (X.tech < 0.3 || !(info.close || X.tech >= 0.55)) return; const key = "b" + i; tm[key] = (tm[key] ?? Math.random() * 3) - dt;      // bomber sorties: fly out, drop their bombs, fly home
-        if (tm[key] <= 0) { tm[key] = 4 + Math.random() * 5; if (WF.air.filter(q => q.st === st).length < (lite ? 1 : 3)) WF.air.push(wfMakePlane(W, X, wfJit(xd, 0.04), wfJit(yd, 0.1), { st, kind: "bomber" })); } });
-      if (info.kind === "orbit" || info.kind === "space") {          // orbital lasers need a clear line: a fleet that cannot see its target over the planet's curve flies closer until it can
-        tm.o -= dt; if (tm.o <= 0) { tm.o = 0.3 + Math.random() * 0.45; const shooters = sides.filter(s => s[0].tech >= SPACE_T), s = shooters[Math.floor(Math.random() * shooters.length)], k = s[4] === "m0" ? 0 : 1, r0 = 1.2 + Math.random() * 0.1,
-            src = wfJit(wfSlerp(s[1], s[3], st.adv[k]), 0.12), tgt = wfJit(s[3], 0.16);
-          if (wfSees(src, r0, tgt, 1.003)) st.mis.push(Math.random() < 0.12 ? { k: "rod", from: src, to: tgt, t: 0, dur: 0.8, col: wfCol(s[0], 0), r0 } : { beam: true, from: src, to: tgt, t: 0, dur: 0.28, col: wfCol(s[0], 0), r0 });       // now and then a kinetic rod drops instead of a beam
-          else { st.adv[k] = Math.min(0.97, st.adv[k] + 0.05); tm.o = 0.12; } }
+        if (tm[key] <= 0) { tm[key] = 4 + Math.random() * 5; if (WF.air.filter(q => q.st === st).length < (lite ? 1 : 3)) { const bp = wfMakePlane(W, X, wfJit(xd, 0.04), wfJit(yd, 0.1), { st, kind: "bomber" }); if (bp) WF.air.push(bp); } } });
+      if (info.kind === "orbit" || info.kind === "space") {          // every spacefaring side has a fleet; orbital weapons are fired by a real ship, and only along a clear line
+        if (!st.ships) st.ships = [[], []];
+        sides.forEach(([X], i) => { if (X.tech >= SPACE_T && !st.ships[i].length && !st.ships[i].spent) { st.ships[i] = Array.from({ length: lite ? 3 : 6 }, () => ({ off: Math.random() * 6.283, rad: 0.04 + Math.random() * 0.08, r: 1.17 + Math.random() * 0.1, sp: 0.4 + Math.random() * 0.5, hp: 1, side: i })); st.ships[i].spent = true; } });
+        tm.o -= dt; if (tm.o <= 0) { tm.o = 0.3 + Math.random() * 0.45; const cands = [];
+          sides.forEach((sd, k) => { if (sd[0].tech >= SPACE_T) for (const sh of st.ships[k]) if (!sh.gone && sh.hp > 0 && sh.dir) cands.push([sd, k, sh]); });
+          if (cands.length) { const [sd, k, sh] = cands[Math.floor(Math.random() * cands.length)], tgt = wfJit(sd[3], 0.16), r0 = sh.r;
+            if (wfSees(sh.dir, r0, tgt, 1.003)) st.mis.push(Math.random() < 0.12 ? { k: "rod", from: sh.dir, to: tgt, t: 0, dur: 0.8, col: wfCol(sd[0], 0), r0, ship: sh } : { beam: true, from: sh.dir, to: tgt, t: 0, dur: 0.28, col: wfCol(sd[0], 0), r0, ship: sh });       // now and then a kinetic rod drops instead of a beam
+            else { st.adv[k] = Math.min(0.97, st.adv[k] + 0.05); tm.o = 0.12; } } }
       }
       if (info.kind === "space") { tm.s -= dt;                         // fleets
-        if (!st.ships) st.ships = [A, B].map((X, i) => Array.from({ length: lite ? 3 : 6 }, (_, k) => ({ off: Math.random() * 6.283, rad: 0.04 + Math.random() * 0.08, r: 1.17 + Math.random() * 0.1, sp: 0.4 + Math.random() * 0.5, hp: 1, side: i })));
         if (tm.s <= 0) { tm.s = 0.15 + Math.random() * 0.25; st.lz = st.lz || []; const s0 = st.ships[0][Math.floor(Math.random() * st.ships[0].length)], s1 = st.ships[1][Math.floor(Math.random() * st.ships[1].length)], from = Math.random() < 0.5 ? s0 : s1;
-          if (s0.dir && s1.dir && !s0.gone && !s1.gone && s0.hp > 0 && s1.hp > 0 && wfSees(s0.dir, s0.r, s1.dir, s1.r)) { st.lz.push({ s0, s1, from, t: 0, dur: 0.18 }); if (Math.random() < 0.25) (st.tp ||= []).push({ a: from, b: from === s0 ? s1 : s0, t: 0, dur: 1 + Math.random() * 0.6, flak: Math.random() < 0.4 }); }       // and sometimes a homing torpedo, which point defence may shoot down
+          if (s0 && s1 && s0.dir && s1.dir && !s0.gone && !s1.gone && s0.hp > 0 && s1.hp > 0 && wfSees(s0.dir, s0.r, s1.dir, s1.r)) { st.lz.push({ s0, s1, from, t: 0, dur: 0.18 }); if (Math.random() < 0.25) (st.tp ||= []).push({ a: from, b: from === s0 ? s1 : s0, t: 0, dur: 1 + Math.random() * 0.6, flak: Math.random() < 0.4 }); }       // and sometimes a homing torpedo, which point defence may shoot down
           if (Math.random() < 0.18) { const v = Math.random() < 0.5 ? s0 : s1; if (v.hp > 0) { st.dbs = st.dbs || []; st.dbs.push({ ship: v, t: 0, dir: null }); v.hp = 0; v.rez = 3.5; } } }
       }
     }
