@@ -313,6 +313,21 @@
   #sfxB .sb input { width:20px; height:20px; } #sfxB .sbf { padding:8px 14px 12px; font-size:11px; color:#8fa4cc; }
   html.phone #bPlay, html.phone #bPause, html.phone #bFF3, html.phone #bFF5, html.phone #bReal, html.phone #bClim, html.phone #bInfo, html.phone #bGraph, html.phone #bHelp, html.phone #gwrap { display:none !important; }   /* phone: the dock already has Play (hold for speeds), Info and the Guide */
   html.phone body.mobile #bottom .btns { flex-direction:column; flex-wrap:nowrap; } html.phone body.mobile #bottom .btns .bg[data-g=world] { order:1; } html.phone body.mobile #bottom .btns .bg[data-g=time] { order:2; } html.phone body.mobile #bottom .btns .bg[data-g=view] { order:3; } html.phone body.mobile #bottom .btns .bg[data-g=panels] { order:4; } html.phone body.mobile #bottom .btns .bg[data-g=more] { order:5; }
+  #awayC { position:fixed; inset:0; z-index:70; display:grid; place-items:center; background:rgba(2,4,10,.55); padding:16px; transition:opacity .3s; } #awayC.out { opacity:0; }
+  #awayC .aw { width:min(440px,100%); max-height:82vh; overflow:auto; border-radius:24px; padding:16px; background:linear-gradient(180deg,rgba(22,34,70,.98),rgba(8,12,28,.98)); border:1px solid rgba(160,190,255,.22); box-shadow:0 20px 60px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.1); color:#e8eefc; animation:awIn .45s cubic-bezier(.2,.9,.3,1.2); }
+  @keyframes awIn { from { transform:translateY(24px) scale(.96); opacity:0; } }
+  #awayC .aw-h { display:flex; align-items:center; gap:12px; } #awayC .aw-h em { font-style:normal; width:46px; height:46px; flex:none; border-radius:50%; display:grid; place-items:center; font-size:24px; background:radial-gradient(circle at 30% 25%,#8a6cff,#2a1a6a); box-shadow:0 0 18px -2px #8a6cff; }
+  #awayC .aw-h b { display:block; font-size:18px; } #awayC .aw-h span { font-size:12px; color:#9fb0d4; }
+  #awayC .aw-e { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin:12px 0 2px; } #awayC .aw-e span { font-size:10px; letter-spacing:.08em; text-transform:uppercase; color:#8fa4cc; } #awayC .aw-e i { font-style:normal; font-size:11px; font-weight:700; color:#0b1020; background:linear-gradient(90deg,#7fe0ff,#8fb4ff); border-radius:12px; padding:3px 10px; }
+  #awayC .aw-l { display:flex; flex-direction:column; gap:8px; margin:12px 0; } #awayC .aw-i { padding:10px 12px; border-radius:14px; background:rgba(120,150,220,.1); border-left:3px solid #7fb6ff; } #awayC .aw-i.big { border-left-color:#ff9a4a; background:rgba(255,150,80,.1); }
+  #awayC .aw-i b { display:block; font-size:14px; margin-bottom:3px; } #awayC .aw-i span { display:block; font-size:12.5px; color:#c4d0ec; line-height:1.4; }
+  #awayC .aw-n { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px; } #awayC .aw-n span { font-size:11.5px; background:rgba(120,150,220,.14); border-radius:12px; padding:4px 10px; }
+  #awayC button { width:100%; min-height:48px; border:0; border-radius:16px; font-size:15px; font-weight:700; color:#fff; background:linear-gradient(135deg,#3a6fff,#8a5cff); box-shadow:0 4px 16px rgba(90,110,255,.45); }
+  #pfStat { display:none; } html.phone body.mobile #pfStat { display:flex; position:fixed; z-index:6; left:20px; right:20px; top:calc(6px + env(safe-area-inset-top)); height:20px; align-items:center; justify-content:space-between; font:600 13px system-ui,sans-serif; color:#dfe8ff; pointer-events:none; text-shadow:0 1px 4px rgba(0,0,0,.6); }
+  #pfStat .bt { display:flex; align-items:center; gap:6px; } #pfStat .bt u { position:relative; width:24px; height:12px; border:1.6px solid rgba(223,232,255,.85); border-radius:4px; text-decoration:none; } #pfStat .bt u::after { content:""; position:absolute; right:-4px; top:3px; width:2px; height:4px; border-radius:0 1px 1px 0; background:rgba(223,232,255,.85); }
+  #pfStat .bt u i { position:absolute; left:1.5px; top:1.5px; bottom:1.5px; border-radius:2px; background:var(--bc,#58e07a); } body.hide #pfStat { display:none !important; }
+  html.phone body.mobile #topbar { top:calc(32px + env(safe-area-inset-top)); } html.phone body.mobile #toast { top:calc(146px + env(safe-area-inset-top)); }
+  html.phone body.mobile #bottom .btns, html.phone body.mobile.mt-more #bottom .btns { max-height:calc(100dvh - 424px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); }
   #pfDock { display:none; } html.phone body.mobile #pfDock { display:flex; align-items:flex-end; margin:0 0 8px; }
   #pfDock .s { flex:1; min-width:0; text-align:center; position:relative; padding:0 1px; cursor:default; }
   #pfDock .s + .s::before { content:""; position:absolute; left:0; top:8px; bottom:6px; width:1px; background:linear-gradient(180deg,transparent,rgba(160,190,255,.2),transparent); }
@@ -583,7 +598,7 @@ const FALL = { stony: { land: [0.42, 0.38, 0.34], sea: [0.55, 0.78, 0.72], sd: [
 const NP = 14, NV = 10;                              // tectonic plates
 const TAU = Math.PI * 2;
 const Q = new URLSearchParams(location.search);
-const PF_BUILD = 2026110515;                                      // bumped on every release (release.sh); the in-game updater compares this with version.json
+const PF_BUILD = 2026110518;                                      // bumped on every release (release.sh); the in-game updater compares this with version.json
 const PF_UPDATES = [                                              // newest first: add an entry for every release, it shows in the welcome box
   { b: 2026110407, d: "4 Nov 2026", t: ["Home Assistant card: keeps its planet when the page refreshes, stays in Endless mode, and has a slim history timeline and camera buttons. It loads in a separate frame with a loading spinner so the dashboard doesn't stutter, and never shows the start menu.", "Home Assistant: a Lovelace card that shows the planet on a dashboard (see the Home Assistant kit).", "The history timeline on the bottom bar no longer bunches up at the right edge as a world ages: recent events stay spread out (the whole-history view now stretches time near the present).", "Bioluminescent seas are calmer and richer in colour: blooms now glow blue, sea-green, violet and rose, with golden sparks."] },
   { b: 2026110406, d: "4 Nov 2026", t: ["The game now starts on the top graphics preset (Ultra+) with automatic quality scaling, so it keeps itself smooth. Phones keep the light preset.", "Endless mode starts on again: a world never restarts by itself until you turn it off (E)."] },
@@ -4258,8 +4273,8 @@ const PHONE = (typeof AndroidBridge !== "undefined" && Q.get("wallpaper") !== "1
 if (PHONE) document.documentElement.classList.add("phone");
 const AND = typeof AndroidBridge !== "undefined" && Q.get("wallpaper") !== "1";            // the Android app itself (its live wallpaper keeps rolling random worlds)
 const PFB = {
-  paces: { off: 0, slow: 0.5, normal: 1, fast: 3 }, cap: 3000, noSave: false,               // pace = billions of years of planet history per real day, while you are away and in Real time
-  cfg: (() => { const c = { pace: "normal", notify: true, nlevel: "all", perf: "balanced", photo: "6h", wallfps: 60 }; if (!("nlevel" in c)) c.nlevel = "all"; try { Object.assign(c, JSON.parse(localStorage.getItem("pfBg") || "{}")); } catch (e) {} return c; })(),
+  paces: { off: 0, slow: 0.5, normal: 1, fast: 3, live: 172.8 }, cap: 3000, noSave: false,               // pace = billions of years of planet history per real day, while you are away and in Real time
+  cfg: (() => { const c = { pace: "normal", notify: true, nlevel: "all", perf: "balanced", photo: "6h", wallfps: 60 }; if (!("nlevel" in c)) c.nlevel = "all"; try { Object.assign(c, JSON.parse(localStorage.getItem("pfBg") || "{}")); } catch (e) {} if (!c.pv3) { c.pv3 = 1; c.pace = "normal"; } return c; })(),
   get rate() { return (this.paces[this.cfg.pace] ?? 1) * 500 / 86400; },                       // planet-age units (2 Myr each) per real second
   saveCfg() { try { localStorage.setItem("pfBg", JSON.stringify(this.cfg)); } catch (e) {} this.cfg.notify = this.cfg.nlevel !== "off"; try { AndroidBridge.bgConfig(!!this.cfg.notify && this.cfg.pace !== "off"); } catch (e) {} try { AndroidBridge.wallFps(this.cfg.wallfps === 0 ? 0 : (+this.cfg.wallfps || 60)); } catch (e) {} try { AndroidBridge.notifyLevel({ off: 0, big: 1, all: 2 }[this.cfg.nlevel] ?? 2); } catch (e) {} try { AndroidBridge.photoConfig(this.cfg.notify ? ({ off: 0, "3h": 3, "6h": 6, "12h": 12, "24h": 24 }[this.cfg.photo] ?? 6) : 0); } catch (e) {} },
   perfs: { balanced: { fps: 30, idle: 8, q: 1 }, smooth: { fps: 24, idle: 6, q: 0.55 }, light: { fps: 15, idle: 4, q: 0.4 } },     // phone performance profiles: frame cap, frame rate while nothing is being touched, resolution ceiling
@@ -4282,10 +4297,10 @@ const PFB = {
   revive(sv, age) {                                                                         // the same planet again: seed and age rebuild it; minds that were alive are brought back with their tech and numbers
     this.noSave = true; try { newWorld(sv.seed, age); const W = S.world; W.silent = true; for (const c of sv.civs || []) W.spawnCiv(age, { pop: c.pop, tech: c.tech, species: c.species, cult: c.cult }); if (W.civs.length) W.bioTime = W.intelNeed; W.silent = false; } finally { this.noSave = false; }
   },
-  target(sv) { return Math.min(this.cap, sv.age + Math.max(0, (Date.now() - sv.at) / 1000) * this.rate); },
+  target(sv) { return sv.age + Math.min(this.cap, Math.max(0, (Date.now() - sv.at) / 1000) * this.rate); },      // cap: the most one absence can add (6 Gyr)
   advance(sv, maxU, budgetMs) {                                                                         // rebuild the saved planet and run its history forward through the time that passed (small steps, no graphics): returns what happened
     const tgt = Math.min(this.target(sv), sv.age + (maxU || 1e9)); this.revive(sv, sv.age); S.driftT = sv.drift || 0;
-    const W = S.world, res = { eras: [], civ: null, tgt, a: sv.age, ev: [] };
+    const W = S.world, res = { eras: [], civ: null, tgt, a: sv.age, ev: [], from: sv.age, at: sv.at };
     if (tgt - sv.age < 0.05) return res;
     this.noSave = true; W.silent = true; W.cap = res.ev;
     let a = sv.age, key = this.eraKey(W, a), had = W.civs.length > 0;
@@ -4384,7 +4399,7 @@ const PFB = {
     let notes = [], facts = null;
     try {
       const sv = this.load(); if (sv && this.rate > 0) {
-        const r = this.advance(sv, 400, 7000);
+        const r = this.advance(sv, 3000, 20000);
         if (r.a - sv.age > 0.05) {
           notes = this.stories(r.ev, r);
           if (!notes.length) { if (r.eras.length) notes.push({ title: "🌍 A new era begins: " + r.eras[r.eras.length - 1], text: "Your planet has entered the " + r.eras[r.eras.length - 1] + " era." }); if (r.civ) notes.push({ title: "🧠 Intelligent life has arisen", text: "The " + r.civ + " have appeared on your planet." }); }
@@ -4398,11 +4413,28 @@ const PFB = {
   },
   resume() {                                                                                 // back from the background: catch the planet up with the time that passed
     const sv = this.load(); if (!AND || !sv || !S.world || S.world.seed !== sv.seed || (Date.now() - sv.at) / 1000 < 300) return;
-    this.note(this.advance(sv, 1500)); this.save();
+    this.note(this.advance(sv, 3000, 2500)); this.save();
   },
-  note(r) { const t = []; if (r.eras.length) t.push(r.eras.length > 2 ? r.eras.length + " new eras" : r.eras.join(", ") + (r.eras.length > 1 ? " eras" : " era") + " began"); if (r.civ) t.push("intelligent life arose: the " + r.civ); if (t.length) setTimeout(() => { try { flash("⏳ While you were away: " + t.join(" · ")); } catch (e) {} }, 1800); },
+  note(r) { if (PHONE && !EMB && r.a - (r.from ?? r.a) > 0.5) { const go = () => { if (document.getElementById("pfSplash") || (window.PFFRAMES | 0) < 4) return setTimeout(go, 400); setTimeout(() => { try { awayCard(r); } catch (e) {} }, 600); }; go(); return; }
+    const t = []; if (r.eras.length) t.push(r.eras.length > 2 ? r.eras.length + " new eras" : r.eras.join(", ") + (r.eras.length > 1 ? " eras" : " era") + " began"); if (r.civ) t.push("intelligent life arose: the " + r.civ); if (t.length) setTimeout(() => { try { flash("⏳ While you were away: " + t.join(" · ")); } catch (e) {} }, 1800); },
 };
 
+function awayCard(r) {                                                          // "While you were away": what happened since the app was last open
+  const W = S.world; if (!W) return; const old = $("awayC"); if (old) old.remove();
+  const ms = Math.max(0, Date.now() - (r.at || Date.now())), mins = Math.round(ms / 60000), away = mins < 60 ? mins + " min" : mins < 1440 ? Math.floor(mins / 60) + " h " + (mins % 60) + " min" : Math.floor(mins / 1440) + " d " + Math.floor((mins % 1440) / 60) + " h";
+  const dm = (r.a - r.from) * 2, gain = dm >= 1000 ? "+" + (dm / 1000).toFixed(2) + " billion years" : "+" + Math.round(dm).toLocaleString() + " million years";
+  let st = []; try { st = PFB.stories(r.ev, r) || []; } catch (e) {}
+  const p = W.params(S.age), m = S.age * 2, nC = W.civs.length, life = Math.round(clamp(p.life, 0, 1) * 100), tC = W.real(p.Ts), tT = S.unit === "C" ? Math.round(tC) + "°C" : S.unit === "K" ? Math.round(tC + 273.15) + " K" : Math.round(tC * 9 / 5 + 32) + "°F";
+  const esc = t => String(t).replace(/[&<>]/g, x => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[x]));
+  const items = st.map(x => `<div class="aw-i${x.big ? " big" : ""}"><b>${esc(x.title)}</b><span>${esc(x.text)}</span></div>`).join("") || `<div class="aw-i"><b>🌙 A quiet stretch</b><span>Nothing dramatic happened: the planet drifted on through time.</span></div>`;
+  const eras = (r.eras || []).slice(-4).map(e => `<i>${esc(e)}</i>`).join("");
+  const el = document.createElement("div"); el.id = "awayC";
+  el.innerHTML = `<div class="aw"><div class="aw-h"><em>⏳</em><div><b>While you were away</b><span>${away} · ${gain}</span></div></div>${eras ? `<div class="aw-e"><span>New era${r.eras.length > 1 ? "s" : ""}</span>${eras}</div>` : ""}<div class="aw-l">${items}</div><div class="aw-n"><span>⏳ ${m >= 1000 ? (m / 1000).toFixed(2) + " Gyr" : Math.round(m) + " Myr"}</span><span>🌡 ${tT}</span><span>🌱 ${life}% life</span><span>${nC ? "🏛 " + nC + " nation" + (nC > 1 ? "s" : "") : "🧠 no minds yet"}</span></div><button id="awayGo">Back to my world</button></div>`;
+  document.body.appendChild(el);
+  const close = () => { el.classList.add("out"); setTimeout(() => el.remove(), 300); };
+  $("awayGo").onclick = close; el.addEventListener("click", e => { if (e.target === el) close(); });
+  if (SND.on && window.pfSfx) try { sfxPlay("chime"); } catch (e) {}
+}
 function newWorld(seed, atAge, raw) {
   seed = seed ?? Math.floor(Math.random() * 2000000000) + 1;
   const a0 = raw ? null : atAge ?? (Q.has("age") ? +Q.get("age") : null);
@@ -4421,7 +4453,7 @@ const BGJOB = Q.get("bg") === "1";
 const RESTORED = (AND || EMB) && !BGJOB && !Q.has("seed") && !Q.has("age") ? PFB.load() : null;
 if (BGJOB) { PFB.job(); throw new Error("pf-bg-stop"); }
 else if (RESTORED && EMB) { PFB.revive(RESTORED, RESTORED.age); S.driftT = RESTORED.drift || 0; }          // the card: the very same planet, exactly where it was
-else if (RESTORED) PFB.note(PFB.advance(RESTORED, 1500));
+else if (RESTORED) PFB.note(PFB.advance(RESTORED, 3000, 2500));
 else newWorld(Q.has("seed") ? +Q.get("seed") : undefined);
 pfBoot("world built, drawing the first frames…");
 
@@ -4590,6 +4622,7 @@ function setUniforms(W, p, w, h) {
   gl.uniform2f(L("uRes"), w, h); gl.uniform2f(L("uShift"), S.shift[0], S.shift[1]); gl.uniform2f(L("uJit"), JIT[0], JIT[1]); u1("uJi", JIT[0] || JIT[1] ? TAA.jn : 0);
   const mc = S.moonCam && S.moonMainW && S.moonRw; let dd = mc ? S.moonD * S.moonRw : S.dist, ctr = mc ? S.moonMainW : [0, 0, 0], yw = S.yaw, pt = S.pitch, cp = null;      // moon-base camera orbits the moon instead of the planet
   const mt = !mc && MOONCAMS.has(S.camMode) ? moonTarget() : null;
+  if (PHONE && !mc && !mt) dd = Math.max(dd, 1.32);                 // phone: never closer than this, whatever set the distance
   if (mt) {                                                          // moon camera modes: orbit it, fly past it, stand on it, or look down on the whole system
     const tt = S.time, L = Math.hypot(...mt.pos) || 1, pd = mt.pos.map(x => -x / L), R = mt.R, cm = S.camMode;
     if (cm === "mOrbit") { ctr = mt.pos; dd = Math.max(S.moonD * R, R * 1.25); }
@@ -4814,7 +4847,7 @@ $("bReal").onclick = () => { if (!S.spinSpeed) { S.spinSpeed = 0.08; S.spinOn = 
 $("bClim").onclick = () => { setPace("clim", 0.6, 0.06); $("bClim").blur(); };
 if (EMB) { setInterval(() => { if (!document.hidden) PFB.save(); }, 4000); addEventListener("pagehide", () => PFB.save()); document.addEventListener("visibilitychange", () => { if (document.hidden) PFB.save(); }); }
 if (AND) {                                                                                // phone: start in Real time (cheap), resume the pace you left, and autosave
-  const P = { play: ["play", 1, 1], ff3: ["ff3", 3, 1], ff5: ["ff5", 5, 1], clim: ["clim", 0.6, 0.06], real: ["real", 1, 1] }[(RESTORED && RESTORED.tmode) || "real"] || ["real", 1, 1];
+  const P = { play: ["play", 1, 1], ff3: ["ff3", 3, 1], ff5: ["ff5", 5, 1], clim: ["clim", 0.6, 0.06], real: ["real", 1, 1] }[PHONE ? "play" : (RESTORED && RESTORED.tmode) || "real"] || ["play", 1, 1];
   if (!S.spinSpeed) { S.spinSpeed = 0.08; S.spinOn = true; } setPace(...P); PFB.save();
   setInterval(() => { if (!document.hidden) PFB.save(); }, 4000);
   setInterval(() => { if (!document.hidden) PFB.pushWidget(); }, 60000); setTimeout(() => PFB.pushWidget(), 5000);
@@ -5281,8 +5314,8 @@ function buildMobileHUD() {                                     // thumb-reach t
     mg.innerHTML = '<i>More</i><button id="mmHelp" data-ico="❔">Guide</button><button id="mmGfx" data-ico="🥔"></button><button id="mmSimple" data-ico="🧩"></button><button id="mmTL" data-ico="📜">Timeline</button><button id="mmBoot" data-ico="⏱"></button>' + (typeof AndroidBridge !== "undefined" && AndroidBridge.setWallpaper ? '<button id="mmWall" data-ico="🖼">Set as live wallpaper</button>' : '') + '<button id="mmPerf" data-ico="🔋"></button>' + (AND ? '<button id="mmNote" data-ico="🔔"></button><button id="mmPace" data-ico="⏳"></button><button id="mmPhoto" data-ico="📸"></button><button id="mmWfps" data-ico="🎞"></button><button id="mmBg" data-ico="🔓">Allow background running</button>' : '');
     const bt = bar.parentNode.querySelector(".btns"); bt.insertBefore(mg, bt.firstChild);
     const gl3 = ["minimal", "low", "medium"], nm = { minimal: "Minimum", low: "Low", medium: "Medium" };
-    const PN = { off: "Off", slow: "Slow", normal: "Normal", fast: "Fast" }, PO = ["slow", "normal", "fast", "off"];
-    const lab = () => { $("mmPerf").textContent = "Performance: " + ({ balanced: "Balanced", smooth: "Smooth", light: "Lightest" }[PFB.cfg.perf] || "Balanced"); if (AND) { $("mmWfps").textContent = "Wallpaper smoothness: " + ({ 15: "15 fps (saves battery)", 30: "30 fps", 60: "60 fps", 0: "Max (screen speed)" }[PFB.cfg.wallfps] || "60 fps"); $("mmPhoto").textContent = "World photos: " + ({ off: "off", "3h": "every 3 h", "6h": "every 6 h", "12h": "every 12 h", "24h": "daily" }[PFB.cfg.photo] || "every 6 h"); $("mmNote").textContent = "Notifications: " + ({ all: "all news", big: "big moments only", off: "off" }[PFB.cfg.nlevel] || "all news"); $("mmPace").textContent = "Away pace: " + PN[PFB.cfg.pace] + (PFB.cfg.pace === "off" ? "" : " · " + PFB.paces[PFB.cfg.pace] + " Gyr/day"); } $("mmGfx").textContent = PHONE ? "Graphics: " + PHONE_TIERS[phoneTier].n + " (tap to change)" : "Graphics: " + (nm[S.gfxPreset] || "Custom"); $("mmSimple").textContent = "Simple menu: " + (document.body.classList.contains("msimple") ? "on" : "off"); };
+    const PN = { off: "Off", slow: "Slow", normal: "Normal", fast: "Fast", live: "×1 (same as playing)" }, PO = ["slow", "normal", "fast", "live", "off"];
+    const lab = () => { $("mmPerf").textContent = "Performance: " + ({ balanced: "Balanced", smooth: "Smooth", light: "Lightest" }[PFB.cfg.perf] || "Balanced"); if (AND) { $("mmWfps").textContent = "Wallpaper smoothness: " + ({ 15: "15 fps (saves battery)", 30: "30 fps", 60: "60 fps", 0: "Max (screen speed)" }[PFB.cfg.wallfps] || "60 fps"); $("mmPhoto").textContent = "World photos: " + ({ off: "off", "3h": "every 3 h", "6h": "every 6 h", "12h": "every 12 h", "24h": "daily" }[PFB.cfg.photo] || "every 6 h"); $("mmNote").textContent = "Notifications: " + ({ all: "all news", big: "big moments only", off: "off" }[PFB.cfg.nlevel] || "all news"); $("mmPace").textContent = "Away pace: " + PN[PFB.cfg.pace] + (PFB.cfg.pace === "off" || PFB.cfg.pace === "live" ? "" : " · " + PFB.paces[PFB.cfg.pace] + " Gyr/day"); } $("mmGfx").textContent = PHONE ? "Graphics: " + PHONE_TIERS[phoneTier].n + " (tap to change)" : "Graphics: " + (nm[S.gfxPreset] || "Custom"); $("mmSimple").textContent = "Simple menu: " + (document.body.classList.contains("msimple") ? "on" : "off"); };
     $("mmGfx").onclick = PHONE ? () => { const o = ["lite", "balanced", "pretty"]; phoneTier = o[(o.indexOf(phoneTier) + 1) % 3]; try { localStorage.setItem("pfPhoneTier", phoneTier); } catch (e) {} phoneProfile(); lab(); } : () => { const i = gl3.indexOf(S.gfxPreset), v = gl3[(i + 1) % gl3.length]; Object.assign(S, PRESETS[v]); S.gfxPreset = v; S.trim = 0; lab(); };
     $("mmSimple").onclick = () => { simplePref = document.body.classList.contains("msimple") ? "0" : "1"; try { localStorage.setItem("planetForgeSimple", simplePref); } catch (e) {} applyMobile(false); closeSheet(); lab(); };
     $("mmPerf").onclick = () => { const o = ["balanced", "smooth", "light"]; PFB.cfg.perf = o[(o.indexOf(PFB.cfg.perf) + 1) % 3]; PFB.saveCfg(); S.trim = 0; if (PHONE) phoneProfile(); else { Object.assign(S, PRESETS.minimal, { gfxPreset: "minimal", tFps: 30 }); S.clouds = Q.get("clouds") !== "0"; } PFB.applyPerf(); if (PHONE && PHONE_TIERS[phoneTier].clouds === false) S.clouds = false; lab(); };
@@ -5387,6 +5420,13 @@ if (PHONE) {                                                           // phone:
   document.addEventListener("pointerdown", e => { if (pop && !pop.el.contains(e.target) && !e.target.closest(".pick") && !e.target.closest("#mqPause")) closePop(); }, true);
   const noKeys = () => document.querySelectorAll("#bottom .btns button").forEach(b => { for (const n of b.childNodes) if (n.nodeType === 3 && / \([A-Z?]\)\s*$/.test(n.nodeValue)) n.nodeValue = n.nodeValue.replace(/ \([A-Z?]\)\s*$/, ""); });   // no keyboard on a phone: drop the "(K)" shortcut hints
   setInterval(() => { if (document.body.classList.contains("mt-on")) noKeys(); }, 500); $("mtabs").addEventListener("click", () => setTimeout(noKeys, 0));
+  { const st = document.createElement("div"); st.id = "pfStat"; st.innerHTML = '<span class="tm"></span><span class="bt"><b></b><u><i></i></u></span>'; document.body.appendChild(st);      // the app is full screen: our own clock and battery above the top card
+    let bat = null; try { if (navigator.getBattery) navigator.getBattery().then(b => { bat = b; }); } catch (e) {}
+    const tick = () => { const d = new Date(); st.querySelector(".tm").textContent = d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }).replace(/\s?[AP]M$/i, "");
+      let l = null, c = false; try { if (typeof AndroidBridge !== "undefined" && AndroidBridge.battery) { const o = JSON.parse(AndroidBridge.battery() || "{}"); if (o.l != null) { l = o.l; c = !!o.c; } } } catch (e) {}
+      if (l == null && bat) { l = Math.round(bat.level * 100); c = bat.charging; }
+      const bt = st.querySelector(".bt"); bt.style.visibility = l == null ? "hidden" : "visible"; if (l != null) { bt.querySelector("b").textContent = (c ? "⚡" : "") + l + "%"; const i = bt.querySelector("i"); i.style.width = Math.max(1, l * 0.19) + "px"; i.style.setProperty("--bc", c ? "#58e07a" : l <= 15 ? "#ff5a4a" : l <= 30 ? "#ffd24a" : "#e8eefc"); } };
+    tick(); setInterval(tick, 15000); }
   setInterval(paint, 1000); setTimeout(paint, 600);
 }
 /* ------------------------------------------------------------------ planet types: jump to a world of a chosen kind (searches seeds, then fast-forwards its history) */

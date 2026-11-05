@@ -73,6 +73,15 @@ public class MainActivity extends Activity {
         @JavascriptInterface
         public void notifyLevel(int level) { getSharedPreferences("pf", MODE_PRIVATE).edit().putInt("nLevel", level).apply(); }
 
+        @JavascriptInterface
+        public String battery() {                                     // for the clock and battery row above the top card (the app runs full screen, so the status bar is hidden)
+            try {
+                android.os.BatteryManager bm = (android.os.BatteryManager) getSystemService(Context.BATTERY_SERVICE);
+                int lvl = bm.getIntProperty(android.os.BatteryManager.BATTERY_PROPERTY_CAPACITY);
+                return "{\"l\":" + lvl + ",\"c\":" + bm.isCharging() + "}";
+            } catch (Exception e) { return "{}"; }
+        }
+
         /** The live wallpaper: the page records pictures of the planet turning and hands them over one by one. */
         @JavascriptInterface
         public void wallFrame(int i, int n, String dataUrl) { Wall.frame(getApplicationContext(), i, n, dataUrl); }
