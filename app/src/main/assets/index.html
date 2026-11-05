@@ -302,6 +302,7 @@
   html.phone body.mobile #toast { top:calc(122px + env(safe-area-inset-top)); border-radius:16px; }
   html.phone body.mobile #bottom { left:8px; right:8px; bottom:calc(8px + env(safe-area-inset-bottom)); border-radius:26px; padding:34px 8px 8px; overflow:visible; background:linear-gradient(180deg,rgba(26,38,78,.96),rgba(8,12,28,.97)) !important; border:1px solid rgba(160,190,255,.16); box-shadow:inset 0 1px 0 rgba(255,255,255,.1), 0 -6px 30px rgba(60,100,220,.18), 0 8px 30px rgba(0,0,0,.6); }
   html.phone body.mobile #bottom .btns, html.phone body.mobile.mt-more #bottom .btns { bottom:calc(100% + 56px); max-height:calc(100dvh - 400px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); }
+  html.phone #bWall, html.phone #bLink, html.phone #bExport, html.phone #bHover, html.phone #bGfx, html.phone #bThumb, html.phone body.mobile #bMobile, html.phone body.mobile.mt-more #bMobile, html.phone #thumbwrap, html.phone .dx { display:none !important; }   /* desktop-only controls: hover, keyboard, browser links/downloads, the desktop graphics panel */
   #pfDock { display:none; } html.phone body.mobile #pfDock { display:flex; align-items:flex-end; margin:0 0 8px; }
   #pfDock .s { flex:1; min-width:0; text-align:center; position:relative; padding:0 1px; cursor:default; }
   #pfDock .s + .s::before { content:""; position:absolute; left:0; top:8px; bottom:6px; width:1px; background:linear-gradient(180deg,transparent,rgba(160,190,255,.2),transparent); }
@@ -572,7 +573,7 @@ const FALL = { stony: { land: [0.42, 0.38, 0.34], sea: [0.55, 0.78, 0.72], sd: [
 const NP = 14, NV = 10;                              // tectonic plates
 const TAU = Math.PI * 2;
 const Q = new URLSearchParams(location.search);
-const PF_BUILD = 2026110512;                                      // bumped on every release (release.sh); the in-game updater compares this with version.json
+const PF_BUILD = 2026110513;                                      // bumped on every release (release.sh); the in-game updater compares this with version.json
 const PF_UPDATES = [                                              // newest first: add an entry for every release, it shows in the welcome box
   { b: 2026110407, d: "4 Nov 2026", t: ["Home Assistant card: keeps its planet when the page refreshes, stays in Endless mode, and has a slim history timeline and camera buttons. It loads in a separate frame with a loading spinner so the dashboard doesn't stutter, and never shows the start menu.", "Home Assistant: a Lovelace card that shows the planet on a dashboard (see the Home Assistant kit).", "The history timeline on the bottom bar no longer bunches up at the right edge as a world ages: recent events stay spread out (the whole-history view now stretches time near the present).", "Bioluminescent seas are calmer and richer in colour: blooms now glow blue, sea-green, violet and rose, with golden sparks."] },
   { b: 2026110406, d: "4 Nov 2026", t: ["The game now starts on the top graphics preset (Ultra+) with automatic quality scaling, so it keeps itself smooth. Phones keep the light preset.", "Endless mode starts on again: a world never restarts by itself until you turn it off (E)."] },
@@ -5374,6 +5375,8 @@ if (PHONE) {                                                           // phone:
     mp.addEventListener("contextmenu", e => e.preventDefault());
     mp.addEventListener("click", e => { if (held) { held = false; e.stopImmediatePropagation(); e.preventDefault(); } }, true); }
   document.addEventListener("pointerdown", e => { if (pop && !pop.el.contains(e.target) && !e.target.closest(".pick") && !e.target.closest("#mqPause")) closePop(); }, true);
+  const noKeys = () => document.querySelectorAll("#bottom .btns button").forEach(b => { for (const n of b.childNodes) if (n.nodeType === 3 && / \([A-Z?]\)\s*$/.test(n.nodeValue)) n.nodeValue = n.nodeValue.replace(/ \([A-Z?]\)\s*$/, ""); });   // no keyboard on a phone: drop the "(K)" shortcut hints
+  setInterval(() => { if (document.body.classList.contains("mt-on")) noKeys(); }, 500); $("mtabs").addEventListener("click", () => setTimeout(noKeys, 0));
   setInterval(paint, 1000); setTimeout(paint, 600);
 }
 /* ------------------------------------------------------------------ planet types: jump to a world of a chosen kind (searches seeds, then fast-forwards its history) */
