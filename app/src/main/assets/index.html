@@ -328,6 +328,12 @@
   #pfStat .bt u i { position:absolute; left:1.5px; top:1.5px; bottom:1.5px; border-radius:2px; background:var(--bc,#58e07a); } body.hide #pfStat { display:none !important; }
   html.phone body.mobile #topbar { top:max(32px, calc(env(safe-area-inset-top) + 6px)); } html.phone body.mobile #toast { top:calc(max(32px, calc(env(safe-area-inset-top) + 6px)) + 114px); width:max-content; max-width:calc(100vw - 24px); white-space:normal; text-align:center; line-height:1.35; }   /* the clock row sits beside the camera cutout, like the real status bar */
   html.phone body.mobile #bottom .btns, html.phone body.mobile.mt-more #bottom .btns { max-height:calc(100dvh - 424px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); }
+  html.phone #mmSimple { display:none !important; }   /* phone: always the simple layout */
+  html.phone body.mobile #mtabs #bNew { background:linear-gradient(135deg,#1c8a4e,#4cc47a); color:#fff; box-shadow:0 4px 14px rgba(60,190,110,.35); }
+  html.phone body.mobile #mtabs #mqInfo { background:linear-gradient(135deg,#137c9e,#3ec4e6); color:#fff; box-shadow:0 4px 14px rgba(60,190,230,.35); }
+  html.phone body.mobile #mtabs #mqMenu { background:linear-gradient(135deg,#b8562a,#ff9a4a); color:#fff; box-shadow:0 4px 14px rgba(255,140,70,.35); }
+  html.phone body.mobile #mtabs #mqMenu.on, html.phone body.mobile #mtabs #mqInfo.on { box-shadow:0 0 0 2px rgba(255,255,255,.55), 0 4px 16px rgba(255,255,255,.2); }
+  html.phone body.mobile #mtabs button:active { transform:scale(.96); }
   #pfDock { display:none; } html.phone body.mobile #pfDock { display:flex; align-items:flex-end; margin:0 0 8px; }
   #pfDock .s { flex:1; min-width:0; text-align:center; position:relative; padding:0 1px; cursor:default; }
   #pfDock .s + .s::before { content:""; position:absolute; left:0; top:8px; bottom:6px; width:1px; background:linear-gradient(180deg,transparent,rgba(160,190,255,.2),transparent); }
@@ -598,7 +604,7 @@ const FALL = { stony: { land: [0.42, 0.38, 0.34], sea: [0.55, 0.78, 0.72], sd: [
 const NP = 14, NV = 10;                              // tectonic plates
 const TAU = Math.PI * 2;
 const Q = new URLSearchParams(location.search);
-const PF_BUILD = 2026110519;                                      // bumped on every release (release.sh); the in-game updater compares this with version.json
+const PF_BUILD = 2026110520;                                      // bumped on every release (release.sh); the in-game updater compares this with version.json
 const PF_UPDATES = [                                              // newest first: add an entry for every release, it shows in the welcome box
   { b: 2026110407, d: "4 Nov 2026", t: ["Home Assistant card: keeps its planet when the page refreshes, stays in Endless mode, and has a slim history timeline and camera buttons. It loads in a separate frame with a loading spinner so the dashboard doesn't stutter, and never shows the start menu.", "Home Assistant: a Lovelace card that shows the planet on a dashboard (see the Home Assistant kit).", "The history timeline on the bottom bar no longer bunches up at the right edge as a world ages: recent events stay spread out (the whole-history view now stretches time near the present).", "Bioluminescent seas are calmer and richer in colour: blooms now glow blue, sea-green, violet and rose, with golden sparks."] },
   { b: 2026110406, d: "4 Nov 2026", t: ["The game now starts on the top graphics preset (Ultra+) with automatic quality scaling, so it keeps itself smooth. Phones keep the light preset.", "Endless mode starts on again: a world never restarts by itself until you turn it off (E)."] },
@@ -5235,7 +5241,7 @@ const mobOn = () => mobPref === "1" || (mobPref === "auto" && IS_PHONE);
 let wakeL = null;
 let simplePref = Q.has("simple") ? Q.get("simple") : (() => { try { return localStorage.getItem("planetForgeSimple") || "1"; } catch (e) { return "1"; } })();
 function applyMobile(first) {
-  const on = mobOn(); document.body.classList.toggle("mobile", on); document.body.classList.toggle("msimple", on && simplePref !== "0"); $("bMobile").style.display = "flex";
+  const on = mobOn(); document.body.classList.toggle("mobile", on); document.body.classList.toggle("msimple", on && (simplePref !== "0" || PHONE)); $("bMobile").style.display = "flex";
   $("bMobile").textContent = "Mobile layout: " + (mobPref === "auto" ? "auto" : mobPref === "1" ? "on" : "off");
   if (!on) document.body.classList.remove("m-info", "m-ctrl", "m-graph", "m-nat", "m-thumb");
   if (on && first && !hadSavedGfx) { Object.assign(S, PRESETS.minimal, { gfxPreset: "minimal", tFps: 30, pins: S.pins, panelA: 0.8 }); applyPanelA(); }
