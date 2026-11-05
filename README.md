@@ -30,3 +30,11 @@ Open the in-game Menu (☰) and tap "Set as live wallpaper", or pick Planet Forg
 - The phone starts in **Real time** (the planet turns once a day, which costs almost nothing). History moves at the **Away pace** (Menu → More: Slow 0.5 / Normal 1 / Fast 3 Gyr per day, or Off). The other speeds still work.
 - Every ~15 minutes a tiny job (no graphics) winds the planet forward and posts a notification for each **new era** and for **intelligent life**. Turn it off with Menu → More → Notifications. Android 13+ asks for notification permission on first launch.
 - Android may delay the job in battery saver / Doze; the planet always catches up when you open the app.
+
+## Phone mode, news and photos (build 2026110422+)
+
+* **Phone mode**: inside the app the game always starts from a light phone profile (it ignores older saved graphics settings). More menu → *Graphics* cycles Lite / Balanced / Pretty. No live blur over the canvas, 30 fps cap, 60 Hz display request.
+* **Background world**: every ~15 minutes the app (without opening) winds the planet forward and posts playful notifications: new eras, minds and super minds, wars and empires, supervolcanoes, impacts, extinctions, moon bases, starships. Big moments use a separate high-priority channel ("Big moments").
+* **World photos**: every 3 / 6 / 12 / 24 hours (More menu → *World photos*) the app opens the page off-screen once, takes a picture of the planet and posts it with a few facts. If graphics can't start in time, the facts are posted without the picture.
+* **Permissions**: notifications, run-in-background (battery optimisation exemption, asked once; also More menu → *Allow background running*), internet (only for the in-game updater).
+* The live wallpaper is unchanged (it never uses phone mode).

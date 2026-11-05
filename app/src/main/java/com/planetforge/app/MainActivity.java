@@ -1,6 +1,12 @@
 package com.planetforge.app;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.net.Uri;
+import android.os.PowerManager;
+import android.provider.Settings;
 import android.app.WallpaperManager;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -17,6 +23,12 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /** Planet Forge: the whole game is one web page (assets/index.html) shown full-screen in a WebView. */
 public class MainActivity extends Activity {
@@ -50,6 +62,33 @@ public class MainActivity extends Activity {
         @JavascriptInterface
         public void bgDone(String json) { }
 
+        /** How often the background job sends a photo of the world, in hours (0 = never). */
+        @JavascriptInterface
+        public void photoConfig(int hours) { getSharedPreferences("pf", MODE_PRIVATE).edit().putInt("photoH", hours).apply(); }
+
+        /** Asks Android to let the app run in the background without being put to sleep (battery optimisation exemption). */
+        @JavascriptInterface
+        public void requestBackground() { runOnUiThread(new Runnable() { @Override public void run() { askBackground(true); } }); }
+
+        /** In-game updater: the page hands over a newer index.html; it is kept in app storage and used while it is newer than the bundled page. */
+        @JavascriptInterface
+        public boolean saveUpdate(String html, double build) {
+            try {
+                if (html == null || html.length() < 200000 || html.length() > 40000000) return false;
+                long b = (long) build; if (b <= bundledBuild() || buildIn(html) != b) return false;
+                File dir = new File(getFilesDir(), "update"); dir.mkdirs();
+                File tmp = new File(dir, "index.html.tmp"), out = new File(dir, "index.html");
+                FileOutputStream f = new FileOutputStream(tmp); f.write(withShim(html).getBytes("UTF-8")); f.close();
+                if (out.exists()) out.delete();
+                return tmp.renameTo(out);
+            } catch (Exception e) { return false; }
+        }
+
+        @JavascriptInterface
+        public void applyUpdate() {
+            runOnUiThread(new Runnable() { @Override public void run() { loadGame(); } });
+        }
+
         @JavascriptInterface
         public void quit() {
             runOnUiThread(new Runnable() {
@@ -58,13 +97,81 @@ public class MainActivity extends Activity {
         }
     }
 
+    /** The page the background job should open: a downloaded update when it is newer than the bundled one. */
+    static String pageUrl(Context c) {
+        try {
+            File f = new File(new File(c.getFilesDir(), "update"), "index.html");
+            if (f.exists()) {
+                InputStream in = new java.io.FileInputStream(f); ByteArrayOutputStream o = new ByteArrayOutputStream(); byte[] buf = new byte[65536]; int n;
+                while ((n = in.read(buf)) > 0) o.write(buf, 0, n);
+                in.close();
+                InputStream ia = c.getAssets().open("index.html"); ByteArrayOutputStream oa = new ByteArrayOutputStream();
+                while ((n = ia.read(buf)) > 0) oa.write(buf, 0, n);
+                ia.close();
+                if (buildIn(o.toString("UTF-8")) > buildIn(oa.toString("UTF-8"))) return "file://" + f.getAbsolutePath();
+            }
+        } catch (Exception e) { }
+        return "file:///android_asset/index.html";
+    }
+
+    /** Offers (once, or on request) the battery-optimisation exemption so the world keeps being made while the phone is idle. */
+    private void askBackground(final boolean force) {
+        try {
+            if (Build.VERSION.SDK_INT < 23) return;
+            final String pkg = getPackageName();
+            PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+            if (pm != null && pm.isIgnoringBatteryOptimizations(pkg)) { if (force) Toast.makeText(this, "Already allowed to run in the background", Toast.LENGTH_SHORT).show(); return; }
+            final android.content.SharedPreferences sp = getSharedPreferences("pf", MODE_PRIVATE);
+            if (!force && sp.getBoolean("bgAsked", false)) return;
+            sp.edit().putBoolean("bgAsked", true).apply();
+            new AlertDialog.Builder(this).setTitle("Keep your world growing?")
+                .setMessage("Planet Forge can keep making your world in the background and send you news and photos of it. Android may put it to sleep to save battery. Allow it to keep running?")
+                .setPositiveButton("Allow", new DialogInterface.OnClickListener() { @Override public void onClick(DialogInterface d, int w) {
+                    try { startActivity(new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Uri.parse("package:" + pkg))); }
+                    catch (Exception e) { try { startActivity(new Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)); } catch (Exception e2) { } } } })
+                .setNegativeButton("Not now", null).show();
+        } catch (Exception e) { }
+    }
+
+    private static final String SHIM = "<script>window.pfApp={isApp:true,android:true,wallpaper:function(on){try{setWallpaper(!!on)}catch(e){}},recording:function(){},quit:function(){try{AndroidBridge.quit()}catch(e){window.close()}},saveUpdate:function(t,b){return AndroidBridge.saveUpdate(t,b)},applyUpdate:function(){AndroidBridge.applyUpdate()}};</script>";
+
+    private static String withShim(String html) { return html.contains("window.pfApp=") ? html : html.replace("<head>", "<head>" + SHIM); }
+
+    private static long buildIn(String html) {
+        Matcher m = Pattern.compile("PF_BUILD\\s*=\\s*(\\d+)").matcher(html);
+        return m.find() ? Long.parseLong(m.group(1)) : 0;
+    }
+
+    private long bundledBuild() {
+        try {
+            InputStream in = getAssets().open("index.html"); ByteArrayOutputStream o = new ByteArrayOutputStream(); byte[] buf = new byte[65536]; int n;
+            while ((n = in.read(buf)) > 0) o.write(buf, 0, n);
+            in.close(); return buildIn(o.toString("UTF-8"));
+        } catch (Exception e) { return 0; }
+    }
+
+    /** Opens the bundled page, or a downloaded update if that is newer (a fresh APK with a newer page wins again). */
+    private void loadGame() {
+        try {
+            File f = new File(new File(getFilesDir(), "update"), "index.html");
+            if (f.exists()) {
+                InputStream in = new java.io.FileInputStream(f); ByteArrayOutputStream o = new ByteArrayOutputStream(); byte[] buf = new byte[65536]; int n;
+                while ((n = in.read(buf)) > 0) o.write(buf, 0, n);
+                in.close();
+                if (buildIn(o.toString("UTF-8")) > bundledBuild()) { web.loadUrl("file://" + f.getAbsolutePath()); return; }
+            }
+        } catch (Exception e) { }
+        web.loadUrl("file:///android_asset/index.html");
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        if (Build.VERSION.SDK_INT >= 28) {
+        {
             WindowManager.LayoutParams lp = getWindow().getAttributes();
-            lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+            if (Build.VERSION.SDK_INT >= 28) lp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+            if (Build.VERSION.SDK_INT >= 23) lp.preferredRefreshRate = 60f;     // the game draws at 30 fps; a 120 Hz screen only makes the compositor work harder
             getWindow().setAttributes(lp);
         }
 
@@ -92,7 +199,8 @@ public class MainActivity extends Activity {
         web.setWebChromeClient(new WebChromeClient());
         web.setOverScrollMode(View.OVER_SCROLL_NEVER);
         web.addJavascriptInterface(new Bridge(), "AndroidBridge");
-        web.loadUrl("file:///android_asset/index.html");
+        loadGame();
+        web.postDelayed(new Runnable() { @Override public void run() { askBackground(false); } }, 8000);
     }
 
     @Override
