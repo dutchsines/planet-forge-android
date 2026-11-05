@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="life_widget_desc">Life on your planet: life, habitability, oxygen and more</string>
+    <string name="planet_widget_desc">Your planet at a glance: temperature, oceans, air and more</string>
+    <string name="time_widget_desc">Your planet\'s timeline: eras, life, minds and nations</string>
+</resources>

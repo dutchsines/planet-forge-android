@@ -537,7 +537,7 @@ const FALL = { stony: { land: [0.42, 0.38, 0.34], sea: [0.55, 0.78, 0.72], sd: [
 const NP = 14, NV = 10;                              // tectonic plates
 const TAU = Math.PI * 2;
 const Q = new URLSearchParams(location.search);
-const PF_BUILD = 2026110504;                                      // bumped on every release (release.sh); the in-game updater compares this with version.json
+const PF_BUILD = 2026110505;                                      // bumped on every release (release.sh); the in-game updater compares this with version.json
 const PF_UPDATES = [                                              // newest first: add an entry for every release, it shows in the welcome box
   { b: 2026110407, d: "4 Nov 2026", t: ["Home Assistant card: keeps its planet when the page refreshes, stays in Endless mode, and has a slim history timeline and camera buttons. It loads in a separate frame with a loading spinner so the dashboard doesn't stutter, and never shows the start menu.", "Home Assistant: a Lovelace card that shows the planet on a dashboard (see the Home Assistant kit).", "The history timeline on the bottom bar no longer bunches up at the right edge as a world ages: recent events stay spread out (the whole-history view now stretches time near the present).", "Bioluminescent seas are calmer and richer in colour: blooms now glow blue, sea-green, violet and rose, with golden sparks."] },
   { b: 2026110406, d: "4 Nov 2026", t: ["The game now starts on the top graphics preset (Ultra+) with automatic quality scaling, so it keeps itself smooth. Phones keep the light preset.", "Endless mode starts on again: a world never restarts by itself until you turn it off (E)."] },
@@ -4317,6 +4317,22 @@ const PFB = {
     const head = cv.length ? `home to ${cv.length} nation${cv.length > 1 ? "s" : ""}` : life > 1 ? "a living world" : "a young world";
     return { title: `📸 ${nm}: ${head}`, text: L.join("\n") };
   },
+  widget() {                                                                                    // numbers for the Android home-screen widgets (small, plain JSON)
+    const W = S.world; if (!W) return null;
+    const p = W.params(S.age), c = W.ch(S.age), g = W.geoEra(S.age), T = W.tree || [], alive = T.filter(n => n.died == null), cv = W.civs;
+    const tC = W.real(p.Ts), oc = clamp(55 + 130 * p.sea, 0, 95) / 100 * p.fill * (1 - p.magma);
+    const day = 24 / Math.max(Math.abs(W.spinK), 0.05), pop = cv.reduce((a, v) => a + v.pop, 0), wars = cv.filter(v => v.war).length;
+    let mind = 0; try { mind = cv.length ? 1 : clamp(W.mindChance(S.age) || 0, 0, 1); } catch (e) {}
+    const hab = clamp(1 - Math.abs(tC - 18) / 45, 0, 1) * (1 - p.magma);
+    const ev = [], seen = {}; (W.events || []).forEach(e => { if (e.era || /impact|Giant|Life:|Intelligent life|nation founded|extinct|becomes an empire|moon/i.test(e.text)) ev.push({ age: Math.round(e.age * 2), text: e.text, era: !!e.era, cat: e.cat }); });
+    const hist = ev.slice(0, 8);
+    const first = re => { const f = (W.events || []).filter(e => re.test(e.text)); return f.length ? Math.round(f[f.length - 1].age * 2) : null; };
+    return { v: 1, at: Date.now(), name: W.worldName || p.name, era: g.era || g.eon, myr: Math.round(S.age * 2), tempC: Math.round(tC), life: Math.round(clamp(p.life, 0, 1) * 100), hab: Math.round(hab * 100), o2: Math.round(c.o2 * 42), co2: Math.round(c.co2 * 100), ocean: Math.round(oc * 100), clouds: Math.round(p.cover * 100), dayH: Math.round(day * 10) / 10,
+      vol: (W.volcs || []).filter(q => q.alive > 0.3).length, moons: (W.moonR > 0 ? 1 : 0) + (W.moons || []).filter(m => S.age >= m.born).length, ring: W.ringF > 0.5, impacts: (W.craters || []).length, poll: Math.round(clamp(W.poll || 0, 0, 1) * 100), size: Math.round(W.size * 100) / 100, star: W.starName || "", season: (S.season && S.season.text) || "",
+      lineages: alive.length, flora: p.life > 0.05 && W.flora ? W.flora.name : "", newest: alive.length ? alive[alive.length - 1].name : "", nations: cv.length, pop: pop, wars: wars, mind: Math.round(mind * 100),
+      ms: { oceans: first(/ocean/i), life: first(/^Life:|life appears|first life/i), minds: first(/Intelligent life/i), nations: first(/nation founded|Intelligent life/i), moon: first(/moon/i) }, hist };
+  },
+  pushWidget() { try { if (typeof AndroidBridge !== "undefined" && AndroidBridge.widgetStats) { const w = this.widget(); if (w) AndroidBridge.widgetStats(JSON.stringify(w)); } } catch (e) {} },
   job() {                                                                                    // ?bg=1: no graphics. Wind the saved planet forward by the time that has passed and report what happened.
     let notes = [], facts = null;
     try {
@@ -4328,6 +4344,7 @@ const PFB = {
           S.tmode = sv.tmode || "real"; this.save(Math.min(Date.now(), r.a < r.tgt - 1e-6 ? sv.at + (r.a - sv.age) / this.rate * 1000 : Date.now()));
         }
         try { facts = this.facts(); } catch (e2) {}
+        try { this.pushWidget(); } catch (e3) {}
       }
     } catch (e) { try { console.error(e); } catch (e2) {} }
     try { AndroidBridge.bgDone(JSON.stringify({ notes, facts })); } catch (e) {}
@@ -4753,8 +4770,9 @@ if (AND) {                                                                      
   const P = { play: ["play", 1, 1], ff3: ["ff3", 3, 1], ff5: ["ff5", 5, 1], clim: ["clim", 0.6, 0.06], real: ["real", 1, 1] }[(RESTORED && RESTORED.tmode) || "real"] || ["real", 1, 1];
   if (!S.spinSpeed) { S.spinSpeed = 0.08; S.spinOn = true; } setPace(...P); PFB.save();
   setInterval(() => { if (!document.hidden) PFB.save(); }, 4000);
-  addEventListener("pagehide", () => PFB.save());
-  document.addEventListener("visibilitychange", () => { if (document.hidden) PFB.save(); else PFB.resume(); });
+  setInterval(() => { if (!document.hidden) PFB.pushWidget(); }, 60000); setTimeout(() => PFB.pushWidget(), 5000);
+  addEventListener("pagehide", () => { PFB.save(); PFB.pushWidget(); });
+  document.addEventListener("visibilitychange", () => { if (document.hidden) { PFB.save(); PFB.pushWidget(); } else PFB.resume(); });
   window.pfSaveNow = () => PFB.save(); window.pfResume = () => PFB.resume();
   setTimeout(() => PFB.applyPerf(), 800); if (AND) setTimeout(() => PFB.saveCfg(), 1500);
   PFB.saveCfg();

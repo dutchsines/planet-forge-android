@@ -51,6 +51,7 @@ public class BgJobService extends JobService {
         @JavascriptInterface public void photoEnd() { h.post(new Runnable() { @Override public void run() { finish(false); } }); }
         @JavascriptInterface public void bgConfig(boolean on) { }
         @JavascriptInterface public void photoConfig(int hours) { }
+        @JavascriptInterface public void widgetStats(final String json) { Widgets.save(getApplicationContext(), json); }
         @JavascriptInterface public void quit() { }
     }
 

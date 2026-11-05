@@ -45,5 +45,20 @@
             </intent-filter>
             <meta-data android:name="android.service.wallpaper" android:resource="@xml/wallpaper" />
         </service>
+
+        <receiver android:name=".Widgets$LifeWidget" android:exported="true" android:label="PF Life">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/life_widget_info" />
+        </receiver>
+
+        <receiver android:name=".Widgets$PlanetWidget" android:exported="true" android:label="PF Planet">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/planet_widget_info" />
+        </receiver>
+
+        <receiver android:name=".Widgets$TimeWidget" android:exported="true" android:label="PF Timeline">
+            <intent-filter><action android:name="android.appwidget.action.APPWIDGET_UPDATE" /></intent-filter>
+            <meta-data android:name="android.appwidget.provider" android:resource="@xml/time_widget_info" />
+        </receiver>
     </application>
 </manifest>

@@ -64,6 +64,9 @@ public class MainActivity extends Activity {
 
         /** Wallpaper smoothness in frames per second (0 = as fast as the screen refreshes). */
         @JavascriptInterface
+        public void widgetStats(String json) { Widgets.save(getApplicationContext(), json); }
+
+        @JavascriptInterface
         public void wallFps(int fps) { getSharedPreferences("pf", MODE_PRIVATE).edit().putInt("wallFps", fps).apply(); }
 
         /** How much news to send: 0 off, 1 big moments only, 2 everything (rate limited). */
