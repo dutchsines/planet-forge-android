@@ -26,7 +26,8 @@ import org.json.JSONObject;
  * Every few hours (your choice) it then opens the page once with graphics, takes a picture of the world, and posts it with a few facts.
  */
 public class BgJobService extends JobService {
-    static final int JOB_ID = 8;
+    static final int JOB_ID = 8, QUICK_ID = 9;               // QUICK_ID: run once, right now (the widget refresh button)
+    private boolean quick;
     private WebView web;
     private boolean finished;
     private JSONObject facts;
@@ -41,6 +42,13 @@ public class BgJobService extends JobService {
         for (JobInfo j : js.getAllPendingJobs()) if (j.getId() == JOB_ID) return;     // already scheduled: don't reset its clock
         js.schedule(new JobInfo.Builder(JOB_ID, new ComponentName(c, BgJobService.class))
                 .setPeriodic(30 * 60 * 1000L).setRequiresBatteryNotLow(true).setPersisted(true).build());
+    }
+
+    /** Runs the catch-up once, straight away (even with the screen on). It never takes a photo. */
+    static void refreshNow(Context c) {
+        JobScheduler js = (JobScheduler) c.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        if (js == null) return;
+        js.schedule(new JobInfo.Builder(QUICK_ID, new ComponentName(c, BgJobService.class)).setMinimumLatency(0).setOverrideDeadline(1000).build());
     }
 
     private class Bridge {
@@ -58,9 +66,9 @@ public class BgJobService extends JobService {
     private JobParameters params;
 
     @Override public boolean onStartJob(JobParameters p) {
-        params = p; finished = false; facts = null;
+        params = p; finished = false; facts = null; quick = p.getJobId() == QUICK_ID;
         if (MainActivity.visible) return false;                       // the app is open and simulating itself
-        try { android.os.PowerManager pm = (android.os.PowerManager) getSystemService(Context.POWER_SERVICE); if (pm != null && pm.isInteractive()) return false; } catch (Exception e) { }     // never while the phone is being used: it would make it lag
+        if (!quick) try { android.os.PowerManager pm = (android.os.PowerManager) getSystemService(Context.POWER_SERVICE); if (pm != null && pm.isInteractive()) return false; } catch (Exception e) { }     // never while the phone is being used: it would make it lag
         try {
             web = new WebView(getApplicationContext());
             WebSettings s = web.getSettings();
@@ -82,7 +90,7 @@ public class BgJobService extends JobService {
         } catch (Exception e) { }
         SharedPreferences sp = getSharedPreferences("pf", MODE_PRIVATE);
         int hours = sp.getInt("photoH", 6); long last = sp.getLong("lastPhoto", 0), now = System.currentTimeMillis();
-        boolean due = hours > 0 && facts != null && (now - last >= hours * 3600000L || (big && now - last >= 30 * 60000L));
+        boolean due = !quick && hours > 0 && facts != null && (now - last >= hours * 3600000L || (big && now - last >= 30 * 60000L));
         if (due) startPhoto(); else finish(false);
     }
 

@@ -18,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextPaint;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.RemoteViews;
 
 import org.json.JSONArray;
@@ -29,10 +30,11 @@ import java.util.Locale;
 /** Home-screen widgets (Life, Planet, Timeline). Each is drawn into a bitmap sized to the widget, so any size works. */
 public class Widgets {
     static final int LIFE = 0, PLANET = 1, TIME = 2;
+    static final String ACTION_REFRESH = "com.planetforge.app.WIDGET_REFRESH";
 
     // ---- data ----------------------------------------------------------------------------------
     public static void save(Context c, String json) {
-        c.getSharedPreferences("pf", Context.MODE_PRIVATE).edit().putString("wJson", json).putLong("wAt", System.currentTimeMillis()).apply();
+        c.getSharedPreferences("pf", Context.MODE_PRIVATE).edit().putString("wJson", json).putLong("wAt", System.currentTimeMillis()).putLong("wBusy", 0).apply();
         refreshAll(c);
     }
 
@@ -66,12 +68,19 @@ public class Widgets {
             Bitmap bm = Bitmap.createBitmap(pw, ph, Bitmap.Config.ARGB_8888);
             Canvas cv = new Canvas(bm);
             cv.scale(sc, sc);
-            draw(cv, wdp, hdp, kind, load(c), c.getSharedPreferences("pf", Context.MODE_PRIVATE).getLong("wAt", 0));
+            SharedPreferences sp = c.getSharedPreferences("pf", Context.MODE_PRIVATE);
+            busyFlag = System.currentTimeMillis() - sp.getLong("wBusy", 0) < 25000;
+            refreshBtn = false;
+            draw(cv, wdp, hdp, kind, load(c), sp.getLong("wAt", 0));
             RemoteViews rv = new RemoteViews(c.getPackageName(), R.layout.widget);
             rv.setImageViewBitmap(R.id.img, bm);
             Intent in = new Intent(c, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             int fl = PendingIntent.FLAG_UPDATE_CURRENT | (Build.VERSION.SDK_INT >= 23 ? PendingIntent.FLAG_IMMUTABLE : 0);
             rv.setOnClickPendingIntent(R.id.root, PendingIntent.getActivity(c, kind, in, fl));
+            rv.setViewVisibility(R.id.refresh, refreshBtn ? View.VISIBLE : View.GONE);
+            Class<?> pc = kind == LIFE ? LifeWidget.class : kind == PLANET ? PlanetWidget.class : TimeWidget.class;
+            Intent rf = new Intent(c, pc).setAction(ACTION_REFRESH);
+            rv.setOnClickPendingIntent(R.id.refresh, PendingIntent.getBroadcast(c, 10 + kind, rf, fl));
             m.updateAppWidget(id, rv);
         } catch (Throwable t) { /* a widget must never crash the app */ }
     }
@@ -80,6 +89,15 @@ public class Widgets {
     public static abstract class Base extends AppWidgetProvider {
         abstract int kind();
         @Override public void onUpdate(Context c, AppWidgetManager m, int[] ids) { for (int id : ids) update(c, m, id, kind()); }
+        @Override public void onReceive(Context c, Intent in) {
+            if (ACTION_REFRESH.equals(in.getAction())) {
+                c.getSharedPreferences("pf", Context.MODE_PRIVATE).edit().putLong("wBusy", System.currentTimeMillis()).apply();
+                refreshAll(c);
+                BgJobService.refreshNow(c);
+                return;
+            }
+            super.onReceive(c, in);
+        }
         @Override public void onAppWidgetOptionsChanged(Context c, AppWidgetManager m, int id, Bundle o) { update(c, m, id, kind()); }
     }
     public static class LifeWidget extends Base { int kind() { return LIFE; } }
@@ -119,7 +137,7 @@ public class Widgets {
             f.setShader(new LinearGradient(x, 0, x + w, 0, c1, c2, Shader.TileMode.CLAMP)); f.setAlpha(170);
             c.drawRoundRect(new RectF(x, y, x + Math.max(w * frac, r * 2), y + h), r, r, f);
         }
-        float ts = Math.max(8.5f, Math.min(12f, h * 0.55f));
+        float ts = Math.max(8.5f, Math.min(13f, h * 0.5f));
         Paint pl = P(0xFFCFD9F2, ts, false), pv = P(0xFFFFFFFF, ts, true);
         float base = y + h / 2 + ts * 0.36f;
         float vw = pv.measureText(value);
@@ -169,17 +187,26 @@ public class Widgets {
         boolean time = kind == TIME;
         if (time) { if (h >= w) vtime(c, w, h, j); else htime(c, w, h, j); return; }
         int cols = w < 130 ? 2 : (w < 245 ? 3 : 4);
+        refreshBtn = !(cols == 2 || h < 80 && w < 160) && w >= 150;
         if (cols == 2 || h < 80 && w < 160) small(c, w, h, kind, j);
         else if (kind == LIFE) life(c, w, h, j, cols); else planet(c, w, h, j, cols);
     }
 
-    // header: icon + title left, subtitle right; returns y where content starts
+    static boolean refreshBtn;
+    // header: icon + title left, subtitle right (room kept for the refresh button); returns y where content starts
     static float header(Canvas c, float w, String ico, String title, String sub) {
         Paint a = P(INK, 13, true), b = P(0xFF8EA0C4, 10, false);
+        float right = w - 12 - (refreshBtn ? 32 : 0);
         float subW = Math.min(w * 0.5f, b.measureText(sub));
-        text(c, ico + " " + title, 12, 21, a, w - 24 - subW - 6);
-        textR(c, sub, w - 12, 20.5f, b, w * 0.5f);
-        return 28;
+        text(c, ico + " " + title, 12, 21, a, right - 12 - subW - 6);
+        textR(c, sub, right, 20.5f, b, w * 0.5f);
+        if (refreshBtn) {
+            Paint p = new Paint(Paint.ANTI_ALIAS_FLAG); p.setColor(0x38789ADC);
+            c.drawCircle(w - 24, 17, 12, p);
+            Paint r = P(0xFFE8EEFC, 15, true); String g = "⟳";
+            c.drawText(g, w - 24 - r.measureText(g) / 2, 22.5f, r);
+        }
+        return 31;
     }
 
     static void small(Canvas c, int w, int h, int kind, JSONObject j) {
@@ -218,64 +245,28 @@ public class Widgets {
     static void life(Canvas c, int w, int h, JSONObject j, int cols) {
         float y = header(c, w, "🌱", "Life", (cols >= 4 ? j.optString("name") + " · " : "") + myr(j.optInt("myr")));
         ArrayList<Object[]> b = new ArrayList<>();
+        int na = j.optInt("nations"), wars = j.optInt("wars");
+        String fl = j.optString("flora"), nw = j.optString("newest");
         b.add(new Object[]{"Life", j.optInt("life") + "%", j.optInt("life") / 100f, GR1, GR2});
         b.add(new Object[]{"Habitable", j.optInt("hab") + "%", j.optInt("hab") / 100f, BL1, BL2});
         b.add(new Object[]{"O₂", j.optInt("o2") + "%", j.optInt("o2") / 42f, CY1, CY2});
         b.add(new Object[]{"Lineages", String.valueOf(j.optInt("lineages")), Math.min(1f, j.optInt("lineages") / 20f), VI1, VI2});
-        String fl = j.optString("flora");
         b.add(new Object[]{"🌿 Plants", fl.length() == 0 ? "none yet" : fl, fl.length() == 0 ? 0f : j.optInt("life") / 100f, GR1, GR2});
-        b.add(new Object[]{"🧠 Mind", j.optInt("nations") > 0 ? j.optInt("nations") + " nations" : j.optInt("mind") + "%", j.optInt("nations") > 0 ? 1f : j.optInt("mind") / 100f, AM1, AM2});
-        footLines(c, w, h, y, b, cols, foot(j, true), j);
-    }
-
-    static String foot(JSONObject j, boolean life) {
-        if (life) {
-            String n = j.optString("newest"); int na = j.optInt("nations");
-            String a = n.length() > 0 ? "✨ Newest: " + n : "✨ No animals yet";
-            if (na > 0) return a + " · 🏛 " + na + (na == 1 ? " nation" : " nations") + " · " + compact(j.optDouble("pop")) + " people";
-            return a + " · 🧠 no minds yet";
-        }
-        String s = "☄️ " + j.optInt("impacts") + " impacts";
-        if (j.optString("star").length() > 0) s += " · ☀ " + j.optString("star") + " sun";
-        s += " · ⏳ " + myr(j.optInt("myr"));
-        if (j.optString("season").length() > 0) s += " · " + j.optString("season");
-        return s;
-    }
-
-    static String compact(double v) {
-        if (v >= 1e9) return String.format(Locale.US, "%.1fB", v / 1e9);
-        if (v >= 1e6) return String.format(Locale.US, "%.1fM", v / 1e6);
-        if (v >= 1e3) return String.format(Locale.US, "%.0fK", v / 1e3);
-        return String.valueOf(Math.round(v));
-    }
-
-    /** bars in cols<4 ? 1 : 2 columns, as many rows as fit, then a footer line when there is room */
-    static void footLines(Canvas c, int w, int h, float y, ArrayList<Object[]> bars, int cols, String foot, JSONObject j) {
-        int ncol = cols >= 4 ? 2 : 1;
-        float gap = 4, fh = h - y > 80 ? 16 : 0;
-        float avail = h - y - 8 - fh;
-        int maxRows = (bars.size() + ncol - 1) / ncol;
-        float bh = Math.max(15, Math.min(22, (avail - gap * (maxRows - 1)) / maxRows));
-        int rows = Math.max(1, Math.min(maxRows, (int) ((avail + gap) / (bh + gap))));
-        float bw = (w - 24 - gap * (ncol - 1)) / ncol;
-        int n = Math.min(bars.size(), rows * ncol);
-        for (int i = 0; i < n; i++) {
-            Object[] b = bars.get(i);
-            int col = ncol == 1 ? 0 : i % 2, row = ncol == 1 ? i : i / 2;
-            bar(c, 12 + col * (bw + gap), y + row * (bh + gap), bw, bh, (Float) b[2], (String) b[0], (String) b[1], (Integer) b[3], (Integer) b[4]);
-        }
-        if (fh > 0) {
-            float fy = y + rows * (bh + gap) + 10;
-            if (fy < h - 4) text(c, foot, 14, Math.min(fy + 2, h - 8), P(0xFFAEBBDC, 10.5f, false), w - 28);
-        }
+        b.add(new Object[]{"🧠 Mind", na > 0 ? "awake" : j.optInt("mind") + "%", na > 0 ? 1f : j.optInt("mind") / 100f, AM1, AM2});
+        b.add(new Object[]{"🏛 Nations", String.valueOf(na), Math.min(1f, na / 8f), AM1, AM2});
+        b.add(new Object[]{"👥 People", na > 0 ? compact(j.optDouble("pop")) : "0", na > 0 ? 0.5f : 0f, BL1, BL2});
+        b.add(new Object[]{"⚔️ Wars", String.valueOf(wars), na > 0 ? Math.min(1f, wars / (float) na) : 0f, RD1, RD2});
+        b.add(new Object[]{"🦎 Newest", nw.length() == 0 ? "none yet" : nw, nw.length() == 0 ? 0f : 0.6f, VI1, VI2});
+        ArrayList<String> ch = new ArrayList<>();
+        ch.add(nw.length() > 0 ? "✨ " + nw : "✨ No animals yet");
+        ch.add(na > 0 ? "🏛 " + na + (na == 1 ? " nation" : " nations") : "🧠 No minds yet");
+        if (na > 0) ch.add("👥 " + compact(j.optDouble("pop")));
+        layout(c, w, h, y, null, b, cols >= 4 ? 2 : 1, ch);
     }
 
     static void planet(Canvas c, int w, int h, JSONObject j, int cols) {
-        String sub = (cols >= 4 ? j.optString("era") + " · " + j.optDouble("size") + "× Earth · " : "") + mins(j.optLong("at"));
+        String sub = (cols >= 4 ? j.optString("era") + " · " + j.optDouble("size") + "× Earth · " : "") + (busy(c) ? "updating…" : mins(j.optLong("at")));
         float y = header(c, w, "🪐", j.optString("name"), sub);
-        float bh = Math.max(16, Math.min(22, (h - y - 30) / 5f));
-        tempBar(c, 12, y, w - 24, bh, j, "🌡 Surface temp", tempBoth(j));
-        y += bh + 4;
         ArrayList<Object[]> b = new ArrayList<>();
         b.add(new Object[]{"🌊 Ocean", j.optInt("ocean") + "%", j.optInt("ocean") / 100f, BL1, BL2});
         b.add(new Object[]{"🫁 Oxygen", j.optInt("o2") + "%", j.optInt("o2") / 42f, CY1, CY2});
@@ -285,7 +276,58 @@ public class Widgets {
         b.add(new Object[]{"🌋 Volcanoes", String.valueOf(j.optInt("vol")), Math.min(1f, j.optInt("vol") / 25f), AM1, AM2});
         b.add(new Object[]{"🌙 Moons", j.optInt("moons") + (j.optBoolean("ring") ? " + ring" : ""), Math.min(1f, j.optInt("moons") / 4f), VI1, VI2});
         b.add(new Object[]{"🏭 Pollution", j.optInt("poll") + "%", j.optInt("poll") / 100f, RD1, RD2});
-        footLines(c, w, h, y, b, cols, foot(j, false), j);
+        ArrayList<String> ch = new ArrayList<>();
+        ch.add("☄️ " + j.optInt("impacts") + " impacts");
+        if (j.optString("star").length() > 0) ch.add("☀ " + j.optString("star"));
+        ch.add("⏳ " + myr(j.optInt("myr")));
+        if (j.optString("season").length() > 0) ch.add(j.optString("season"));
+        layout(c, w, h, y, j, b, cols >= 4 ? 2 : 1, ch);
+    }
+
+    static boolean busyFlag;
+    static boolean busy(Canvas c) { return busyFlag; }
+
+    static String compact(double v) {
+        if (v >= 1e9) return String.format(Locale.US, "%.1fB", v / 1e9);
+        if (v >= 1e6) return String.format(Locale.US, "%.1fM", v / 1e6);
+        if (v >= 1e3) return String.format(Locale.US, "%.0fK", v / 1e3);
+        return String.valueOf(Math.round(v));
+    }
+
+    /** Bars grow to fill the card: an optional full-width temperature bar, then a grid, then a row of chips. */
+    static void layout(Canvas c, int w, int h, float y, JSONObject temp, ArrayList<Object[]> bars, int ncol, ArrayList<String> chips) {
+        float gap = 4, minBh = 20, maxBh = 36;
+        float chipH = (h - y > 96) ? 17 : 0;
+        float avail = h - y - 8 - (chipH > 0 ? chipH + 5 : 0);
+        int tRows = temp != null ? 1 : 0;
+        int gridMax = (bars.size() + ncol - 1) / ncol;
+        int total = (int) ((avail + gap) / (minBh + gap));                // how many rows fit at the smallest size
+        total = Math.max(1, Math.min(total, tRows + gridMax));
+        int gRows = Math.max(0, total - tRows);
+        if (temp == null && gRows < 1) gRows = 1;
+        int rows = tRows + gRows;
+        float bh = Math.max(minBh - 4, Math.min(maxBh, (avail - gap * (rows - 1)) / rows));
+        float yy = y;
+        if (temp != null) { tempBar(c, 12, yy, w - 24, bh, temp, "🌡 Surface temp", tempBoth(temp)); yy += bh + gap; }
+        float bw = (w - 24 - gap * (ncol - 1)) / ncol;
+        int n = Math.min(bars.size(), gRows * ncol);
+        for (int i = 0; i < n; i++) {
+            Object[] b = bars.get(i);
+            int col = ncol == 1 ? 0 : i % ncol, row = ncol == 1 ? i : i / ncol;
+            bar(c, 12 + col * (bw + gap), yy + row * (bh + gap), bw, bh, (Float) b[2], (String) b[0], (String) b[1], (Integer) b[3], (Integer) b[4]);
+        }
+        if (chipH > 0) {
+            float cx = 12, cy = h - 8 - chipH;
+            Paint tp = P(0xFFAEBBDC, 10, false), bg = new Paint(Paint.ANTI_ALIAS_FLAG); bg.setColor(0x29789ADC);
+            for (String s : chips) {
+                String t = fit(s, tp, w - 24 - 14);
+                float cw = tp.measureText(t) + 14;
+                if (cx + cw > w - 12) break;
+                c.drawRoundRect(new RectF(cx, cy, cx + cw, cy + chipH), chipH / 2, chipH / 2, bg);
+                c.drawText(t, cx + 7, cy + chipH / 2 + 3.5f, tp);
+                cx += cw + 5;
+            }
+        }
     }
 
     // ---- timeline ------------------------------------------------------------------------------------
