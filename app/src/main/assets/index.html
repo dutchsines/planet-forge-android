@@ -301,7 +301,7 @@
   html.phone #topbar .pt-seg { flex:1; display:flex; gap:3px; height:6px; min-width:30px; } html.phone #topbar .pt-seg i { flex:1; border-radius:3px; background:var(--sc); opacity:.85; } html.phone #topbar .pt-seg i.n { background:linear-gradient(90deg,var(--sc) 55%,rgba(255,255,255,.14) 55%); opacity:1; }
   html.phone body.mobile #toast { top:calc(122px + env(safe-area-inset-top)); border-radius:16px; }
   html.phone body.mobile #bottom { left:8px; right:8px; bottom:calc(8px + env(safe-area-inset-bottom)); border-radius:26px; padding:34px 8px 8px; overflow:visible; background:linear-gradient(180deg,rgba(26,38,78,.96),rgba(8,12,28,.97)) !important; border:1px solid rgba(160,190,255,.16); box-shadow:inset 0 1px 0 rgba(255,255,255,.1), 0 -6px 30px rgba(60,100,220,.18), 0 8px 30px rgba(0,0,0,.6); }
-  html.phone body.mobile #bottom .btns { bottom:calc(100% + 56px); }
+  html.phone body.mobile #bottom .btns, html.phone body.mobile.mt-more #bottom .btns { bottom:calc(100% + 56px); max-height:calc(100dvh - 400px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); }
   #pfDock { display:none; } html.phone body.mobile #pfDock { display:flex; align-items:flex-end; margin:0 0 8px; }
   #pfDock .s { flex:1; min-width:0; text-align:center; position:relative; padding:0 1px; cursor:default; }
   #pfDock .s + .s::before { content:""; position:absolute; left:0; top:8px; bottom:6px; width:1px; background:linear-gradient(180deg,transparent,rgba(160,190,255,.2),transparent); }
@@ -309,10 +309,10 @@
   #pfDock .s b { display:block; font-size:15px; color:#fff; line-height:1.1; white-space:nowrap; } #pfDock .s span { display:block; font-size:8px; letter-spacing:.06em; text-transform:uppercase; color:#8fa4cc; margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   #pfDock .s u { display:block; height:3px; margin:5px 12% 0; border-radius:2px; background:rgba(255,255,255,.1); overflow:hidden; text-decoration:none; } #pfDock .s u i { display:block; height:100%; border-radius:2px; background:linear-gradient(90deg, color-mix(in srgb, var(--c) 50%, #000), var(--c)); box-shadow:0 0 6px var(--c); transition:width .6s; }
   #pfDock .s.pick { cursor:pointer; } #pfDock .s.pick:active { background:rgba(127,182,255,.12); border-radius:12px; } #pfDock .s.pick.open { background:rgba(127,182,255,.16); border-radius:12px; box-shadow:0 0 0 2px rgba(127,182,255,.35); }
-  #pfDock .cc { flex:1.4; } #pfDock .cc .ring { width:62px; height:62px; margin:-46px auto 2px; border-radius:50%; position:relative; display:grid; place-items:center; background:conic-gradient(#7fe08a 0 25%,#ffd24a 25% 50%,#ff9a4a 50% 75%,#7fb6ff 75% 100%); box-shadow:0 0 0 4px #0b1226, 0 0 22px color-mix(in srgb, var(--c) 45%, transparent); }
-  #pfDock .cc .ring.flat { background:#2a3558; } #pfDock .cc .ring::before { content:""; position:absolute; inset:6px; border-radius:50%; background:radial-gradient(circle at 35% 30%,#1c2a55,#0a1226); }
-  #pfDock .cc .ring i { position:relative; font-style:normal; font-size:25px; } #pfDock .cc .ring s { position:absolute; inset:0; transform:rotate(var(--p,0deg)); transition:transform .8s; } #pfDock .cc .ring.flat s { display:none; } #pfDock .cc .ring s::after { content:""; position:absolute; left:50%; top:-4px; width:10px; height:10px; margin-left:-5px; border-radius:50%; background:#fff; box-shadow:0 0 8px #fff; }
-  #pfDock .cc b { font-size:17px; } #pfDock .cc .st { color:var(--c); font-weight:700; font-size:10px; letter-spacing:.03em; text-transform:none; margin-top:0; } #pfDock .cc small { display:block; font-size:8.5px; color:#8fa4cc; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  #pfDock .pcc { flex:1.4; } #pfDock .pcc .ring { width:62px; height:62px; margin:-46px auto 2px; border-radius:50%; position:relative; display:grid; place-items:center; background:conic-gradient(#7fe08a 0 25%,#ffd24a 25% 50%,#ff9a4a 50% 75%,#7fb6ff 75% 100%); box-shadow:0 0 0 4px #0b1226, 0 0 22px color-mix(in srgb, var(--c) 45%, transparent); }
+  #pfDock .pcc .ring.flat { background:#2a3558; } #pfDock .pcc .ring::before { content:""; position:absolute; inset:6px; border-radius:50%; background:radial-gradient(circle at 35% 30%,#1c2a55,#0a1226); }
+  #pfDock .pcc .ring i { position:relative; font-style:normal; font-size:25px; } #pfDock .pcc .ring s { position:absolute; inset:0; transform:rotate(var(--p,0deg)); transition:transform .8s; } #pfDock .pcc .ring.flat s { display:none; } #pfDock .pcc .ring s::after { content:""; position:absolute; left:50%; top:-4px; width:10px; height:10px; margin-left:-5px; border-radius:50%; background:#fff; box-shadow:0 0 8px #fff; }
+  #pfDock .pcc b { font-size:17px; } #pfDock .pcc .st { color:var(--c); font-weight:700; font-size:10px; letter-spacing:.03em; text-transform:none; margin-top:0; } #pfDock .pcc small { display:block; font-size:8.5px; color:#8fa4cc; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   html.phone body.msimple #mtabs button, html.phone body.mobile #mtabs button { min-height:46px; border-radius:16px; background:rgba(120,150,220,.13); position:relative; }
   html.phone body.mobile #mtabs button.on { background:#2d5bb8; }
   html.phone body.mobile #mtabs #mqPause { background:linear-gradient(135deg,#3a6fff,#8a5cff); color:#fff; box-shadow:0 4px 16px rgba(90,110,255,.45); }
@@ -572,7 +572,7 @@ const FALL = { stony: { land: [0.42, 0.38, 0.34], sea: [0.55, 0.78, 0.72], sd: [
 const NP = 14, NV = 10;                              // tectonic plates
 const TAU = Math.PI * 2;
 const Q = new URLSearchParams(location.search);
-const PF_BUILD = 2026110511;                                      // bumped on every release (release.sh); the in-game updater compares this with version.json
+const PF_BUILD = 2026110512;                                      // bumped on every release (release.sh); the in-game updater compares this with version.json
 const PF_UPDATES = [                                              // newest first: add an entry for every release, it shows in the welcome box
   { b: 2026110407, d: "4 Nov 2026", t: ["Home Assistant card: keeps its planet when the page refreshes, stays in Endless mode, and has a slim history timeline and camera buttons. It loads in a separate frame with a loading spinner so the dashboard doesn't stutter, and never shows the start menu.", "Home Assistant: a Lovelace card that shows the planet on a dashboard (see the Home Assistant kit).", "The history timeline on the bottom bar no longer bunches up at the right edge as a world ages: recent events stay spread out (the whole-history view now stretches time near the present).", "Bioluminescent seas are calmer and richer in colour: blooms now glow blue, sea-green, violet and rose, with golden sparks."] },
   { b: 2026110406, d: "4 Nov 2026", t: ["The game now starts on the top graphics preset (Ultra+) with automatic quality scaling, so it keeps itself smooth. Phones keep the light preset.", "Endless mode starts on again: a world never restarts by itself until you turn it off (E)."] },
@@ -2912,6 +2912,7 @@ void plantsApply(vec3 p, vec3 rd, float pxr, float bi, inout vec3 col, inout vec
 
 vec3 shadePlanet(vec3 p, vec3 rd, float t, vec3 sun, float pixAng, vec3 moonP) {
   float px = max(t * pixAng, 1e-6);
+  vec3 CFX = craterFx(p);                                          // once per pixel (it was inlined three times: a much bigger shader to compile)
   float octf = clamp(log2(1.0 / (px * 1.5)) - 0.3 + uOct, 2.0, 10.5);
   PInfo pi = plateInfo(p);
   float h0 = terrain(p, pi, octf);
@@ -3079,7 +3080,7 @@ vec3 shadePlanet(vec3 p, vec3 rd, float t, vec3 sun, float pixAng, vec3 moonP) {
     vec3 mc;
     if (vw == 1) mc = heightRamp(clamp((e + 0.6) / 1.5, 0.0, 1.0));
     else if (vw == 2) {
-      T += vglow * 700.0 + craterFx(p).x * 700.0;
+      T += vglow * 700.0 + CFX.x * 700.0;
       float hx = T < 100.0 ? (T + 60.0) / 160.0 * 0.7 : 0.7 + 0.3 * clamp(log(T / 100.0) / log(15.0), 0.0, 1.0);
       mc = heatRamp(clamp(hx, 0.0, 1.0));
     } else if (vw == 3) {                                         // water: ocean depth, sea ice, land moisture
@@ -3151,7 +3152,7 @@ vec3 shadePlanet(vec3 p, vec3 rd, float t, vec3 sun, float pixAng, vec3 moonP) {
       mc = riskRamp(clamp(risk, 0.0, 1.0));
       mc = mix(mc, vec3(0.8), coast * 0.2);
     } else if (vw == 17) {                                        // impact scars: scorch, ejecta and fresh glow over a grey relief
-      vec3 fx = craterFx(p);
+      vec3 fx = CFX;
       float x = clamp(fx.y * 0.9 + fx.x * 0.5, 0.0, 1.0), g = 0.22 + 0.45 * clamp((e + 0.6) / 1.5, 0.0, 1.0);
       mc = mix(vec3(g), impRamp(x), smoothstep(0.02, 0.2, x));
       mc = mix(mc, vec3(0.05, 0.08, 0.14), step(e, 0.0) * 0.5);
@@ -3264,7 +3265,7 @@ vec3 shadePlanet(vec3 p, vec3 rd, float t, vec3 sun, float pixAng, vec3 moonP) {
   float flicker = 0.88 + 0.12 * sin(uTime * 1.7 + p.x * 400.0 + p.y * 300.0);
   col += alb * s.emis * 2.2 * flicker;
   col += (vwS > 0.0002 ? vcS / vwS : vec3(1.0, 0.28, 0.06)) * vglow * 3.5 * (0.85 + 0.15 * flicker);
-  { vec3 cf = craterFx(p); col += vec3(1.0, 0.32, 0.07) * cf.x * 1.8 * (0.85 + 0.15 * flicker) + vec3(1.0, 0.8, 0.5) * cf.z; }
+  { vec3 cf = CFX; col += vec3(1.0, 0.32, 0.07) * cf.x * 1.8 * (0.85 + 0.15 * flicker) + vec3(1.0, 0.8, 0.5) * cf.z; }
   { float nF = 1.0 - smoothstep(-0.06, 0.12, ndl0); col += pow(uBio[4], vec3(2.2)) * 0.9 * s.bio * uBioGlow * nF * (0.8 + 0.2 * sin(uTime * 0.8 + p.x * 30.0)); }   // bioluminescence
   if (uBioLum > 0.01) { float nL = 1.0 - smoothstep(-0.10, 0.18, ndl0);                                    // luminous worlds: living veins of light on the land, glowing seas along the coasts, slow pulses rolling across the planet
     if (nL > 0.01) { vec3 gc = pow(uBioC, vec3(2.0));
@@ -5342,7 +5343,7 @@ if (PHONE) {                                                           // phone:
     const se = S.season || W.seasonInfo(S.age), flat = !se || /^no seasons/.test(se.text) || p.magma > 0.5;
     let pos = 0, sname = "";
     if (!flat) { const a = Math.asin(clamp(se.x, -1, 1)) * 180 / Math.PI, rising = se.x > 0.995 ? false : W.seasonInfo(S.age).x !== undefined && (() => { const s2 = W.seasonInfo(S.age + 0.5); return s2.x > se.x; })(); pos = rising ? 225 + a : 225 - a; sname = se.x > 0.55 ? "summer" : se.x < -0.55 ? "winter" : rising ? "spring" : "autumn"; }
-    const cen = `<div class="s cc" style="--c:${sI[1]}"><div class="ring${flat ? " flat" : ""}" style="--p:${pos}deg"><i>${sI[0]}</i><s></s></div><b>${unitT(tC)}</b><span class="st">${sN}</span><small>${flat ? (p.magma > 0.5 ? "molten surface" : "no seasons") : sname + " · north"}</small></div>`;
+    const cen = `<div class="s pcc" style="--c:${sI[1]}"><div class="ring${flat ? " flat" : ""}" style="--p:${pos}deg"><i>${sI[0]}</i><s></s></div><b>${unitT(tC)}</b><span class="st">${sN}</span><small>${flat ? (p.magma > 0.5 ? "molten surface" : "no seasons") : sname + " · north"}</small></div>`;
     const A = CAT[slots[0]](c, p, W), B = CAT[slots[1]](c, p, W);
     const h = tile(life) + tile(mind) + cen + tile(A, "pick" + (pop && pop.slot === 0 ? " open" : ""), 'data-slot="0"') + tile(B, "pick" + (pop && pop.slot === 1 ? " open" : ""), 'data-slot="1"');
     if (h !== dock._h) { dock._h = h; dock.innerHTML = h; }
