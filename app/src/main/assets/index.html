@@ -303,6 +303,16 @@
   html.phone body.mobile #bottom { left:8px; right:8px; bottom:calc(8px + env(safe-area-inset-bottom)); border-radius:26px; padding:34px 8px 8px; overflow:visible; background:linear-gradient(180deg,rgba(26,38,78,.96),rgba(8,12,28,.97)) !important; border:1px solid rgba(160,190,255,.16); box-shadow:inset 0 1px 0 rgba(255,255,255,.1), 0 -6px 30px rgba(60,100,220,.18), 0 8px 30px rgba(0,0,0,.6); }
   html.phone body.mobile #bottom .btns, html.phone body.mobile.mt-more #bottom .btns { bottom:calc(100% + 56px); max-height:calc(100dvh - 400px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); }
   html.phone #bWall, html.phone #bLink, html.phone #bExport, html.phone #bHover, html.phone #bGfx, html.phone #bThumb, html.phone body.mobile #bMobile, html.phone body.mobile.mt-more #bMobile, html.phone #thumbwrap, html.phone .dx { display:none !important; }   /* desktop-only controls: hover, keyboard, browser links/downloads, the desktop graphics panel */
+  #sfxB { position:fixed; left:50%; top:50%; transform:translate(-50%,-50%); z-index:60; width:min(560px, 94vw); max-height:86vh; display:flex; flex-direction:column; border-radius:20px; background:linear-gradient(180deg,rgba(18,28,58,.98),rgba(8,12,28,.98)); border:1px solid rgba(160,190,255,.25); box-shadow:0 20px 60px rgba(0,0,0,.7); color:#e8eefc; font-size:13px; }
+  #sfxB .sbh { display:flex; align-items:center; padding:12px 14px 6px; font-size:15px; } #sfxB .sbh button { margin-left:auto; min-height:32px; }
+  #sfxB .sbt { display:flex; flex-wrap:wrap; gap:10px 14px; align-items:center; padding:4px 14px 10px; border-bottom:1px solid rgba(160,190,255,.15); } #sfxB .sbt input[type=range] { width:120px; vertical-align:middle; }
+  #sfxB .sbg { overflow:auto; padding:10px; display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr)); gap:6px; }
+  #sfxB .sb { display:flex; align-items:center; gap:10px; padding:6px 8px; border-radius:12px; background:rgba(120,150,220,.1); } #sfxB .sb.off { opacity:.45; }
+  #sfxB .sb .pl { flex:none; width:42px; height:42px; min-height:0; padding:0; border-radius:50%; font-size:20px; background:radial-gradient(circle at 30% 25%,#3a5aa8,#141e44); }
+  #sfxB .sb .pl:active { transform:scale(.92); } #sfxB .sb div { flex:1; min-width:0; } #sfxB .sb b { display:block; font-size:13px; } #sfxB .sb span { display:block; font-size:10.5px; color:#8fa4cc; }
+  #sfxB .sb input { width:20px; height:20px; } #sfxB .sbf { padding:8px 14px 12px; font-size:11px; color:#8fa4cc; }
+  html.phone #bPlay, html.phone #bPause, html.phone #bFF3, html.phone #bFF5, html.phone #bReal, html.phone #bClim, html.phone #bInfo, html.phone #bGraph, html.phone #bHelp, html.phone #gwrap { display:none !important; }   /* phone: the dock already has Play (hold for speeds), Info and the Guide */
+  html.phone body.mobile #bottom .btns { flex-direction:column; flex-wrap:nowrap; } html.phone body.mobile #bottom .btns .bg[data-g=world] { order:1; } html.phone body.mobile #bottom .btns .bg[data-g=time] { order:2; } html.phone body.mobile #bottom .btns .bg[data-g=view] { order:3; } html.phone body.mobile #bottom .btns .bg[data-g=panels] { order:4; } html.phone body.mobile #bottom .btns .bg[data-g=more] { order:5; }
   #pfDock { display:none; } html.phone body.mobile #pfDock { display:flex; align-items:flex-end; margin:0 0 8px; }
   #pfDock .s { flex:1; min-width:0; text-align:center; position:relative; padding:0 1px; cursor:default; }
   #pfDock .s + .s::before { content:""; position:absolute; left:0; top:8px; bottom:6px; width:1px; background:linear-gradient(180deg,transparent,rgba(160,190,255,.2),transparent); }
@@ -548,7 +558,7 @@
     <div class="bg"><i>World</i><button id="bNew" title="Roll a brand-new random world (R)">New world</button><button id="bWall" data-ico="🖼" title="Hide everything and let the camera and sun drift on their own, for use as a live desktop wallpaper (W; click, Esc or W to leave)">Wallpaper (W)</button><button id="bEndless">Endless: off (E)</button><button id="bLink" data-ico="🔗" title="Copy a link that rebuilds this exact world from its seed">Copy link</button><button id="bExport" data-ico="📄" title="Download the planet and every nation's story as a web page">Export story</button></div>
     <div class="bg"><i>Time</i><button id="bPlay" data-ico="▶️" title="Normal speed">Play</button><button id="bPause" data-ico="⏸" title="Pause everything (Space)">Pause</button><button id="bFF3" data-ico="⏩" title="Fast forward ×3">Fast ×3</button><button id="bFF5" data-ico="⏭" title="Fast forward ×5">Fast ×5</button><button id="bReal" data-ico="🕰" title="Real time: the planet turns once every 24 hours and the weather moves at its true pace">Real time</button><button id="bClim" data-ico="🌡" title="Climate pace: a day lasts a few minutes so you can watch heat and weather spread, while evolution only creeps">Climate pace</button><button id="bCalm" data-ico="🌿" title="When minds appear, slow down the plates, climate and weather so their story is easy to follow">Calm</button><button id="bSpin" data-ico="🌀">Spin: on (S)</button><button id="bEvo" data-ico="🧬">Pause evolution (P)</button><button id="bSun" data-ico="☀️">Look at sun (F)</button><button id="bCam" data-ico="🎥">Camera: free (M)</button><button id="bLock" data-ico="🔒">Lock view (L)</button></div>
     <div class="bg" id="viewBg"><i>View</i><select id="selView" title="Map view (V)"></select><div id="viewGrid"></div></div>
-    <div class="bg"><i>Panels</i><button id="bInfo" data-ico="ℹ️">Info (I)</button><button id="bGraph" data-ico="📈" class="on">Graphs (J)</button><button id="bNat" data-ico="🏛">Nations (O)</button><button id="bTz" data-ico="🌐" class="on" title="Time zone lines, zone clocks and the international date line">Time zones</button><button id="bHover" data-ico="🖱" class="on" title="A small box that follows the mouse over the planet and shows the local time, weather and life at that spot">Hover info</button><button id="bTree" data-ico="🌳" title="How life branched and which lines died out">Tree of life</button><button id="bCrit" data-ico="🦎" class="on" title="Show the creatures themselves moving about inside their ranges (zoom in close)">Creatures</button><button id="bLife" data-ico="📍" title="Cycle: off, dots only (where each line began and died out), dots plus the area it spread over">Life ranges: off</button><button id="bMinds" data-ico="🧠" title="Show the area each intelligent species lives in, in its own colour, with contours that drift outward as it spreads">Mind range</button><button id="bMoonB" data-ico="🌙" title="Fly the camera to the moon base (B)">Moon base (B)</button><button id="bSound" data-ico="🔊" title="Ambient wind, rumbles and thunder">Sound: off (X)</button><button id="bHelp" data-ico="❓" title="Keys and map guide">Help (?)</button><button id="bThumb" data-ico="🛰">Live views (T)</button><button id="bGfx" data-ico="⚙️">Graphics (G)</button><button id="bCtrl" data-ico="🎛">World Controls</button><button id="bMobile" data-ico="📱">Mobile layout: auto</button></div>
+    <div class="bg"><i>Panels</i><button id="bInfo" data-ico="ℹ️">Info (I)</button><button id="bGraph" data-ico="📈" class="on">Graphs (J)</button><button id="bNat" data-ico="🏛">Nations (O)</button><button id="bTz" data-ico="🌐" class="on" title="Time zone lines, zone clocks and the international date line">Time zones</button><button id="bHover" data-ico="🖱" class="on" title="A small box that follows the mouse over the planet and shows the local time, weather and life at that spot">Hover info</button><button id="bTree" data-ico="🌳" title="How life branched and which lines died out">Tree of life</button><button id="bCrit" data-ico="🦎" class="on" title="Show the creatures themselves moving about inside their ranges (zoom in close)">Creatures</button><button id="bLife" data-ico="📍" title="Cycle: off, dots only (where each line began and died out), dots plus the area it spread over">Life ranges: off</button><button id="bMinds" data-ico="🧠" title="Show the area each intelligent species lives in, in its own colour, with contours that drift outward as it spreads">Mind range</button><button id="bMoonB" data-ico="🌙" title="Fly the camera to the moon base (B)">Moon base (B)</button><button id="bSound" data-ico="🔊" title="Ambient wind, rumbles and thunder">Sound: off (X)</button><button id="bSndB" data-ico="🎛" title="Every sound in the game: preview, mute, volume">Soundboard</button><button id="bHelp" data-ico="❓" title="Keys and map guide">Help (?)</button><button id="bThumb" data-ico="🛰">Live views (T)</button><button id="bGfx" data-ico="⚙️">Graphics (G)</button><button id="bCtrl" data-ico="🎛">World Controls</button><button id="bMobile" data-ico="📱">Mobile layout: auto</button></div>
   </div>
     <div id="gwrap"><div id="chips"></div><div id="gstrip"></div></div>
   <div id="maps" class="panel closed"><div id="mapsHead"><span>Maps</span><span style="flex:1"></span><button id="bMapsC" title="Compact cards: two small maps per row" style="margin-right:6px">▤</button><button id="bMaps" title="Show or hide the flat live maps">+</button></div><div id="mapsBody"></div></div>
@@ -573,7 +583,7 @@ const FALL = { stony: { land: [0.42, 0.38, 0.34], sea: [0.55, 0.78, 0.72], sd: [
 const NP = 14, NV = 10;                              // tectonic plates
 const TAU = Math.PI * 2;
 const Q = new URLSearchParams(location.search);
-const PF_BUILD = 2026110513;                                      // bumped on every release (release.sh); the in-game updater compares this with version.json
+const PF_BUILD = 2026110515;                                      // bumped on every release (release.sh); the in-game updater compares this with version.json
 const PF_UPDATES = [                                              // newest first: add an entry for every release, it shows in the welcome box
   { b: 2026110407, d: "4 Nov 2026", t: ["Home Assistant card: keeps its planet when the page refreshes, stays in Endless mode, and has a slim history timeline and camera buttons. It loads in a separate frame with a loading spinner so the dashboard doesn't stutter, and never shows the start menu.", "Home Assistant: a Lovelace card that shows the planet on a dashboard (see the Home Assistant kit).", "The history timeline on the bottom bar no longer bunches up at the right edge as a world ages: recent events stay spread out (the whole-history view now stretches time near the present).", "Bioluminescent seas are calmer and richer in colour: blooms now glow blue, sea-green, violet and rose, with golden sparks."] },
   { b: 2026110406, d: "4 Nov 2026", t: ["The game now starts on the top graphics preset (Ultra+) with automatic quality scaling, so it keeps itself smooth. Phones keep the light preset.", "Endless mode starts on again: a world never restarts by itself until you turn it off (E)."] },
@@ -1020,7 +1030,7 @@ class World {
     if (birth) { Object.assign(this.chem, { o2: 0.01, co2: 0.35, ch4: 0.3, so2: 0.2 }); return; }
     for (let i = 0; i < 500; i++) this.stepChem(1, age, true);
   }
-  log(age, text, loc) { if (this.cap) this.cap.push({ age, text }); if (this.silent) return; if (/comet blazes|meteor shower|solar eclipse|lunar eclipse|tsunami|earthquake|mountain belt|island rises|settled a volcanic|base on the moon|name the moon|ascends|starships take|space elevator|orbital ring|steer the weather|terraform|solar collectors|great works fall|mission to the moon|lander is lost|Supervolcano|extinction|nowball|othouse|Cambrian|era begins|impact|Giant|Matrioshka|stellar engine|ringworld|star itself|habitats|fleet of|departs the world|turns inward|destroys itself|goes quiet|caretaker|Nuclear fire|dark age|becomes an empire|signal from|probe from|war of the ascended|share the sky|join into one|green revolution|brings back/i.test(text)) this.toasts.push({ msg: text }); this.events.unshift({ age, text, loc, cat: evCat(text), era: /(era|eon) begins$/i.test(text) }); if (this.events.length > 400) this.events.pop(); }
+  log(age, text, loc) { if (this.cap) this.cap.push({ age, text }); if (this.silent) return; if (/comet blazes|meteor shower|solar eclipse|lunar eclipse|tsunami|earthquake|mountain belt|island rises|settled a volcanic|base on the moon|name the moon|ascends|starships take|space elevator|orbital ring|steer the weather|terraform|solar collectors|great works fall|mission to the moon|lander is lost|Supervolcano|extinction|nowball|othouse|Cambrian|era begins|impact|Giant|Matrioshka|stellar engine|ringworld|star itself|habitats|fleet of|departs the world|turns inward|destroys itself|goes quiet|caretaker|Nuclear fire|dark age|becomes an empire|signal from|probe from|war of the ascended|share the sky|join into one|green revolution|brings back/i.test(text)) this.toasts.push({ msg: text }); this.events.unshift({ age, text, loc, cat: evCat(text), era: /(era|eon) begins$/i.test(text) }); if (this === S.world && window.pfSfx) window.pfSfx(text); if (this.events.length > 400) this.events.pop(); }
   plumeCenter(p) { const pl = this.plates[p.k]; return mulMV(rotAxis(pl.axis, pl.rate * S.driftT * 0.01), p.local); }
   addPlume(age, site, spd) {                                         // an ash/dust front that spreads outward from where it started; a new hit inside (or near) an existing cloud feeds it instead of restarting it
     const L = this.plumes = (this.plumes || []).filter(q => age - q.tl < 40), E = this.plumeCenter(site);
@@ -5495,11 +5505,17 @@ function buildHelp() {
 const toggleHelp = on => { if (!$("helpB").innerHTML) buildHelp(); $("help").classList.toggle("open", on); };
 $("bHelp").onclick = () => { toggleHelp(); $("bHelp").blur(); }; $("helpC").onclick = () => toggleHelp(false);
 /* ambient sound: procedural wind, volcanic rumble and thunder (starts only after the button is pressed) */
+const SFXCFG = (() => { const d = { on: false, vol: 0.7, amb: true, off: [] }; try { return Object.assign(d, JSON.parse(localStorage.getItem("pfSnd") || "{}")); } catch (e) { return d; } })();
+const sfxSave = () => { try { localStorage.setItem("pfSnd", JSON.stringify(SFXCFG)); } catch (e) {} };
 const SND = { on: false, ctx: null };
 function soundInit() {
   const c = SND.ctx = new (window.AudioContext || window.webkitAudioContext)(), len = c.sampleRate * 2, buf = c.createBuffer(1, len, c.sampleRate), d = buf.getChannelData(0); let b = 0;
+  SND.master = c.createGain(); SND.master.gain.value = SFXCFG.vol; SND.master.connect(c.destination);
+  SND.amb = c.createGain(); SND.amb.gain.value = SFXCFG.amb ? 1 : 0; SND.amb.connect(SND.master);
+  SND.fx = c.createGain(); SND.fx.gain.value = 1; SND.fx.connect(SND.master);
+  { const wl = c.sampleRate * 2, wb = c.createBuffer(1, wl, c.sampleRate), wd = wb.getChannelData(0); for (let i = 0; i < wl; i++) wd[i] = Math.random() * 2 - 1; SND.white = wb; }
   for (let i = 0; i < len; i++) { b = (b + 0.02 * (Math.random() * 2 - 1)) / 1.02; d[i] = b * 3.5; }
-  const mk = (type, freq, q) => { const src = c.createBufferSource(); src.buffer = buf; src.loop = true; const f = c.createBiquadFilter(); f.type = type; f.frequency.value = freq; f.Q.value = q; const g = c.createGain(); g.gain.value = 0; src.connect(f); f.connect(g); g.connect(c.destination); src.start(); return { g, f }; };
+  const mk = (type, freq, q) => { const src = c.createBufferSource(); src.buffer = buf; src.loop = true; const f = c.createBiquadFilter(); f.type = type; f.frequency.value = freq; f.Q.value = q; const g = c.createGain(); g.gain.value = 0; src.connect(f); f.connect(g); g.connect(SND.amb); src.start(); return { g, f }; };
   SND.wind = mk("bandpass", 500, 0.6); SND.rum = mk("lowpass", 90, 0.8); SND.thu = mk("lowpass", 160, 0.5);
 }
 function soundStep(p, W, dt) {
@@ -5508,7 +5524,87 @@ function soundStep(p, W, dt) {
   ease(SND.rum, 0.8 * clamp(W.volcs.reduce((a, v) => a + v.act * v.alive, 0) / 4 + W.eruptBoost, 0, 1));
   SND.thu.g.gain.setTargetAtTime(p.thu > 0.15 && Math.random() < dt * 0.6 * p.thu ? 1.0 : 0, t, p.thu > 0.15 ? 0.03 : 1.2);
 }
-$("bSound").onclick = () => { SND.on = !SND.on; if (SND.on && !SND.ctx) soundInit(); if (SND.ctx) SND.ctx[SND.on ? "resume" : "suspend"](); $("bSound").textContent = "Sound: " + (SND.on ? "on" : "off") + " (X)"; $("bSound").classList.toggle("on", SND.on); $("bSound").blur(); };
+$("bSound").onclick = () => { SND.on = !SND.on; SFXCFG.on = SND.on; sfxSave(); if (SND.on && !SND.ctx) soundInit(); if (SND.ctx) SND.ctx[SND.on ? "resume" : "suspend"](); if (SND.on) setTimeout(() => sfxPlay("chime", true), 120); $("bSound").textContent = "Sound: " + (SND.on ? "on" : "off") + " (X)"; $("bSound").classList.toggle("on", SND.on); $("bSound").blur(); };
+/* ---- the soundboard: every big event has its own synthesized sound (no audio files: all made live with Web Audio) ---- */
+const SFX = {                                                                        // key: [icon, name, what triggers it]
+  war: ["⚔️", "War drums", "a war is declared, civil war"], victory: ["🏆", "Victory horns", "a nation wins a war or becomes an empire"], nuke: ["☢️", "Nuclear blast", "nuclear fire"],
+  rocket: ["🚀", "Rocket launch", "launches, moon missions, satellites"], starship: ["🛸", "Starship", "fleets leave for the stars, a nation departs"], contact: ["📡", "Signal", "signals and probes from other worlds"],
+  ascend: ["🌌", "Ascension", "super minds, megastructures"], impact: ["☄️", "Impact", "asteroid and comet impacts"], comet: ["🌠", "Comet / meteors", "comets and meteor showers"],
+  erupt: ["🌋", "Eruption", "volcanic and supervolcano eruptions"], quake: ["🫨", "Earthquake", "earthquakes, new mountains, islands"], wave: ["🌊", "Tsunami", "giant waves, floods"],
+  storm: ["⛈", "Thunder", "storms, blizzards, tempests"], ice: ["❄️", "Ice", "snowball worlds, deep freezes"], doom: ["💀", "Doom", "extinctions, plague, famine, collapse"],
+  life: ["🌱", "Life", "life appears, new species and plants"], mind: ["🧠", "Minds awaken", "intelligent life arises"], nation: ["🏛", "New nation", "nations founded, alliances, peace"],
+  era: ["🔔", "New era", "a new era or eon begins"], tech: ["⚙️", "Discovery", "inventions and discoveries"], moon: ["🌙", "Moon", "moons and rings form, break or drift away"], chime: ["✨", "Chime", "sound switched on"]
+};
+const SFX_RULES = [
+  ["nuke", /nuclear fire|destroys itself/i], ["contact", /signal from|probe from|share the sky|being watched/i], ["starship", /departs the world|leaves for another star|race to the stars|fleet of/i],
+  ["ascend", /ascends|join into one mind|war of the ascended|merges into the mind|Matrioshka|stellar engine|ringworld|star itself|turns inward/i],
+  ["rocket", /launches|mission to the moon|base on the moon|flag on the moon|lander|satellite|space elevator|orbital ring|colony on a captured moon|turns a falling rock aside/i],
+  ["war", /declares war|Civil war|turn on their makers|fractures/i], ["victory", /defeats|becomes an empire|is absorbed by/i],
+  ["impact", /impact|Giant|asteroid/i], ["comet", /comet|meteor shower/i], ["erupt", /eruption|Supervolcano|volcan/i], ["wave", /Tsunami|Floods swamp|sea swallows|under water/i],
+  ["quake", /earthquake|mountain belt|island rises/i], ["storm", /storm|tempest|Blizzard|batters|Geomagnetic/i], ["ice", /nowball|glaciation|ice age|deep freeze/i],
+  ["doom", /extinct|Mass extinction|Plague|Famine|anarchy|falls silent|dark age|catastrophe|great works fall|goes quiet/i],
+  ["mind", /Intelligent life|Another mind awakens/i], ["nation", /nation founded|settled a volcanic island|peace settles|alliance/i],
+  ["era", /(era|eon) begins$/i], ["tech", /exceptional|completes its|green revolution|Thinking machines|unearth|steer the weather|terraform|solar collectors/i],
+  ["moon", /moon|ring system|rings dissipate|Roche/i], ["life", /^Life:|New flora|greening|Explosion of life|Adaptive radiation|Oxygen surge|Cambrian|brings back/i]
+];
+const SFXQ = { last: 0, lastK: {} };
+function sfxPlay(k, force) {
+  if (!SND.ctx || (!force && (!SND.on || document.hidden))) return; const c = SND.ctx, t0 = c.currentTime + 0.02, out = SND.fx;
+  const env = (g, t, a, pk, d) => { g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(pk, t + a); g.gain.exponentialRampToValueAtTime(0.0001, t + a + d); };
+  const nz = (t, dur, type, f0, f1, q, pk, a = 0.01, dst = out) => { const s = c.createBufferSource(); s.buffer = SND.white; s.loop = true; const f = c.createBiquadFilter(); f.type = type; f.Q.value = q; f.frequency.setValueAtTime(f0, t); f.frequency.exponentialRampToValueAtTime(Math.max(20, f1), t + dur); const g = c.createGain(); env(g, t, a, pk, dur); s.connect(f); f.connect(g); g.connect(dst); s.start(t, Math.random()); s.stop(t + a + dur + 0.1); };
+  const tn = (t, type, f0, f1, dur, pk, a = 0.01, det = 0, dst = out) => { const o = c.createOscillator(); o.type = type; o.detune.value = det; o.frequency.setValueAtTime(f0, t); if (f1 !== f0) o.frequency.exponentialRampToValueAtTime(Math.max(10, f1), t + a + dur); const g = c.createGain(); env(g, t, a, pk, dur); o.connect(g); g.connect(dst); o.start(t); o.stop(t + a + dur + 0.1); };
+  const lp = (fr, dst = out) => { const f = c.createBiquadFilter(); f.type = "lowpass"; f.frequency.value = fr; f.connect(dst); return f; };
+  const N = n => 440 * Math.pow(2, (n - 69) / 12);
+  switch (k) {
+    case "war": { const L = lp(900); [0, 0.32, 0.64, 0.8, 0.96, 1.28].forEach((d, i) => { tn(t0 + d, "sine", i % 3 === 2 ? 140 : 105, 45, 0.32, 0.9, 0.005, 0, L); nz(t0 + d, 0.12, "lowpass", 600, 200, 0.7, 0.35, 0.003); });
+      nz(t0 + 1.6, 0.5, "highpass", 3000, 6000, 0.8, 0.25, 0.004); nz(t0 + 1.62, 0.4, "bandpass", 2500, 1800, 6, 0.2, 0.004); break; }
+    case "victory": { const L = lp(2200); [[60, 64, 67], [65, 69, 72], [67, 71, 74], [72, 76, 79]].forEach((ch, i) => ch.forEach(n => tn(t0 + i * 0.28, "sawtooth", N(n), N(n), i === 3 ? 1.6 : 0.3, 0.12, 0.03, (Math.random() - 0.5) * 12, L))); tn(t0, "sine", 98, 49, 0.4, 0.7); tn(t0 + 0.84, "sine", 98, 49, 0.5, 0.8); break; }
+    case "nuke": { nz(t0, 0.25, "highpass", 2000, 400, 0.7, 0.9, 0.002); nz(t0, 4.5, "lowpass", 2400, 40, 0.9, 1.2, 0.02); tn(t0, "sine", 70, 22, 3.5, 1.0, 0.01); tn(t0 + 0.2, "sawtooth", 55, 50, 4, 0.08, 1.5, 0, lp(300)); break; }
+    case "rocket": { nz(t0, 4, "bandpass", 180, 1400, 0.9, 0.6, 0.8); nz(t0, 4.2, "lowpass", 90, 160, 0.8, 0.9, 0.6); tn(t0 + 0.3, "sawtooth", 60, 140, 3.6, 0.07, 1.0, 0, lp(400)); break; }
+    case "starship": { const L = lp(1800); tn(t0, "sawtooth", 55, 110, 3.5, 0.12, 0.8, 0, L); tn(t0, "sawtooth", 55.4, 111, 3.5, 0.12, 0.8, 7, L); tn(t0 + 0.4, "sine", 330, 1320, 2.6, 0.12, 0.6); nz(t0 + 0.2, 3.2, "bandpass", 400, 4000, 2, 0.25, 0.8); break; }
+    case "contact": { for (let i = 0; i < 6; i++) tn(t0 + i * 0.18, "square", i % 2 ? 1320 : 880, i % 2 ? 1320 : 880, 0.08, 0.08, 0.004, 0, lp(3000)); nz(t0, 1.4, "bandpass", 1800, 2200, 3, 0.08, 0.05); tn(t0 + 1.2, "sine", 660, 1980, 1.2, 0.1, 0.05); break; }
+    case "ascend": { [60, 64, 67, 71, 74, 79, 83, 86].forEach((n, i) => { tn(t0 + i * 0.12, "triangle", N(n), N(n), 2.2, 0.1, 0.02, 6); tn(t0 + i * 0.12, "sine", N(n + 12), N(n + 12), 2.2, 0.05, 0.02, -6); }); nz(t0, 3, "highpass", 6000, 9000, 0.5, 0.04, 1); break; }
+    case "impact": { nz(t0, 0.12, "highpass", 3000, 800, 0.7, 0.6, 0.002); nz(t0, 2.6, "lowpass", 1600, 50, 0.9, 1.0, 0.01); tn(t0, "sine", 90, 28, 1.8, 0.9, 0.005); break; }
+    case "comet": { nz(t0, 2.4, "bandpass", 300, 3500, 1.5, 0.35, 1.0); nz(t0 + 0.3, 1.6, "highpass", 5000, 9000, 0.6, 0.06, 0.8); for (let i = 0; i < 5; i++) tn(t0 + 0.6 + i * 0.22 + Math.random() * 0.1, "sine", 2400 - i * 200, 900, 0.25, 0.05, 0.01); break; }
+    case "erupt": { nz(t0, 3.6, "lowpass", 140, 60, 1, 1.0, 0.4); tn(t0, "sine", 48, 36, 3.2, 0.6, 0.3); nz(t0 + 0.5, 0.3, "lowpass", 1200, 100, 0.8, 0.7, 0.005); nz(t0 + 1.4, 0.3, "lowpass", 900, 90, 0.8, 0.5, 0.005); for (let i = 0; i < 10; i++) nz(t0 + 0.6 + Math.random() * 2.2, 0.04, "highpass", 2500, 2000, 1, 0.12, 0.002); break; }
+    case "quake": { const L = lp(110); nz(t0, 3.2, "lowpass", 80, 50, 1.2, 1.2, 0.3, L); tn(t0, "sine", 34, 30, 3, 0.7, 0.4); for (let i = 0; i < 6; i++) nz(t0 + 0.3 + i * 0.4 + Math.random() * 0.2, 0.15, "lowpass", 400, 80, 0.8, 0.25, 0.01); break; }
+    case "wave": { nz(t0, 3.4, "lowpass", 250, 1800, 0.7, 0.8, 1.4); nz(t0 + 1.2, 2.2, "highpass", 1500, 4000, 0.5, 0.25, 0.4); break; }
+    case "storm": { nz(t0, 0.08, "highpass", 4000, 2000, 0.7, 0.5, 0.002); nz(t0 + 0.05, 3.2, "lowpass", 900, 60, 0.8, 0.9, 0.04); nz(t0 + 0.6, 2.4, "lowpass", 300, 60, 0.8, 0.5, 0.2); break; }
+    case "ice": { for (let i = 0; i < 14; i++) { const d = Math.random() * 1.6; nz(t0 + d, 0.05, "bandpass", 3000 + Math.random() * 4000, 2500, 8, 0.12, 0.002); } tn(t0, "sine", 1760, 1700, 2.2, 0.04, 0.6); tn(t0, "sine", 2637, 2600, 2.2, 0.03, 0.6); nz(t0, 2.4, "highpass", 4000, 6000, 0.5, 0.05, 0.8); break; }
+    case "doom": { const L = lp(500); tn(t0, "sawtooth", 55, 52, 4, 0.18, 1.2, 0, L); tn(t0, "sawtooth", 58.3, 55, 4, 0.16, 1.2, 0, L); tn(t0, "sine", 41, 38, 4.2, 0.5, 1.0); tn(t0 + 0.4, "triangle", N(58), N(57), 3.2, 0.06, 0.8); break; }
+    case "life": { const sc = [72, 74, 76, 79, 81, 84, 86]; for (let i = 0; i < 4; i++) { const n = sc[Math.floor(Math.random() * sc.length)]; tn(t0 + i * 0.16, "sine", N(n), N(n), 1.4, 0.12, 0.005); tn(t0 + i * 0.16, "sine", N(n) * 2.01, N(n) * 2.01, 0.6, 0.03, 0.005); } break; }
+    case "mind": { const L = lp(2600); [57, 64, 69, 71, 76].forEach((n, i) => { tn(t0 + i * 0.05, "triangle", N(n), N(n), 3.4, 0.08, 1.0, 5, L); tn(t0 + i * 0.05, "sawtooth", N(n), N(n), 3.4, 0.03, 1.2, -7, L); }); tn(t0 + 1.4, "sine", N(81), N(81), 2, 0.06, 0.4); break; }
+    case "nation": { const L = lp(1600); [[55, 62], [60, 67], [64, 72]].forEach((ch, i) => ch.forEach(n => tn(t0 + i * 0.35, "sawtooth", N(n), N(n), i === 2 ? 1.4 : 0.38, 0.1, 0.04, 4, L))); break; }
+    case "era": { const f = 110; [[1, 0.5], [1.48, 0.3], [2.09, 0.22], [2.96, 0.14], [4.1, 0.08]].forEach(([m, a]) => tn(t0, "sine", f * m, f * m * 0.996, 5, a, 0.01)); nz(t0, 0.3, "bandpass", 800, 400, 1, 0.15, 0.003); break; }
+    case "tech": { [76, 83, 88].forEach((n, i) => tn(t0 + i * 0.09, "square", N(n), N(n), 0.18, 0.05, 0.004, 0, lp(4000))); tn(t0 + 0.3, "sine", N(95), N(95), 0.9, 0.06, 0.005); break; }
+    case "moon": { [69, 76, 81].forEach((n, i) => tn(t0 + i * 0.25, "sine", N(n), N(n), 2.4, 0.09, 0.3, 4)); nz(t0, 2.6, "bandpass", 1200, 600, 4, 0.04, 1); break; }
+    default: { [79, 84, 91].forEach((n, i) => tn(t0 + i * 0.08, "sine", N(n), N(n), 0.9, 0.09, 0.005)); }
+  }
+}
+window.pfSfx = text => {                                                              // called by the live world for every logged event
+  if (!SND.on || !SND.ctx || document.hidden) return; let k = null; for (const r of SFX_RULES) if (r[1].test(text)) { k = r[0]; break; } if (!k || SFXCFG.off.includes(k)) return;
+  const now = performance.now(), big = /nuke|war|victory|impact|erupt|mind|starship|ascend|era/.test(k);
+  if (now - SFXQ.last < (big ? 700 : 1600) || now - (SFXQ.lastK[k] || 0) < 5000) return; SFXQ.last = now; SFXQ.lastK[k] = now; sfxPlay(k);
+};
+function sfxBoard() {                                                                 // the soundboard: master volume, ambient on/off, and every sound to preview or mute
+  let el = $("sfxB"); if (el) { el.remove(); return; }
+  el = document.createElement("div"); el.id = "sfxB";
+  const row = () => Object.keys(SFX).filter(k => k !== "chime").map(k => `<div class="sb${SFXCFG.off.includes(k) ? " off" : ""}" data-k="${k}"><button class="pl" data-play="${k}" title="Play">${SFX[k][0]}</button><div><b>${SFX[k][1]}</b><span>${SFX[k][2]}</span></div><label><input type="checkbox" data-en="${k}"${SFXCFG.off.includes(k) ? "" : " checked"}></label></div>`).join("");
+  el.innerHTML = `<div class="sbh"><b>🎛 Soundboard</b><button id="sfxX">✕</button></div><div class="sbt"><button id="sfxOn">${SND.on ? "🔊 Sound on" : "🔇 Sound off"}</button><label>Volume <input id="sfxV" type="range" min="0" max="1" step="0.05" value="${SFXCFG.vol}"></label><label><input id="sfxA" type="checkbox"${SFXCFG.amb ? " checked" : ""}> Wind &amp; rumble</label></div><div class="sbg">${row()}</div><div class="sbf">Tap an icon to hear it. Untick a sound to mute it during play.</div>`;
+  document.body.appendChild(el);
+  const need = () => { if (!SND.ctx) soundInit(); if (SND.ctx.state !== "running") SND.ctx.resume(); };
+  el.addEventListener("click", e => { const b = e.target.closest("[data-play]"); if (b) { need(); sfxPlay(b.dataset.play, true); } });
+  el.addEventListener("change", e => { const k = e.target.dataset && e.target.dataset.en; if (k) { SFXCFG.off = SFXCFG.off.filter(x => x !== k); if (!e.target.checked) SFXCFG.off.push(k); e.target.closest(".sb").classList.toggle("off", !e.target.checked); sfxSave(); } });
+  $("sfxV").oninput = e => { SFXCFG.vol = +e.target.value; if (SND.master) SND.master.gain.setTargetAtTime(SFXCFG.vol, SND.ctx.currentTime, 0.05); sfxSave(); };
+  $("sfxA").onchange = e => { SFXCFG.amb = e.target.checked; if (SND.amb) SND.amb.gain.setTargetAtTime(SFXCFG.amb ? 1 : 0, SND.ctx.currentTime, 0.2); sfxSave(); };
+  $("sfxOn").onclick = () => { $("bSound").onclick(); $("sfxOn").textContent = SND.on ? "🔊 Sound on" : "🔇 Sound off"; };
+  $("sfxX").onclick = () => el.remove();
+}
+if (SFXCFG.on && !EMB && Q.get("bg") !== "1" && Q.get("photo") !== "1" && Q.get("wallpaper") !== "1") {      // sound was on last time: switch it back on at the first touch or key (browsers need one before they will play)
+  const go = () => { removeEventListener("pointerdown", go, true); removeEventListener("keydown", go, true); if (!SND.on) $("bSound").onclick(); };
+  addEventListener("pointerdown", go, true); addEventListener("keydown", go, true);
+}
+$("bSndB").onclick = () => { sfxBoard(); $("bSndB").blur(); };
 const toggleMoonCam = () => {
   const W = S.world;
   if (!S.moonCam && !(W.moonBases || []).some(b => (b.moon ?? -1) === -1)) { flash("No moon base yet: a nation must reach the moon first"); return; }
@@ -5554,12 +5650,12 @@ canvas.addEventListener("pointerup", e => { ptrs.delete(e.pointerId); drag = nul
 canvas.addEventListener("pointercancel", e => { ptrs.delete(e.pointerId); drag = null; });
 canvas.addEventListener("pointermove", e => {
   if (ptrs.has(e.pointerId)) ptrs.set(e.pointerId, [e.clientX, e.clientY]);
-  if (ptrs.size === 2 && !S.camLock) { const [a, b] = [...ptrs.values()], d = Math.hypot(a[0] - b[0], a[1] - b[1]); if (pinch0 > 0 && d > 0) S.tDist = clamp(1 + (S.tDist - 1) * pinch0 / d, 1.0006, 14); pinch0 = d; return; }          // two-finger pinch zoom
+  if (ptrs.size === 2 && !S.camLock) { const [a, b] = [...ptrs.values()], d = Math.hypot(a[0] - b[0], a[1] - b[1]); if (pinch0 > 0 && d > 0) S.tDist = clamp(1 + (S.tDist - 1) * pinch0 / d, PHONE ? 1.32 : 1.0006, 14); pinch0 = d; return; }          // two-finger pinch zoom
   if (!drag) return;
   const zs = clamp((S.dist - 1) / 0.25, 0.004, 1); S.yaw -= (e.clientX - drag[0]) * 0.005 * zs * S.rotK * (S.invX ? -1 : 1); S.pitch = clamp(S.pitch + (e.clientY - drag[1]) * 0.005 * zs * S.rotK * (S.invY ? -1 : 1), -1.45, 1.45);
   drag = [e.clientX, e.clientY]; S.tYaw = S.yaw; S.tPitch = S.pitch;
 });
-canvas.addEventListener("wheel", e => { e.preventDefault(); if (S.camLock || !S.wheelZoom) return; if (S.moonCam || S.camMode === "mOrbit") { S.moonD = clamp((S.moonD || 3.2) * Math.exp(e.deltaY * 0.0012 * S.zoomK), 1.3, 14); return; } S.tDist = clamp(1 + (S.tDist - 1) * Math.exp(e.deltaY * 0.0012 * S.zoomK), 1.0006, 14); }, { passive: false });
+canvas.addEventListener("wheel", e => { e.preventDefault(); if (S.camLock || !S.wheelZoom) return; if (S.moonCam || S.camMode === "mOrbit") { S.moonD = clamp((S.moonD || 3.2) * Math.exp(e.deltaY * 0.0012 * S.zoomK), 1.3, 14); return; } S.tDist = clamp(1 + (S.tDist - 1) * Math.exp(e.deltaY * 0.0012 * S.zoomK), PHONE ? 1.32 : 1.0006, 14); }, { passive: false });
 
 /* ---- bottom graphs: one card per series; each can be shown/hidden, and all at once ---- */
 const fmtT = v0 => { const v = S.world ? S.world.real(v0) : v0; return S.unit === "F" ? `${(v * 9 / 5 + 32).toFixed(0)} °F` : S.unit === "K" ? `${(v + 273.15).toFixed(0)} K` : `${v.toFixed(0)} °C`; };
@@ -6145,7 +6241,7 @@ function frame0(now) {
   }
   const k = 1 - Math.exp(-dt * S.camEase);
   if (S.follow && !drag) { if (S.time < S.follow.until && S.M) { const c = mulMV(transpose(S.M), S.follow.dir); let ty = Math.atan2(c[0], c[2]); const dd = ty - S.yaw; S.tYaw = S.yaw + Math.atan2(Math.sin(dd), Math.cos(dd)); S.tPitch = Math.asin(clamp(c[1], -1, 1)); } else S.follow = null; }       // fly-to-event: keep the place centred while the planet turns
-  S.yaw += (S.tYaw - S.yaw) * (drag ? 0 : k); S.pitch += (S.tPitch - S.pitch) * (drag ? 0 : k); S.dist += (S.tDist - S.dist) * k;
+  S.yaw += (S.tYaw - S.yaw) * (drag ? 0 : k); S.pitch += (S.tPitch - S.pitch) * (drag ? 0 : k); if (PHONE && !S.moonCam && S.tDist < 1.32) S.tDist = 1.32; S.dist += (S.tDist - S.dist) * k;
 
   { const ms = dt * 1000; emaMs += (Math.min(ms, emaMs * 1.8 + 4) - emaMs) * 0.05;                   // a lone hitch is clipped so it can't masquerade as a slow GPU
     SPK.frame(ms); }
