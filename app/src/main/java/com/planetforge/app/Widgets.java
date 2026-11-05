@@ -324,9 +324,9 @@ public class Widgets {
         Paint hp = P(INK, 12, true);
         c.drawText(fit("⏳ Time", hp, w - 16), 10, 20, hp);
         boolean events = w >= 110;
-        ArrayList<Ev> l;
+        ArrayList<Ev> l = new ArrayList<>();
         if (events) {
-            l = new ArrayList<>(); JSONArray hs = j.optJSONArray("hist");
+            JSONArray hs = j.optJSONArray("hist");
             if (hs != null) for (int i = Math.min(hs.length(), 8) - 1; i >= 0; i--) { JSONObject e = hs.optJSONObject(i); if (e == null) continue; Ev x = new Ev(); x.ico = ""; x.name = e.optString("text"); x.when = String.format(Locale.US, "%,d Myr", e.optInt("age")); x.done = true; l.add(x); }
             if (l.isEmpty()) events = false;
         }
