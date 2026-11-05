@@ -26,24 +26,29 @@ import org.json.JSONObject;
  * Every few hours (your choice) it then opens the page once with graphics, takes a picture of the world, and posts it with a few facts.
  */
 public class BgJobService extends JobService {
-    static final int JOB_ID = 7;
+    static final int JOB_ID = 8;
     private WebView web;
     private boolean finished;
     private JSONObject facts;
+    private boolean wallRun;
     private final Handler h = new Handler(Looper.getMainLooper());
 
     static void schedule(Context c, boolean on) {
         JobScheduler js = (JobScheduler) c.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         if (js == null) return;
+        js.cancel(7);                                                  // the first version of the job (it ran even while the phone was in use)
         if (!on) { js.cancel(JOB_ID); return; }
         for (JobInfo j : js.getAllPendingJobs()) if (j.getId() == JOB_ID) return;     // already scheduled: don't reset its clock
         js.schedule(new JobInfo.Builder(JOB_ID, new ComponentName(c, BgJobService.class))
-                .setPeriodic(15 * 60 * 1000L).setPersisted(true).build());
+                .setPeriodic(30 * 60 * 1000L).setRequiresBatteryNotLow(true).setPersisted(true).build());
     }
 
     private class Bridge {
         @JavascriptInterface public void bgDone(final String json) { h.post(new Runnable() { @Override public void run() { report(json); } }); }
         @JavascriptInterface public void photoReady(final String dataUrl, final String json) { h.post(new Runnable() { @Override public void run() { photo(dataUrl, json); } }); }
+        @JavascriptInterface public void wallFrame(int i, int n, String dataUrl) { Wall.frame(getApplicationContext(), i, n, dataUrl); }
+        @JavascriptInterface public void wallDone(int n) { Wall.done(getApplicationContext(), n); }
+        @JavascriptInterface public void photoEnd() { h.post(new Runnable() { @Override public void run() { finish(false); } }); }
         @JavascriptInterface public void bgConfig(boolean on) { }
         @JavascriptInterface public void photoConfig(int hours) { }
         @JavascriptInterface public void quit() { }
@@ -54,6 +59,7 @@ public class BgJobService extends JobService {
     @Override public boolean onStartJob(JobParameters p) {
         params = p; finished = false; facts = null;
         if (MainActivity.visible) return false;                       // the app is open and simulating itself
+        try { android.os.PowerManager pm = (android.os.PowerManager) getSystemService(Context.POWER_SERVICE); if (pm != null && pm.isInteractive()) return false; } catch (Exception e) { }     // never while the phone is being used: it would make it lag
         try {
             web = new WebView(getApplicationContext());
             WebSettings s = web.getSettings();
@@ -71,11 +77,7 @@ public class BgJobService extends JobService {
         try {
             JSONArray a; Object o = new org.json.JSONTokener(json).nextValue();
             if (o instanceof JSONObject) { a = ((JSONObject) o).optJSONArray("notes"); facts = ((JSONObject) o).optJSONObject("facts"); } else a = (JSONArray) o;
-            if (a != null) for (int i = 0; i < a.length(); i++) {
-                JSONObject n = a.getJSONObject(i);
-                boolean b = n.optBoolean("big", false); big |= b;
-                Notifier.post(getApplicationContext(), n.optString("title"), n.optString("text"), b);
-            }
+            if (a != null) { for (int i = 0; i < a.length(); i++) big |= a.getJSONObject(i).optBoolean("big", false); Notifier.news(getApplicationContext(), a); }
         } catch (Exception e) { }
         SharedPreferences sp = getSharedPreferences("pf", MODE_PRIVATE);
         int hours = sp.getInt("photoH", 6); long last = sp.getLong("lastPhoto", 0), now = System.currentTimeMillis();
@@ -87,18 +89,19 @@ public class BgJobService extends JobService {
     private void startPhoto() {
         try {
             h.removeCallbacksAndMessages(null);
-            final int w = 1080, hh = 1350;
+            final int w = 720, hh = 1560;
+            wallRun = getSharedPreferences("pf", MODE_PRIVATE).getBoolean("wallOn", false);
             web.stopLoading();
             web.measure(View.MeasureSpec.makeMeasureSpec(w, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(hh, View.MeasureSpec.EXACTLY));
             web.layout(0, 0, w, hh);
             web.onResume(); web.resumeTimers();
-            web.loadUrl(MainActivity.pageUrl(getApplicationContext()) + "?photo=1&notitle=1&mobile=1");
+            web.loadUrl(MainActivity.pageUrl(getApplicationContext()) + "?photo=1&notitle=1&mobile=1" + (wallRun ? "&wall=1" : ""));
             h.postDelayed(new Runnable() { @Override public void run() { photoFallback(); } }, 80000);       // graphics did not start in time: send the facts without a picture
         } catch (Exception e) { photoFallback(); }
     }
 
     private void photoFallback() {
-        try { if (facts != null) Notifier.post(getApplicationContext(), facts.optString("title"), facts.optString("text"), false); } catch (Exception e) { }
+        try { if (facts != null) Notifier.post(getApplicationContext(), facts.optString("title"), facts.optString("text")); } catch (Exception e) { }
         getSharedPreferences("pf", MODE_PRIVATE).edit().putLong("lastPhoto", System.currentTimeMillis()).apply();
         finish(false);
     }
@@ -112,6 +115,7 @@ public class BgJobService extends JobService {
             FileOutputStream os = new FileOutputStream(out); os.write(jpg); os.close();
             Notifier.photo(getApplicationContext(), f.optString("title"), f.optString("text"), out);
             getSharedPreferences("pf", MODE_PRIVATE).edit().putLong("lastPhoto", System.currentTimeMillis()).apply();
+            if (wallRun) { h.removeCallbacksAndMessages(null); h.postDelayed(new Runnable() { @Override public void run() { finish(false); } }, 170000); return; }      // keep going: the page now records the turning planet for the wallpaper (photoEnd finishes the job)
             finish(false);
         } catch (Exception e) { photoFallback(); }
     }

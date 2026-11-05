@@ -38,3 +38,8 @@ Open the in-game Menu (☰) and tap "Set as live wallpaper", or pick Planet Forg
 * **World photos**: every 3 / 6 / 12 / 24 hours (More menu → *World photos*) the app opens the page off-screen once, takes a picture of the planet and posts it with a few facts. If graphics can't start in time, the facts are posted without the picture.
 * **Permissions**: notifications, run-in-background (battery optimisation exemption, asked once; also More menu → *Allow background running*), internet (only for the in-game updater).
 * The live wallpaper is unchanged (it never uses phone mode).
+
+## Live wallpaper (rewritten) and quieter notifications (build 2026110423+)
+
+* The wallpaper no longer runs the game in a hidden WebView (that drew black and starved the app). More menu -> *Set as live wallpaper* makes the game record 36 pictures of your planet turning (you see it spin for a few seconds), then opens Android's wallpaper preview. The wallpaper plays them back with cross-fades, about one turn every 90 s, and never shows black (it falls back to stars and a simple planet). The background photo job refreshes the set every few hours.
+* Notifications: one notification at a time (a new one replaces the last), at most 6 a day, 45 minutes apart (15 for big moments), the same headline at most every 6 hours, silent channels (big moments are normal priority). More menu -> *Notifications* cycles all news / big moments only / off. The background check only runs while the screen is off and the battery is not low, every 30 minutes, and never works for more than ~7 s per run.

@@ -62,6 +62,17 @@ public class MainActivity extends Activity {
         @JavascriptInterface
         public void bgDone(String json) { }
 
+        /** How much news to send: 0 off, 1 big moments only, 2 everything (rate limited). */
+        @JavascriptInterface
+        public void notifyLevel(int level) { getSharedPreferences("pf", MODE_PRIVATE).edit().putInt("nLevel", level).apply(); }
+
+        /** The live wallpaper: the page records pictures of the planet turning and hands them over one by one. */
+        @JavascriptInterface
+        public void wallFrame(int i, int n, String dataUrl) { Wall.frame(getApplicationContext(), i, n, dataUrl); }
+
+        @JavascriptInterface
+        public void wallDone(int n) { Wall.done(getApplicationContext(), n); setWallpaper(); }
+
         /** How often the background job sends a photo of the world, in hours (0 = never). */
         @JavascriptInterface
         public void photoConfig(int hours) { getSharedPreferences("pf", MODE_PRIVATE).edit().putInt("photoH", hours).apply(); }
