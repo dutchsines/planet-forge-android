@@ -290,6 +290,38 @@
   body.mobile .dx, body.mobile #mtabs .dsep { display:none !important; }
   /* ---- phone mode: no live blur over the WebGL canvas (the single biggest mobile compositor cost), flat opaque panels instead ---- */
   html.phone *, html.phone *::before, html.phone *::after { backdrop-filter:none !important; -webkit-backdrop-filter:none !important; }
+  /* ---- phone: top card + bottom dock (stat tiles, storm/season centre, speed menu) ---- */
+  html.phone body.mobile #topbar { left:8px; right:8px; top:calc(8px + env(safe-area-inset-top)); transform:none; max-width:none; display:block; white-space:normal; padding:10px 12px; border-radius:24px; overflow:visible; font-size:12px; letter-spacing:0; background:linear-gradient(180deg,rgba(8,12,28,.94),rgba(14,22,48,.9)) !important; border:1px solid rgba(160,190,255,.16); box-shadow:inset 0 1px 0 rgba(255,255,255,.1), 0 8px 28px rgba(0,0,0,.5); }
+  html.phone #topbar .pt-r1 { display:flex; align-items:center; gap:10px; }
+  html.phone #topbar .pt-badge { flex:none; width:38px; height:38px; border-radius:50%; display:grid; place-items:center; font-size:20px; background:radial-gradient(circle at 30% 25%, color-mix(in srgb, var(--bc) 70%, #fff), color-mix(in srgb, var(--bc) 45%, #0a1020)); box-shadow:0 0 16px -2px var(--bc); }
+  html.phone #topbar .pt-nm { min-width:0; flex:1; } html.phone #topbar .pt-nm b { display:block; font-size:14.5px; letter-spacing:.05em; text-transform:uppercase; color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; } html.phone #topbar .pt-nm span { display:block; font-size:10px; color:#8fa4cc; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  html.phone #topbar .pt-age { flex:none; text-align:right; } html.phone #topbar .pt-age b { display:block; font-size:20px; line-height:1; color:#fff; text-transform:none; letter-spacing:0; } html.phone #topbar .pt-age span { font-size:9px; letter-spacing:.1em; color:#8fa4cc; text-transform:uppercase; }
+  html.phone #topbar .pt-era { margin-top:9px; display:flex; align-items:center; gap:8px; }
+  html.phone #topbar .pt-chip { flex:0 1 auto; min-width:0; max-width:62%; font-size:11px; font-weight:700; color:#0b1020; background:linear-gradient(90deg,#7fe0ff,#8fb4ff); border-radius:12px; padding:3px 10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  html.phone #topbar .pt-seg { flex:1; display:flex; gap:3px; height:6px; min-width:30px; } html.phone #topbar .pt-seg i { flex:1; border-radius:3px; background:var(--sc); opacity:.85; } html.phone #topbar .pt-seg i.n { background:linear-gradient(90deg,var(--sc) 55%,rgba(255,255,255,.14) 55%); opacity:1; }
+  html.phone body.mobile #toast { top:calc(122px + env(safe-area-inset-top)); border-radius:16px; }
+  html.phone body.mobile #bottom { left:8px; right:8px; bottom:calc(8px + env(safe-area-inset-bottom)); border-radius:26px; padding:34px 8px 8px; overflow:visible; background:linear-gradient(180deg,rgba(26,38,78,.96),rgba(8,12,28,.97)) !important; border:1px solid rgba(160,190,255,.16); box-shadow:inset 0 1px 0 rgba(255,255,255,.1), 0 -6px 30px rgba(60,100,220,.18), 0 8px 30px rgba(0,0,0,.6); }
+  html.phone body.mobile #bottom .btns { bottom:calc(100% + 56px); }
+  #pfDock { display:none; } html.phone body.mobile #pfDock { display:flex; align-items:flex-end; margin:0 0 8px; }
+  #pfDock .s { flex:1; min-width:0; text-align:center; position:relative; padding:0 1px; cursor:default; }
+  #pfDock .s + .s::before { content:""; position:absolute; left:0; top:8px; bottom:6px; width:1px; background:linear-gradient(180deg,transparent,rgba(160,190,255,.2),transparent); }
+  #pfDock .s .ic { width:26px; height:26px; margin:0 auto 3px; border-radius:50%; display:grid; place-items:center; font-size:14px; background:radial-gradient(circle at 30% 25%, color-mix(in srgb, var(--c) 55%, #fff), color-mix(in srgb, var(--c) 40%, #0a1020)); box-shadow:0 0 12px -2px var(--c); }
+  #pfDock .s b { display:block; font-size:15px; color:#fff; line-height:1.1; white-space:nowrap; } #pfDock .s span { display:block; font-size:8px; letter-spacing:.06em; text-transform:uppercase; color:#8fa4cc; margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  #pfDock .s u { display:block; height:3px; margin:5px 12% 0; border-radius:2px; background:rgba(255,255,255,.1); overflow:hidden; text-decoration:none; } #pfDock .s u i { display:block; height:100%; border-radius:2px; background:linear-gradient(90deg, color-mix(in srgb, var(--c) 50%, #000), var(--c)); box-shadow:0 0 6px var(--c); transition:width .6s; }
+  #pfDock .s.pick { cursor:pointer; } #pfDock .s.pick:active { background:rgba(127,182,255,.12); border-radius:12px; } #pfDock .s.pick.open { background:rgba(127,182,255,.16); border-radius:12px; box-shadow:0 0 0 2px rgba(127,182,255,.35); }
+  #pfDock .cc { flex:1.4; } #pfDock .cc .ring { width:62px; height:62px; margin:-46px auto 2px; border-radius:50%; position:relative; display:grid; place-items:center; background:conic-gradient(#7fe08a 0 25%,#ffd24a 25% 50%,#ff9a4a 50% 75%,#7fb6ff 75% 100%); box-shadow:0 0 0 4px #0b1226, 0 0 22px color-mix(in srgb, var(--c) 45%, transparent); }
+  #pfDock .cc .ring.flat { background:#2a3558; } #pfDock .cc .ring::before { content:""; position:absolute; inset:6px; border-radius:50%; background:radial-gradient(circle at 35% 30%,#1c2a55,#0a1226); }
+  #pfDock .cc .ring i { position:relative; font-style:normal; font-size:25px; } #pfDock .cc .ring s { position:absolute; inset:0; transform:rotate(var(--p,0deg)); transition:transform .8s; } #pfDock .cc .ring.flat s { display:none; } #pfDock .cc .ring s::after { content:""; position:absolute; left:50%; top:-4px; width:10px; height:10px; margin-left:-5px; border-radius:50%; background:#fff; box-shadow:0 0 8px #fff; }
+  #pfDock .cc b { font-size:17px; } #pfDock .cc .st { color:var(--c); font-weight:700; font-size:10px; letter-spacing:.03em; text-transform:none; margin-top:0; } #pfDock .cc small { display:block; font-size:8.5px; color:#8fa4cc; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  html.phone body.msimple #mtabs button, html.phone body.mobile #mtabs button { min-height:46px; border-radius:16px; background:rgba(120,150,220,.13); position:relative; }
+  html.phone body.mobile #mtabs button.on { background:#2d5bb8; }
+  html.phone body.mobile #mtabs #mqPause { background:linear-gradient(135deg,#3a6fff,#8a5cff); color:#fff; box-shadow:0 4px 16px rgba(90,110,255,.45); }
+  html.phone #mqPause .spd { position:absolute; right:6px; top:4px; font-style:normal; font-size:9px; font-weight:700; background:rgba(255,255,255,.25); border-radius:8px; padding:1px 6px; } html.phone #mqPause .hint { position:absolute; right:7px; bottom:3px; font-size:8px; opacity:.8; }
+  .pfpop { position:absolute; z-index:30; bottom:calc(100% + 58px); border-radius:16px; background:rgba(10,16,34,.97); border:1px solid rgba(127,182,255,.45); padding:8px; box-shadow:0 10px 30px rgba(0,0,0,.6); }
+  .pfpop::after { content:""; position:absolute; bottom:-7px; left:var(--ax,50%); margin-left:-6px; width:12px; height:12px; background:rgba(10,16,34,.97); border-right:1px solid rgba(127,182,255,.45); border-bottom:1px solid rgba(127,182,255,.45); transform:rotate(45deg); }
+  .pfpop h4 { font:700 11px system-ui; letter-spacing:.08em; color:#9fb0d4; text-transform:uppercase; margin:0 2px 7px; }
+  .pfpop .g { display:grid; grid-template-columns:repeat(4,1fr); gap:5px; } .pfpop .o { border-radius:10px; background:rgba(120,150,220,.12); border:1px solid transparent; text-align:center; padding:6px 2px 5px; color:#fff; cursor:pointer; } .pfpop .o em { display:block; font-style:normal; font-size:15px; } .pfpop .o b { display:block; font-size:11px; margin-top:1px; } .pfpop .o span { font-size:7.5px; color:#8fa4cc; text-transform:uppercase; letter-spacing:.03em; } .pfpop .o.on { border-color:#7fb6ff; background:rgba(127,182,255,.22); } .pfpop .o.used { opacity:.35; pointer-events:none; }
+  .pfpop.sp { width:240px; } .pfpop .sr { display:flex; align-items:center; gap:10px; padding:9px 10px; border-radius:11px; font-size:13px; color:#e8eefc; cursor:pointer; } .pfpop .sr em { font-style:normal; width:24px; text-align:center; font-size:16px; } .pfpop .sr small { margin-left:auto; color:#8fa4cc; font-size:10px; } .pfpop .sr.on { background:rgba(127,182,255,.2); } .pfpop .sr.on::after { content:"✓"; color:#7fb6ff; font-weight:700; margin-left:6px; }
   html.phone .panel, html.phone #bottom, html.phone #topbar { background:rgba(8,12,24,.9) !important; }
   html.phone .pin .lbl, html.phone .pin.pcl, html.phone .ntag, html.phone .ngrp, html.phone #hoverTip { background:rgba(10,14,28,.94) !important; }
   html.phone #gfx, html.phone #welcome, html.phone #title.pause { background:rgba(4,8,18,.95) !important; }
@@ -481,6 +513,9 @@
 </style>
 </head>
 <body>
+<div id="pfSplash" style="position:fixed;inset:0;z-index:99999;background:#05070f;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;font:600 14px system-ui,sans-serif;color:#9fb0d4;letter-spacing:.16em;transition:opacity .4s"><div style="width:54px;height:54px;border-radius:50%;border:4px solid rgba(120,150,220,.25);border-top-color:#7fb6ff;animation:pfspin 1s linear infinite"></div>PLANET FORGE<small style="font-weight:400;letter-spacing:.02em;opacity:.7">Warming up the graphics…</small></div>
+<style>@keyframes pfspin{to{transform:rotate(360deg)}}</style>
+<script>if (/[?&](embed|wallpaper|bg|photo|ov)=/.test(location.search)) document.getElementById("pfSplash").remove();</script>
 <canvas id="c"></canvas>
 <canvas id="warfx"></canvas><div id="pins"></div><button id="hudHide" title="Hide or show the whole HUD (H)" aria-label="Hide HUD"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18M10.6 5.1A10 10 0 0112 5c6 0 10 7 10 7a17 17 0 01-3.2 3.9M6.6 6.6A17 17 0 002 12s4 7 10 7a9.7 9.7 0 004-.9M9.9 9.9a3 3 0 004.2 4.2"/></svg><span class="hh">Hide HUD</span><span class="sh">Show HUD</span><kbd>H</kbd></button><div id="wtimer" class="panel"></div><div id="toast"></div><div id="help" class="panel"><div class="gh"><span>Guide</span><button id="helpC">✕</button></div><div id="helpB"></div></div>
 <div id="leftcol"><div id="info" class="panel"><div id="infoTxt" title="Click to collapse or expand"></div>
@@ -522,7 +557,7 @@
 <div id="rightcol"><div id="hudR" class="panel"></div><div id="side" class="panel closed"><div id="sideHead"><span>Controls <span style="font-weight:400;color:#8fa4cc">(Tab)</span></span><button id="bSide">–</button></div><div id="sideBody"></div></div></div>
 <pre id="err"></pre>
 
-<script>
+<script type="text/plain" id="pfMain">
 "use strict";
 /* ===================================================================================
    Planet Forge (WebGL2).  Everything about the planet is computed per pixel on the GPU:
@@ -537,7 +572,7 @@ const FALL = { stony: { land: [0.42, 0.38, 0.34], sea: [0.55, 0.78, 0.72], sd: [
 const NP = 14, NV = 10;                              // tectonic plates
 const TAU = Math.PI * 2;
 const Q = new URLSearchParams(location.search);
-const PF_BUILD = 2026110507;                                      // bumped on every release (release.sh); the in-game updater compares this with version.json
+const PF_BUILD = 2026110509;                                      // bumped on every release (release.sh); the in-game updater compares this with version.json
 const PF_UPDATES = [                                              // newest first: add an entry for every release, it shows in the welcome box
   { b: 2026110407, d: "4 Nov 2026", t: ["Home Assistant card: keeps its planet when the page refreshes, stays in Endless mode, and has a slim history timeline and camera buttons. It loads in a separate frame with a loading spinner so the dashboard doesn't stutter, and never shows the start menu.", "Home Assistant: a Lovelace card that shows the planet on a dashboard (see the Home Assistant kit).", "The history timeline on the bottom bar no longer bunches up at the right edge as a world ages: recent events stay spread out (the whole-history view now stretches time near the present).", "Bioluminescent seas are calmer and richer in colour: blooms now glow blue, sea-green, violet and rose, with golden sparks."] },
   { b: 2026110406, d: "4 Nov 2026", t: ["The game now starts on the top graphics preset (Ultra+) with automatic quality scaling, so it keeps itself smooth. Phones keep the light preset.", "Endless mode starts on again: a world never restarts by itself until you turn it off (E)."] },
@@ -3824,7 +3859,7 @@ const vs = compile(gl.VERTEX_SHADER, VS), fs = compile(gl.FRAGMENT_SHADER, FS);
 if (vs && fs) {
   gl.attachShader(prog, vs); gl.attachShader(prog, fs); gl.linkProgram(prog);
   if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) fail("Link error:\n" + gl.getProgramInfoLog(prog));
-  else pfBoot("shader ready after " + ((performance.now() - tCompile0) / 1000).toFixed(1) + " s");
+  else { window.PFSHADER = (performance.now() - tCompile0) / 1000; pfBoot("shader ready after " + window.PFSHADER.toFixed(1) + " s"); }
 }
 gl.useProgram(prog);
 const vao = gl.createVertexArray(); gl.bindVertexArray(vao);
@@ -5179,7 +5214,7 @@ const PHONE_TIERS = {                                                  // phone 
   balanced: { n: "Balanced", base: "minimal", q: 0.65, dpr: 1.15, clouds: true,  atmoQ: 4, aurQ: 6,  stars: 0.6,  fxCity: true,  corona: false },
   pretty:   { n: "Pretty",   base: "low",     q: 0.8,  dpr: 1.5,  clouds: true,  atmoQ: 8, aurQ: 10, stars: 1,    fxCity: true,  corona: true }
 };
-let phoneTier = (() => { try { const t = localStorage.getItem("pfPhoneTier"); return PHONE_TIERS[t] ? t : "balanced"; } catch (e) { return "balanced"; } })();
+let phoneTier = (() => { try { const t = localStorage.getItem("pfPhoneTier"); return PHONE_TIERS[t] ? t : "lite"; } catch (e) { return "lite"; } })();
 function phoneProfile() {                                              // always starts from a known-light setup, whatever older versions saved
   if (!PHONE) return; const T = PHONE_TIERS[phoneTier];
   Object.assign(S, PRESETS[T.base], { gfxPreset: T.base, tFps: 30, maxDpr: T.dpr, quality: T.q, auto: true, res4k: false, clouds: T.clouds, atmoQ: T.atmoQ, aurQ: T.aurQ, stars: T.stars, fxCity: T.fxCity, corona: T.corona,
@@ -5262,6 +5297,82 @@ buildMobileHUD();
 { const bar = $("mtabs"), nw = $("bNew"), en = $("bEndless");                                 // New world and Endless live on the main bar, at its left end
   nw.innerHTML = "<b>🌱</b><span>New world</span>"; en.title = "Never restart: let this world run forever (E)"; en.classList.add("q2"); nw.classList.add("q2");
   const sep = document.createElement("i"); sep.className = "dsep"; const nav = $("dkN"); nav.insertBefore(sep, nav.firstChild); nav.insertBefore(en, nav.firstChild); nav.insertBefore(nw, nav.firstChild); updateButtons(); }
+if (PHONE) {                                                           // phone: the top card, the stat dock above the buttons, and the speed menu on Play
+  const SC = { play: ["▶", "Play", "×1"], real: ["🕰", "Real time", "1 s = 1 s"], ff3: ["⏩", "Fast", "×3"], ff5: ["⏭", "Faster", "×5"], clim: ["🌡", "Climate", "slow · big swings"] };
+  const F = c => Math.round(c * 9 / 5 + 32), unitT = c => S.unit === "K" ? Math.round(c + 273.15) + " K" : S.unit === "C" ? Math.round(c) + "°C" : F(c) + "°F";
+  const esc = t => String(t).replace(/[&<>"]/g, m => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[m]));
+  window.pfTopHTML = (W, p) => {
+    const m = S.age * 2, big = m >= 1000, nC = W.civs.length, tC = W.real(p.Ts);
+    const ic = p.magma > 0.5 ? ["🌋", "#ff8a3a"] : nC ? ["🏛", "#ffd278"] : p.life > 0.05 ? ["🌱", "#58e07a"] : tC < -25 ? ["❄", "#7fb6ff"] : p.fill < 0.5 ? ["🪨", "#b39a82"] : ["🌊", "#4aa8ff"];
+    const L = W.eraList || [], sg = L.slice(-6).map((e, i, a) => `<i${i === a.length - 1 ? ' class="n"' : ""} style="--sc:hsl(${e.hue} 70% 58%)"></i>`).join("");
+    const sub = [W.worldName ? p.name : "", "seed " + W.seed, W.starName + " sun", W.ring ? "ringed" : ""].filter(Boolean).join(" · ");
+    return `<div class="pt-r1"><div class="pt-badge" style="--bc:${ic[1]}">${ic[0]}</div><div class="pt-nm"><b>${esc(W.worldName || p.name)}</b><span>${esc(sub)}</span></div><div class="pt-age"><b>${big ? (m / 1000).toFixed(2) : Math.round(m).toLocaleString()}</b><span>${big ? "Billion" : "Million"} years</span></div></div><div class="pt-era"><div class="pt-chip">${esc(p.era)}</div><div class="pt-seg">${sg}</div></div>`;
+  };
+  const CAT = {                                                        // the stats a slot can show
+    o2: (c, p, W) => ({ i: "🫁", l: "Oxygen", v: Math.round(c.o2 * 42) + "%", f: c.o2, c: "#3de0d0" }),
+    co2: (c, p, W) => ({ i: "🫧", l: "CO₂", v: Math.round(c.co2 * 100) + "%", f: c.co2, c: "#9fb4d8" }),
+    ocean: (c, p, W) => { const oc = clamp(55 + 130 * p.sea, 0, 95) / 100 * p.fill * (1 - p.magma); return { i: "🌊", l: "Ocean", v: Math.round(oc * 100) + "%", f: oc, c: "#6aaeff" }; },
+    clouds: (c, p, W) => ({ i: "☁", l: "Clouds", v: Math.round(p.cover * 100) + "%", f: p.cover, c: "#bcd4ff" }),
+    day: (c, p, W) => { const d = 24 / Math.max(Math.abs(W.spinK), 0.05); return { i: "🕓", l: "Day", v: d.toFixed(d < 10 ? 1 : 0) + " h", f: d / 48, c: "#ffb04a" }; },
+    vol: (c, p, W) => { const n = (W.volcs || []).filter(q => q.alive > 0.3).length; return { i: "🌋", l: "Volcanoes", v: String(n), f: n / 25, c: "#ff8a3a" }; },
+    moons: (c, p, W) => { const n = (W.moonR > 0 ? 1 : 0) + (W.moons || []).filter(m => S.age >= m.born).length; return { i: "🌙", l: "Moons", v: String(n), f: n / 4, c: "#c08aff" }; },
+    poll: (c, p, W) => ({ i: "🏭", l: "Pollution", v: Math.round(clamp(W.poll || 0, 0, 1) * 100) + "%", f: W.poll || 0, c: "#ff6a4a" }),
+    impacts: (c, p, W) => ({ i: "☄️", l: "Impacts", v: String((W.craters || []).length), f: (W.craters || []).length / 16, c: "#ff9a4a" }),
+    age: (c, p, W) => { const m = S.age * 2; return { i: "⏳", l: "Age", v: m >= 1000 ? (m / 1000).toFixed(1) + " Gyr" : Math.round(m) + " Myr", f: S.age / 2268, c: "#b79bff" }; },
+    lineages: (c, p, W) => { const n = (W.tree || []).filter(x => x.died == null).length; return { i: "🦎", l: "Lineages", v: String(n), f: n / 20, c: "#c08aff" }; },
+    wars: (c, p, W) => { const n = W.civs.filter(v => v.war).length; return { i: "⚔️", l: "Wars", v: String(n), f: W.civs.length ? n / W.civs.length : 0, c: "#ff5a5a" }; }
+  };
+  const ORDER = ["ocean", "clouds", "o2", "co2", "day", "vol", "moons", "poll", "impacts", "age", "lineages", "wars"];
+  let slots = ["o2", "co2"]; try { const v = JSON.parse(localStorage.getItem("pfSlots") || "null"); if (Array.isArray(v) && v.length === 2 && CAT[v[0]] && CAT[v[1]] && v[0] !== v[1]) slots = v; } catch (e) {}
+  const dock = document.createElement("div"); dock.id = "pfDock"; $("bottom").insertBefore(dock, $("bottom").firstChild);
+  const tile = (x, cls, extra) => `<div class="s ${cls || ""}" style="--c:${x.c}" ${extra || ""}><div class="ic">${x.i}</div><b>${x.v}</b><span>${x.l}</span><u><i style="width:${Math.round(clamp(x.f, 0, 1) * 100)}%"></i></u></div>`;
+  const STORM = { "Dust storm": ["🌪", "#ffd9a0"], "Blizzard": ["🌨", "#bfe3ff"], "Superstorm": ["⛈", "#ffd9a0"], "Ash cloud": ["🌋", "#ffb0a0"], "Storm cluster": ["🌧", "#bcd4ff"], "Sulfur storm": ["☣️", "#f0e07a"], "Methane tempest": ["🌀", "#ffb08a"], "Carbon-rich storm": ["🌀", "#ffc89a"] };
+  const paint = () => {
+    const W = S.world; if (!W || !document.body.classList.contains("mobile") || document.hidden) return;
+    const p = W.params(S.age), c = W.ch(S.age), nC = W.civs.length, tC = W.real(p.Ts);
+    const lc = clamp(W.lifeChance(S.age) || 0, 0, 1), mc = clamp(W.mindChance(S.age) || 0, 0, 1);
+    const life = { i: "🌱", l: "Life chance", v: Math.round(lc * 100) + "%", f: lc, c: "#58e07a" };
+    const mind = nC ? { i: "👥", l: "People", v: fmtPop(W.civs.reduce((a, v) => a + v.pop, 0)), f: Math.max(...W.civs.map(v => v.tech)), c: "#6aaeff" } : { i: "🧠", l: "Mind chance", v: Math.round(mc * 100) + "%", f: mc, c: "#ffb04a" };
+    // centre: temperature, the strongest storm, and where the year is
+    let st = null, best = 0.15; for (const o of W.wx || []) if ((o.str || 0) > best && STORM[o.name]) { best = o.str; st = o; }
+    let sI = ["🌤", "#b8f0c0"], sN = "Calm skies";
+    if (p.magma > 0.5) { sI = ["🔥", "#ffb070"]; sN = "Ash and fire"; } else if (st) { sI = STORM[st.name]; sN = st.name; } else if (W.geo > 0.3) { sI = ["⚡", "#d0b0ff"]; sN = "Geomagnetic storm"; } else if (p.fill < 0.5) { sI = ["🌫", "#cdbba6"]; sN = "Dry and still"; }
+    const se = S.season || W.seasonInfo(S.age), flat = !se || /^no seasons/.test(se.text) || p.magma > 0.5;
+    let pos = 0, sname = "";
+    if (!flat) { const a = Math.asin(clamp(se.x, -1, 1)) * 180 / Math.PI, rising = se.x > 0.995 ? false : W.seasonInfo(S.age).x !== undefined && (() => { const s2 = W.seasonInfo(S.age + 0.5); return s2.x > se.x; })(); pos = rising ? 225 + a : 225 - a; sname = se.x > 0.55 ? "summer" : se.x < -0.55 ? "winter" : rising ? "spring" : "autumn"; }
+    const cen = `<div class="s cc" style="--c:${sI[1]}"><div class="ring${flat ? " flat" : ""}" style="--p:${pos}deg"><i>${sI[0]}</i><s></s></div><b>${unitT(tC)}</b><span class="st">${sN}</span><small>${flat ? (p.magma > 0.5 ? "molten surface" : "no seasons") : sname + " · north"}</small></div>`;
+    const A = CAT[slots[0]](c, p, W), B = CAT[slots[1]](c, p, W);
+    const h = tile(life) + tile(mind) + cen + tile(A, "pick" + (pop && pop.slot === 0 ? " open" : ""), 'data-slot="0"') + tile(B, "pick" + (pop && pop.slot === 1 ? " open" : ""), 'data-slot="1"');
+    if (h !== dock._h) { dock._h = h; dock.innerHTML = h; }
+    const chip = document.querySelector("#mqPause .spd"); if (chip) chip.textContent = S.frozen ? "paused" : S.tmode === "real" ? "real" : S.tmode === "clim" ? "clim" : "×" + S.mult;
+  };
+  let pop = null;                                                      // the open popup: { el, slot } for a stat picker, { el, speed:true } for the speed menu
+  const closePop = () => { if (pop) { pop.el.remove(); pop = null; dock._h = ""; paint(); } };
+  const place = (el, anchor) => { $("bottom").appendChild(el); const b = $("bottom").getBoundingClientRect(), r = anchor.getBoundingClientRect(), w = el.offsetWidth; let l = r.left - b.left + r.width / 2 - w / 2; l = Math.max(0, Math.min(b.width - w, l)); el.style.left = l + "px"; el.style.setProperty("--ax", (r.left - b.left + r.width / 2 - l) + "px"); };
+  dock.addEventListener("click", e => {
+    const t = e.target.closest(".pick"); if (!t) return; const slot = +t.dataset.slot; if (pop && pop.slot === slot) { closePop(); return; } closePop();
+    const W = S.world, p = W.params(S.age), c = W.ch(S.age), el = document.createElement("div"); el.className = "pfpop"; el.style.width = "min(330px, 94%)";
+    el.innerHTML = '<h4>Show in this slot</h4><div class="g">' + ORDER.map(k => { const x = CAT[k](c, p, W); return `<div class="o${k === slots[slot] ? " on" : k === slots[1 - slot] ? " used" : ""}" data-k="${k}"><em>${x.i}</em><b>${x.v}</b><span>${x.l}</span></div>`; }).join("") + "</div>";
+    el.addEventListener("click", ev => { const o = ev.target.closest(".o"); if (!o) return; slots[slot] = o.dataset.k; try { localStorage.setItem("pfSlots", JSON.stringify(slots)); } catch (x) {} closePop(); });
+    pop = { el, slot }; place(el, t); dock._h = ""; paint();
+  });
+  // press and hold Play/Pause: speed menu (a quick tap still plays or pauses)
+  { const mp = $("mqPause"); let tm = 0, held = false;
+    mp.insertAdjacentHTML("beforeend", '<i class="spd">×1</i><i class="hint">▾ hold</i>');
+    const openSpeed = () => {
+      closePop(); held = true; const cur = S.frozen ? "" : S.tmode, el = document.createElement("div"); el.className = "pfpop sp";
+      el.innerHTML = ["real", "play", "ff3", "ff5", "clim"].map(k => `<div class="sr${k === cur ? " on" : ""}" data-k="${k}"><em>${SC[k][0]}</em>${SC[k][1]}<small>${SC[k][2]}</small></div>`).join("");
+      el.addEventListener("click", ev => { const r = ev.target.closest(".sr"); if (!r) return; const k = r.dataset.k;
+        if (k === "real") $("bReal").onclick(); else if (k === "play") setPace("play", 1, 1); else if (k === "ff3") setPace("ff3", 3, 1); else if (k === "ff5") setPace("ff5", 5, 1); else setPace("clim", 0.6, 0.06);
+        closePop(); });
+      pop = { el, speed: true }; place(el, mp); try { navigator.vibrate && navigator.vibrate(12); } catch (x) {} };
+    mp.addEventListener("pointerdown", () => { held = false; clearTimeout(tm); tm = setTimeout(openSpeed, 450); });
+    ["pointerup", "pointercancel", "pointerleave"].forEach(ev => mp.addEventListener(ev, () => clearTimeout(tm)));
+    mp.addEventListener("contextmenu", e => e.preventDefault());
+    mp.addEventListener("click", e => { if (held) { held = false; e.stopImmediatePropagation(); e.preventDefault(); } }, true); }
+  document.addEventListener("pointerdown", e => { if (pop && !pop.el.contains(e.target) && !e.target.closest(".pick") && !e.target.closest("#mqPause")) closePop(); }, true);
+  setInterval(paint, 1000); setTimeout(paint, 600);
+}
 /* ------------------------------------------------------------------ planet types: jump to a world of a chosen kind (searches seeds, then fast-forwards its history) */
 const PLANET_TYPES = [
   { ico: "🌍", name: "Earth-like", age: 2300, tip: "Mild climate, oceans and continents, thriving life", f: (w, T, wet, lt) => T > 8 && T < 22 && wet > -0.1 && wet < 0.45 && lt > 0.4 && w.size > 0.8 && w.size < 1.35 && !w.ring ? 1 - Math.abs(T - 15) / 20 + (w.canIntel ? 0.3 : 0) : null },
@@ -5875,6 +5986,7 @@ function updateInfo(p) {
   if ($("lt-data").classList.contains("on")) updateTables(p);
   const W = S.world, ageM = S.age * 2, ageT = ageM >= 1000 ? (ageM / 1000).toFixed(2) + " Gyr" : Math.round(ageM) + " Myr";
   setHTML($("topbar"), `<b>${W.worldName || p.name}</b>${W.worldName ? `<span class="sep g">·</span><span class="g">${p.name}</span>` : ""}<span class="sep">·</span><span class="era">${p.era}</span><span class="sep g">·</span><span class="g">${p.geo}</span><span class="sep z">·</span><span class="z">${W.size.toFixed(2)}× Earth</span><span class="sep">·</span><span>${ageT}</span>${W.civs.length ? `<span class="sep z">·</span><span class="z">${fmtPop(W.civs.reduce((a, v) => a + v.pop, 0))}</span>` : ""}`);
+  if (PHONE && window.pfTopHTML) { try { setHTML($("topbar"), window.pfTopHTML(W, p)); } catch (e) {} }
   { const nMoon = (W.moonR > 0 ? 1 : 0) + W.moons.filter(m => S.age >= m.born).length, tv = W.real(p.Ts), tT = S.unit === "F" ? `${(tv * 9 / 5 + 32).toFixed(0)}°F` : S.unit === "K" ? `${(tv + 273.15).toFixed(0)} K` : `${tv.toFixed(0)}°C`;
     setHTML($("infoTxt"), `<h1>${W.worldName || p.name}</h1><div class="sub">${W.worldName ? p.name + " · " : ""}seed ${W.seed}${W.moonName ? " · moon " + W.moonName : ""} · ${W.starName} sun${W.ring ? " · ringed" : ""}${nMoon ? ` · ${nMoon} moon${nMoon > 1 ? "s" : ""}` : ""}</div><div class="stats">${(() => { const c0 = W.ch(S.age), oc = clamp(55 + 130 * p.sea, 0, 95) / 100 * p.fill * (1 - p.magma), tc = clamp((tv + 40) / 120, 0, 1), day = 24 / Math.max(Math.abs(W.spinK), 0.05), nC = W.civs.length, pop = W.civs.reduce((a, v) => a + v.pop, 0), tech = nC ? Math.max(...W.civs.map(v => v.tech)) : 0,
         tile = (ico, v, lab, f, col, tip) => `<div class="st" style="--c:${col}" title="${tip}"><em>${ico}</em><b>${v}</b><span>${lab}</span><u><i style="width:${Math.round(clamp(f, 0, 1) * 100)}%"></i></u></div>`;
@@ -7303,6 +7415,19 @@ const TITLE = { on: false, sel: 0, mode: "title", box: null };
   }, true);
   window.pfOpenMenu = () => { if (!TITLE.on && !wel.classList.contains("on")) openPause(); };
 }
+</script>
+<script>   // the big script starts one frame after the first paint, so the splash shows at once instead of a black screen while the graphics driver compiles the planet shader
+(function () {
+  var t0 = performance.now(), sp = document.getElementById("pfSplash");
+  function go() { var el = document.createElement("script"); el.textContent = document.getElementById("pfMain").textContent; document.body.appendChild(el); }
+  requestAnimationFrame(function () { setTimeout(go, 80); });
+  var iv = setInterval(function () {
+    var ready = (window.PFFRAMES | 0) > 3, late = performance.now() - t0 > 150000;
+    if (!ready && !late) return; clearInterval(iv);
+    if (sp) { sp.style.opacity = 0; setTimeout(function () { sp.remove(); }, 450); }
+    try { if (typeof AndroidBridge !== "undefined" && window.flash) { var T = (performance.now() - t0) / 1000; window.PFBOOT = T; setTimeout(function () { window.flash("⏱ Started in " + T.toFixed(1) + " s" + (window.PFSHADER ? " · graphics " + window.PFSHADER.toFixed(1) + " s" : "")); }, 700); } } catch (e) {}
+  }, 200);
+})();
 </script>
 </body>
 </html>
