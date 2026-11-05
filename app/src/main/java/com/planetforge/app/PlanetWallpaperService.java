@@ -8,8 +8,8 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.RadialGradient;
 import android.graphics.Shader;
-import android.os.Handler;
-import android.os.Looper;
+import android.os.Build;
+import android.view.Choreographer;
 import android.os.SystemClock;
 import android.service.wallpaper.WallpaperService;
 import android.view.SurfaceHolder;
@@ -22,13 +22,11 @@ import java.util.Random;
  * cross-fading between them. Until a set exists it draws a simple planet and stars, so it is never black.
  */
 public class PlanetWallpaperService extends WallpaperService {
-    private static final int STEP_MS = 2500;      // time per picture; 36 pictures = one turn every 90 seconds
-    private static final int FRAME_MS = 66;       // ~15 draws per second
+    private static final int STEP_MS = 1000;      // time per picture; 90 pictures = one turn every 90 seconds
 
     @Override public Engine onCreateEngine() { return new PlanetEngine(); }
 
     private class PlanetEngine extends Engine {
-        private final Handler handler = new Handler(Looper.getMainLooper());
         private final Paint paint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG), fill = new Paint(Paint.ANTI_ALIAS_FLAG);
         private final Matrix m = new Matrix();
         private boolean visible = false;
@@ -37,24 +35,30 @@ public class PlanetWallpaperService extends WallpaperService {
         private long t0 = SystemClock.uptimeMillis(), lastCheck = 0;
         private float[] sx, sy, sr;
 
-        private final Runnable drawer = new Runnable() {
-            @Override public void run() {
+        private long lastNs = 0, gapNs = 15500000L;                    // minimum time between draws (from the smoothness setting)
+
+        private void readFps() { int f = getSharedPreferences("pf", MODE_PRIVATE).getInt("wallFps", 60); gapNs = f <= 0 ? 0 : Math.max(0, 1000000000L / f - 1500000L); }
+        private final Choreographer.FrameCallback drawer = new Choreographer.FrameCallback() {
+            @Override public void doFrame(long ns) {
                 if (!visible) return;
-                SurfaceHolder holder = getSurfaceHolder();
-                Canvas c = null;
-                try {
-                    c = holder.lockCanvas();
-                    if (c != null) { if (w == 0) { w = c.getWidth(); h = c.getHeight(); } draw(c); }
-                } catch (Exception ignored) {
-                } finally {
-                    if (c != null) { try { holder.unlockCanvasAndPost(c); } catch (Exception ignored) { } }
+                if (ns - lastNs >= gapNs) {
+                    lastNs = ns;
+                    SurfaceHolder holder = getSurfaceHolder();
+                    Canvas c = null;
+                    try {
+                        c = Build.VERSION.SDK_INT >= 26 ? holder.lockHardwareCanvas() : holder.lockCanvas();          // the graphics chip draws the pictures: smooth at 60
+                        if (c != null) { if (w == 0) { w = c.getWidth(); h = c.getHeight(); } draw(c); }
+                    } catch (Exception ignored) {
+                    } finally {
+                        if (c != null) { try { holder.unlockCanvasAndPost(c); } catch (Exception ignored) { } }
+                    }
                 }
-                handler.postDelayed(this, FRAME_MS);
+                Choreographer.getInstance().postFrameCallback(this);
             }
         };
 
         private void refresh() {                                   // is there a (new) set of pictures?
-            long now = SystemClock.uptimeMillis(); if (now - lastCheck < 30000 && n > 0) return; lastCheck = now;
+            long now = SystemClock.uptimeMillis(); if (now - lastCheck < 30000 && n > 0) return; lastCheck = now; readFps();
             int count = getSharedPreferences("pf", MODE_PRIVATE).getInt("wallN", 0), at = (int) (getSharedPreferences("pf", MODE_PRIVATE).getLong("wallAt", 0) / 1000L);
             if (count != n || at != loadedAt) { n = count; loadedAt = at; curIdx = -1; if (cur != null) cur.recycle(); if (nxt != null) nxt.recycle(); cur = nxt = null; }
         }
@@ -104,12 +108,12 @@ public class PlanetWallpaperService extends WallpaperService {
         @Override public void onSurfaceChanged(SurfaceHolder holder, int format, int width, int height) { super.onSurfaceChanged(holder, format, width, height); w = width; h = height; }
 
         @Override public void onVisibilityChanged(boolean v) {
-            visible = v; handler.removeCallbacks(drawer);
-            if (v) { lastCheck = 0; handler.post(drawer); }
+            visible = v; Choreographer.getInstance().removeFrameCallback(drawer);
+            if (v) { lastCheck = 0; readFps(); Choreographer.getInstance().postFrameCallback(drawer); }
         }
 
         @Override public void onDestroy() {
-            visible = false; handler.removeCallbacks(drawer);
+            visible = false; Choreographer.getInstance().removeFrameCallback(drawer);
             if (cur != null) cur.recycle(); if (nxt != null) nxt.recycle(); cur = nxt = null;
             super.onDestroy();
         }
