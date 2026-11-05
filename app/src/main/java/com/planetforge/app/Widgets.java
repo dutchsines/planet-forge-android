@@ -196,10 +196,12 @@ public class Widgets {
     // header: icon + title left, subtitle right (room kept for the refresh button); returns y where content starts
     static float header(Canvas c, float w, String ico, String title, String sub) {
         Paint a = P(INK, 13, true), b = P(0xFF8EA0C4, 10, false);
-        float right = w - 12 - (refreshBtn ? 32 : 0);
-        float subW = Math.min(w * 0.5f, b.measureText(sub));
-        text(c, ico + " " + title, 12, 21, a, right - 12 - subW - 6);
-        textR(c, sub, right, 20.5f, b, w * 0.5f);
+        float right = w - 12 - (refreshBtn ? 32 : 0), room = right - 12 - 8;
+        String t = ico + " " + title;
+        float tw = Math.min(a.measureText(t), Math.max(room * 0.62f, room - b.measureText(sub)));   // the name comes first; the subtitle gets what is left
+        float sw = room - tw;
+        text(c, t, 12, 21, a, tw + 1);
+        if (sw > 24) textR(c, sub, right, 20.5f, b, sw);
         if (refreshBtn) {
             Paint p = new Paint(Paint.ANTI_ALIAS_FLAG); p.setColor(0x38789ADC);
             c.drawCircle(w - 24, 17, 12, p);
@@ -265,7 +267,7 @@ public class Widgets {
     }
 
     static void planet(Canvas c, int w, int h, JSONObject j, int cols) {
-        String sub = (cols >= 4 ? j.optString("era") + " · " + j.optDouble("size") + "× Earth · " : "") + (busy(c) ? "updating…" : mins(j.optLong("at")));
+        String sub = (cols >= 4 ? j.optString("era") + " · " : "") + (busy(c) ? "updating…" : mins(j.optLong("at")));
         float y = header(c, w, "🪐", j.optString("name"), sub);
         ArrayList<Object[]> b = new ArrayList<>();
         b.add(new Object[]{"🌊 Ocean", j.optInt("ocean") + "%", j.optInt("ocean") / 100f, BL1, BL2});

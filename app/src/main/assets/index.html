@@ -572,7 +572,7 @@ const FALL = { stony: { land: [0.42, 0.38, 0.34], sea: [0.55, 0.78, 0.72], sd: [
 const NP = 14, NV = 10;                              // tectonic plates
 const TAU = Math.PI * 2;
 const Q = new URLSearchParams(location.search);
-const PF_BUILD = 2026110509;                                      // bumped on every release (release.sh); the in-game updater compares this with version.json
+const PF_BUILD = 2026110511;                                      // bumped on every release (release.sh); the in-game updater compares this with version.json
 const PF_UPDATES = [                                              // newest first: add an entry for every release, it shows in the welcome box
   { b: 2026110407, d: "4 Nov 2026", t: ["Home Assistant card: keeps its planet when the page refreshes, stays in Endless mode, and has a slim history timeline and camera buttons. It loads in a separate frame with a loading spinner so the dashboard doesn't stutter, and never shows the start menu.", "Home Assistant: a Lovelace card that shows the planet on a dashboard (see the Home Assistant kit).", "The history timeline on the bottom bar no longer bunches up at the right edge as a world ages: recent events stay spread out (the whole-history view now stretches time near the present).", "Bioluminescent seas are calmer and richer in colour: blooms now glow blue, sea-green, violet and rose, with golden sparks."] },
   { b: 2026110406, d: "4 Nov 2026", t: ["The game now starts on the top graphics preset (Ultra+) with automatic quality scaling, so it keeps itself smooth. Phones keep the light preset.", "Endless mode starts on again: a world never restarts by itself until you turn it off (E)."] },
@@ -4254,7 +4254,7 @@ const PFB = {
   get perf() { return this.perfs[this.cfg.perf] || this.perfs.balanced; },
   applyPerf() {
     const P = this.perf, light = this.cfg.perf === "light"; S.tFps = P.fps; S.qMax = P.q; if (S.quality > P.q) S.quality = P.q;
-    if (light) { S.clouds = false; S.shadow = 0; S.cShadow = 0; S.stars = Math.min(S.stars, 0.3); S.atmoQ = Math.min(S.atmoQ, 4); }
+    if (light) { if (!PHONE) S.clouds = false; S.shadow = 0; S.cShadow = 0; S.stars = Math.min(S.stars, 0.3); S.atmoQ = Math.min(S.atmoQ, 4); }
     else if (this.cfg.perf === "smooth") { S.atmoQ = Math.min(S.atmoQ, 6); S.cShadow = 0; }
   },
   eraKey(W, a) { const g = W.geoEra(a); return g.eon + "/" + g.era; },
@@ -5210,7 +5210,7 @@ $("bSide").addEventListener("click", () => document.body.classList.remove("m-ctr
     if (m < 10 && d < 300) { if (now - tapT < 350 && Math.hypot(e.clientX - tapX, e.clientY - tapY) < 30) { document.body.classList.toggle("hide"); tapT = 0; } else { tapT = now; tapX = e.clientX; tapY = e.clientY; } } }); }
 applyMobile(true);
 const PHONE_TIERS = {                                                  // phone graphics tiers: render scale (of CSS pixels), pixel-ratio cap, and which costly effects stay on
-  lite:     { n: "Lite",     base: "minimal", q: 0.5,  dpr: 1,    clouds: false, atmoQ: 3, aurQ: 4,  stars: 0.35, fxCity: false, corona: false },
+  lite:     { n: "Lite",     base: "minimal", q: 0.5,  dpr: 1,    clouds: true,  atmoQ: 3, aurQ: 4,  stars: 0.35, fxCity: false, corona: false },
   balanced: { n: "Balanced", base: "minimal", q: 0.65, dpr: 1.15, clouds: true,  atmoQ: 4, aurQ: 6,  stars: 0.6,  fxCity: true,  corona: false },
   pretty:   { n: "Pretty",   base: "low",     q: 0.8,  dpr: 1.5,  clouds: true,  atmoQ: 8, aurQ: 10, stars: 1,    fxCity: true,  corona: true }
 };
@@ -5266,7 +5266,7 @@ function buildMobileHUD() {                                     // thumb-reach t
   const B = document.body, closeSheet = () => { B.classList.remove("mt-on", "mt-world", "mt-time", "mt-view", "mt-panels", "mt-more"); bar.querySelectorAll("[data-t]").forEach(b => b.classList.remove("on")); };
   bar.querySelectorAll("[data-t]").forEach(b => b.addEventListener("click", () => { const t = b.dataset.t, was = B.classList.contains("mt-" + t); closeSheet(); if (!was) { B.classList.add("mt-on", "mt-" + t); b.classList.add("on"); } }));
   { const mg = document.createElement("div"); mg.className = "bg"; mg.dataset.g = "more";
-    mg.innerHTML = '<i>More</i><button id="mmHelp" data-ico="❔">Guide</button><button id="mmGfx" data-ico="🥔"></button><button id="mmSimple" data-ico="🧩"></button><button id="mmTL" data-ico="📜">Timeline</button>' + (typeof AndroidBridge !== "undefined" && AndroidBridge.setWallpaper ? '<button id="mmWall" data-ico="🖼">Set as live wallpaper</button>' : '') + '<button id="mmPerf" data-ico="🔋"></button>' + (AND ? '<button id="mmNote" data-ico="🔔"></button><button id="mmPace" data-ico="⏳"></button><button id="mmPhoto" data-ico="📸"></button><button id="mmWfps" data-ico="🎞"></button><button id="mmBg" data-ico="🔓">Allow background running</button>' : '');
+    mg.innerHTML = '<i>More</i><button id="mmHelp" data-ico="❔">Guide</button><button id="mmGfx" data-ico="🥔"></button><button id="mmSimple" data-ico="🧩"></button><button id="mmTL" data-ico="📜">Timeline</button><button id="mmBoot" data-ico="⏱"></button>' + (typeof AndroidBridge !== "undefined" && AndroidBridge.setWallpaper ? '<button id="mmWall" data-ico="🖼">Set as live wallpaper</button>' : '') + '<button id="mmPerf" data-ico="🔋"></button>' + (AND ? '<button id="mmNote" data-ico="🔔"></button><button id="mmPace" data-ico="⏳"></button><button id="mmPhoto" data-ico="📸"></button><button id="mmWfps" data-ico="🎞"></button><button id="mmBg" data-ico="🔓">Allow background running</button>' : '');
     const bt = bar.parentNode.querySelector(".btns"); bt.insertBefore(mg, bt.firstChild);
     const gl3 = ["minimal", "low", "medium"], nm = { minimal: "Minimum", low: "Low", medium: "Medium" };
     const PN = { off: "Off", slow: "Slow", normal: "Normal", fast: "Fast" }, PO = ["slow", "normal", "fast", "off"];
@@ -5281,6 +5281,8 @@ function buildMobileHUD() {                                     // thumb-reach t
       if (ok) { flash("🖼 Wallpaper ready"); } else flash("Couldn't make the wallpaper, try again"); };
     $("mmTL").onclick = () => { closeSheet(); tlToggle(); };
     $("mmHelp").onclick = () => { closeSheet(); $("bHelp").onclick(); };
+    const bootLab = () => { let b = null; try { b = JSON.parse(localStorage.getItem("pfBootInfo") || "null"); } catch (e) {} $("mmBoot").textContent = b ? "Last start: " + b.t + " s" + (b.g != null ? " · graphics " + b.g + " s" : "") : "Last start: not measured yet"; };
+    $("mmBoot").onclick = () => {}; bootLab(); bar.querySelector("#mqMenu").addEventListener("click", bootLab);
     lab(); bar.querySelector("#mqMenu").addEventListener("click", lab); }
   $("mqInfo").onclick = () => { closeSheet(); $("bInfo").click(); };
   $("mqPause").onclick = () => { if (S.frozen) $("bPlay").onclick(); else $("bPause").onclick(); };
@@ -7425,7 +7427,7 @@ const TITLE = { on: false, sel: 0, mode: "title", box: null };
     var ready = (window.PFFRAMES | 0) > 3, late = performance.now() - t0 > 150000;
     if (!ready && !late) return; clearInterval(iv);
     if (sp) { sp.style.opacity = 0; setTimeout(function () { sp.remove(); }, 450); }
-    try { if (typeof AndroidBridge !== "undefined" && window.flash) { var T = (performance.now() - t0) / 1000; window.PFBOOT = T; setTimeout(function () { window.flash("⏱ Started in " + T.toFixed(1) + " s" + (window.PFSHADER ? " · graphics " + window.PFSHADER.toFixed(1) + " s" : "")); }, 700); } } catch (e) {}
+    try { if (typeof AndroidBridge !== "undefined" && window.flash) { var T = (performance.now() - t0) / 1000; window.PFBOOT = T; try { localStorage.setItem("pfBootInfo", JSON.stringify({ t: +T.toFixed(1), g: window.PFSHADER ? +window.PFSHADER.toFixed(1) : null, at: Date.now() })); } catch (e) {} setTimeout(function () { window.flash("⏱ Started in " + T.toFixed(1) + " s" + (window.PFSHADER ? " · graphics " + window.PFSHADER.toFixed(1) + " s" : "")); }, 700); } } catch (e) {}
   }, 200);
 })();
 </script>
